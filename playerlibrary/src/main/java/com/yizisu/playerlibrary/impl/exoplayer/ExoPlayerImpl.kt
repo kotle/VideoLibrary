@@ -31,9 +31,6 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(), Player.Even
     override val currentBufferDuration: Long
         get() = player.bufferedPosition
 
-    override val bufferedPercentage: Int
-        get() = player.bufferedPercentage
-
     override fun prepareAndPlay(
         models: MutableList<PlayerModel>,
         playIndex: Int,

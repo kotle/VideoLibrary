@@ -37,9 +37,11 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     //完整依赖exoPlayer(https://exoplayer.dev/hello-world.html)
     api 'com.google.android.exoplayer:exoplayer:2.11.3'
+    api 'com.google.android.exoplayer:extension-rtmp:2.10.4'
     //部分依赖exoPlayer(https://exoplayer.dev/hello-world.html)
 //    implementation 'com.google.android.exoplayer:exoplayer-core:2.X.X'
 //    implementation 'com.google.android.exoplayer:exoplayer-dash:2.11.3'
 //    implementation 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.11.3'
 //    implementation 'com.google.android.exoplayer:exoplayer-ui:2.X.X'
+//    api 'com.google.android.exoplayer:exoplayer-rtsp:2.11.3'
 }

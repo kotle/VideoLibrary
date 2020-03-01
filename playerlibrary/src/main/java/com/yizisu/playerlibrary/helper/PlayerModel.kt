@@ -30,12 +30,6 @@ abstract class PlayerModel {
     val currentBufferDurationText: String
         get() = getCountTimeByLong(_currentBufferDuration)
 
-    //缓存的百分比
-    internal var _bufferedPercentage: Int = 0
-    val bufferedPercentage: Int
-        get() = _bufferedPercentage
-
-
     //播放链接
     abstract fun getMediaUri(): Uri
 }

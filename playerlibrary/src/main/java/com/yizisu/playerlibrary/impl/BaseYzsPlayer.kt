@@ -67,7 +67,6 @@ abstract class BaseYzsPlayer : IYzsPlayer {
                             model._totalDuration = totalDuration
                             model._currentDuration = currentDuration
                             model._currentBufferDuration = currentBufferDuration
-                            model._bufferedPercentage = bufferedPercentage
                             it.onTick(model)
                         }
                     }
@@ -98,8 +97,7 @@ abstract class BaseYzsPlayer : IYzsPlayer {
     open val currentDuration: Long = 0
     //当前已经缓存的时间
     open val currentBufferDuration: Long = 0
-    //缓存的百分比
-    open val bufferedPercentage: Int = 0
+
 
     override fun prepare(
         models: MutableList<PlayerModel>,
