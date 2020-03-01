@@ -2,7 +2,6 @@ package com.yizisu.playerlibrary.impl
 
 import android.os.Handler
 import android.os.Looper
-import androidx.lifecycle.LifecycleOwner
 import com.yizisu.playerlibrary.IYzsPlayer
 import com.yizisu.playerlibrary.SimplePlayer
 import com.yizisu.playerlibrary.helper.PlayerModel
@@ -13,9 +12,9 @@ abstract class BaseYzsPlayer : IYzsPlayer {
     //当前播放模式，支持四种
     private var currentLoopMode = SimplePlayer.LOOP_MODO_NONE
     //这个索引，不经过各种判断直接赋值
-    protected var _currentIndex=0
+    protected var _currentIndex = 0
     //设置当前索引
-    open var currentIndex
+    var currentIndex
         get() = _currentIndex
         set(value) {
             val count = playModelList.count()
@@ -56,7 +55,7 @@ abstract class BaseYzsPlayer : IYzsPlayer {
         }
 
     //监听器集合
-    protected val playerListener = mutableListOf<SimplePlayerListener>()
+    private val playerListener = mutableListOf<SimplePlayerListener>()
     private val mainHandler = Handler(Looper.getMainLooper())
     //定时任务
     private val timerTask = object : TimerTask() {
@@ -64,12 +63,12 @@ abstract class BaseYzsPlayer : IYzsPlayer {
             if (playModelList.isNotEmpty()) {
                 mainHandler.post {
                     currentPlayModel?.let { model ->
-                        playerListener.forEach {
+                        doPlayerListener {
                             model._totalDuration = totalDuration
                             model._currentDuration = currentDuration
                             model._currentBufferDuration = currentBufferDuration
                             model._bufferedPercentage = bufferedPercentage
-                            it.onBufferChange(model)
+                            it.onTick(model)
                         }
                     }
                 }
@@ -102,10 +101,14 @@ abstract class BaseYzsPlayer : IYzsPlayer {
     //缓存的百分比
     open val bufferedPercentage: Int = 0
 
-    override fun prepare(models: MutableList<PlayerModel>, listener: ((PlayerModel?) -> Unit)?) {
+    override fun prepare(
+        models: MutableList<PlayerModel>,
+        playIndex: Int,
+        listener: ((PlayerModel?) -> Unit)?
+    ) {
         playModelList.clear()
         playModelList.addAll(models)
-        currentIndex = 0
+        _currentIndex = playIndex
     }
 
 
@@ -124,5 +127,22 @@ abstract class BaseYzsPlayer : IYzsPlayer {
 
     final override fun removePlayerListener(listener: SimplePlayerListener) {
         playerListener.remove(listener)
+    }
+
+    final override fun getCurrentModel(): PlayerModel? = currentPlayModel
+
+    final override fun getAllPlayModel(): MutableList<PlayerModel> {
+        return playModelList
+    }
+
+    final override fun getCurrentPlayIndex(): Int = currentIndex
+
+    /**
+     * 回调播放器
+     */
+    fun doPlayerListener(model: (SimplePlayerListener) -> Unit) {
+        playerListener.forEach {
+            model.invoke(it)
+        }
     }
 }

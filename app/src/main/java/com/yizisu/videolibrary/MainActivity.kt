@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     private fun onClick() {
         simplePlayer.attachView(playerView)
         simplePlayer.addPlayerListener(object : SimplePlayerListener {
-            override fun onBufferChange(playerModel: PlayerModel) {
+            override fun onTick(playerModel: PlayerModel) {
                 progressTv.text = "当前进度：${playerModel.currentDurationText}\n" +
                         "缓存进度：${playerModel.currentBufferDurationText}\n" +
                         "缓存百分比：${playerModel.bufferedPercentage}\n" +
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
                     Mp4PlayerModel("http://ivi.bupt.edu.cn/hls/cctv3hd.m3u8"),
                     Mp4PlayerModel("http://ivi.bupt.edu.cn/hls/cctv8hd.m3u8"),
                     Mp4PlayerModel("rtmp://203.207.99.19:1935/live/CCTV7")
-                )
+                ), 1
             ) {
 
             }

@@ -19,13 +19,18 @@ internal interface IYzsPlayer : PlayerLifecycleObserver {
      * 准备资源
      * 需要手动再调用播放
      */
-    fun prepare(models: MutableList<PlayerModel>, listener: Function1<PlayerModel?, Unit>? = null)
+    fun prepare(
+        models: MutableList<PlayerModel>,
+        playIndex: Int = 0,
+        listener: Function1<PlayerModel?, Unit>? = null
+    )
 
     /**
      * 准备完毕就播放
      */
     fun prepareAndPlay(
         models: MutableList<PlayerModel>,
+        playIndex: Int = 0,
         listener: Function1<PlayerModel?, Unit>? = null
     )
 
@@ -75,5 +80,20 @@ internal interface IYzsPlayer : PlayerLifecycleObserver {
      * 移除监听
      */
     fun removePlayerListener(listener: SimplePlayerListener)
+
+    /**
+     * 当前播放的model
+     */
+    fun getCurrentModel(): PlayerModel?
+
+    /**
+     * 获取所以列表
+     */
+    fun getAllPlayModel(): MutableList<PlayerModel>
+
+    /**
+     * 当前播放索引
+     */
+    fun getCurrentPlayIndex(): Int
 
 }

@@ -15,22 +15,7 @@ import com.yizisu.playerlibrary.helper.logI
  */
 class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(), Player.EventListener,
     VideoListener {
-    /**
-     * 利用播放器的上一首下一首，如果播放链接出错，会导致此播放器瘫痪
-     * 所以我现在写一个自己的播放索引
-     */
-    private var isUsePlayerSeekList = false
-    override var currentIndex: Int
-        get() {
-            return if (isUsePlayerSeekList) {
-                player.currentWindowIndex
-            } else {
-                super.currentIndex
-            }
-        }
-        set(value) {
-            super.currentIndex = value
-        }
+
     //创建播放器
     private val player = createSimpleExoPlayer(context).apply {
         addListener(this@ExoPlayerImpl)
@@ -51,16 +36,20 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(), Player.Even
 
     override fun prepareAndPlay(
         models: MutableList<PlayerModel>,
+        playIndex: Int,
         listener: ((PlayerModel?) -> Unit)?
     ) {
-        prepare(models, null)
+        prepare(models, playIndex, null)
         play(listener)
     }
 
-    override fun prepare(models: MutableList<PlayerModel>, listener: ((PlayerModel?) -> Unit)?) {
-        super.prepare(models, listener)
-        player.createDefaultSource(context, models)
-        listener?.invoke(currentPlayModel)
+    override fun prepare(
+        models: MutableList<PlayerModel>,
+        playIndex: Int,
+        listener: ((PlayerModel?) -> Unit)?
+    ) {
+        super.prepare(models, playIndex, listener)
+        startPrepare(listener)
     }
 
     override fun play(listener: ((PlayerModel?) -> Unit)?) {
@@ -79,35 +68,25 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(), Player.Even
 
     override fun next(listener: ((PlayerModel?) -> Unit)?) {
         currentIndex++
-        if (isUsePlayerSeekList) {
-            if (player.hasNext()) {
-                player.next()
-                listener?.invoke(currentPlayModel)
-            } else {
-                listener?.invoke(null)
+        startPrepare(listener)
+    }
+
+    /**
+     * 准备资源和播放
+     */
+    private fun startPrepare(listener: ((PlayerModel?) -> Unit)?) {
+        val playModel = currentPlayModel?.apply {
+            player.createSingleSource(context, this)
+            doPlayerListener {
+                it.onPlayerModelChange(this)
             }
-        } else {
-            listener?.invoke(currentPlayModel?.apply {
-                player.createSingleSource(context, this)
-            })
         }
+        listener?.invoke(playModel)
     }
 
     override fun previous(listener: ((PlayerModel?) -> Unit)?) {
         currentIndex--
-        if (isUsePlayerSeekList) {
-            if (player.hasPrevious()) {
-                player.previous()
-                listener?.invoke(currentPlayModel)
-            } else {
-                listener?.invoke(null)
-            }
-        } else {
-            listener?.invoke(currentPlayModel?.apply {
-                player.createSingleSource(context, this)
-            })
-        }
-
+        startPrepare(listener)
     }
 
     override fun attachView(view: TextureView) {
@@ -124,14 +103,8 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(), Player.Even
             }
             //注意这里，这里赋值，不受播放模式判断影响，所以直接赋值
             _currentIndex = index
-            if (isUsePlayerSeekList) {
-                if (index < playModelList.count()) {
-                    player.seekTo(index, positionMs)
-                }
-            } else {
-                currentPlayModel?.apply {
-                    player.createSingleSource(context, this)
-                }
+            currentPlayModel?.apply {
+                player.createSingleSource(context, this)
             }
             listener?.invoke(currentPlayModel)
         }
@@ -142,7 +115,9 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(), Player.Even
      */
     override fun onPlayerError(error: ExoPlaybackException) {
         logI(error.message)
-        player.duration
+        doPlayerListener {
+            it.onError(error, currentPlayModel)
+        }
     }
 
     override fun onDestroy() {
@@ -152,6 +127,15 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(), Player.Even
     }
 
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+        if (playbackState == Player.STATE_BUFFERING) {
+            doPlayerListener {
+                it.onBufferStateChange(true, playWhenReady, currentPlayModel)
+            }
+        } else {
+            doPlayerListener {
+                it.onBufferStateChange(false, playWhenReady, currentPlayModel)
+            }
+        }
         val state = when (playbackState) {
             Player.STATE_BUFFERING -> {
                 "STATE_BUFFERING"
@@ -175,5 +159,14 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(), Player.Even
 
     override fun onIsPlayingChanged(isPlaying: Boolean) {
         logI("--->isPlaying:${isPlaying}")
+        if (isPlaying) {
+            doPlayerListener {
+                it.onPlay(player.playWhenReady, currentPlayModel)
+            }
+        } else {
+            doPlayerListener {
+                it.onPause(player.playWhenReady, currentPlayModel)
+            }
+        }
     }
 }
