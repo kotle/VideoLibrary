@@ -16,7 +16,7 @@ SimplePlayer(
 ) 
 ```
 
-3.开始调用类[IYzsPlayer](http://baidu.com)中的方法
+3.开始调用类[IYzsPlayer](https://github.com/kotle/VideoLibrary/blob/master/playerlibrary/src/main/java/com/yizisu/playerlibrary/IYzsPlayer.kt)中的方法
 调用
 **prepare(models: MutableList<PlayerModel>, playIndex: Int = 0, listener: Function1<PlayerModel?, Unit>? = null)**
 或者
