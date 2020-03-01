@@ -16,12 +16,12 @@ SimplePlayer(
 ) 
 ```
 
-3.开始调用类[IYzsPlayer](https://github.com/kotle/VideoLibrary/blob/master/playerlibrary/src/main/java/com/yizisu/playerlibrary/IYzsPlayer.kt)中的方法\br
-调用\br
-**prepare(models: MutableList<PlayerModel>, playIndex: Int = 0, listener: Function1<PlayerModel?, Unit>? = null)**\br
-或者\br
+3.开始调用类[IYzsPlayer](https://github.com/kotle/VideoLibrary/blob/master/playerlibrary/src/main/java/com/yizisu/playerlibrary/IYzsPlayer.kt)中的方法<br/>
+调用<br/>
+**prepare(models: MutableList<PlayerModel>, playIndex: Int = 0, listener: Function1<PlayerModel?, Unit>? = null)**<br/>
+或者<br/>
 **prepareAndPlay(models: MutableList<PlayerModel>, playIndex: Int = 0, listener: Function1<PlayerModel?, Unit>? = null)**\br
-开始播放 \br
+开始播放<br/>
 播放视频需要调用 **attachView(view: TextureView)** 设置视频展示的view
 ```kotlin
 /**
