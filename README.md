@@ -26,7 +26,6 @@ SimplePlayer(
 ```kotlin
 /**
      * 开始播放
-     * 返回值，是否成功播放
      */
     fun play(listener: Function1<PlayerModel?, Unit>? = null)
 
@@ -51,14 +50,12 @@ SimplePlayer(
 
     /**
      * 暂停播放
-     * 返回值，是否成功暂停
      */
     fun pause(listener: Function1<PlayerModel?, Unit>? = null)
 
 
     /**
      * 停止播放
-     * reset：是否清空资源
      */
     fun stop(listener: Function1<PlayerModel?, Unit>? = null)
 
