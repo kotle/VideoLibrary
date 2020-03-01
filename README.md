@@ -94,12 +94,12 @@ SimplePlayer(
     fun removePlayerListener(listener: SimplePlayerListener)
 
     /**
-     * 当前播放的model
+     * 当前播放的model对象
      */
     fun getCurrentModel(): PlayerModel?
 
     /**
-     * 获取所以列表
+     * 获取播放列表
      */
     fun getAllPlayModel(): MutableList<PlayerModel>
 
