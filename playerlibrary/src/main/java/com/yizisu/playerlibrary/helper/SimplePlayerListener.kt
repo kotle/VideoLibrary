@@ -34,4 +34,16 @@ interface SimplePlayerListener {
      */
     fun onPlayerModelChange(playerModel: PlayerModel) {}
 
+    /**
+     * 获取视频尺寸
+     */
+    fun onVideoSizeChange(
+        width: Int,
+        height: Int,
+        unappliedRotationDegrees: Int,
+        pixelWidthHeightRatio: Float,
+        playerModel: PlayerModel?
+    ) {
+
+    }
 }

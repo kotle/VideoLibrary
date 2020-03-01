@@ -157,6 +157,9 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(), Player.Even
         logI("--->${playWhenReady}:${state}")
     }
 
+    /**
+     * 播放状态变化
+     */
     override fun onIsPlayingChanged(isPlaying: Boolean) {
         logI("--->isPlaying:${isPlaying}")
         if (isPlaying) {
@@ -167,6 +170,23 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(), Player.Even
             doPlayerListener {
                 it.onPause(player.playWhenReady, currentPlayModel)
             }
+        }
+    }
+
+    override fun onVideoSizeChanged(
+        width: Int,
+        height: Int,
+        unappliedRotationDegrees: Int,
+        pixelWidthHeightRatio: Float
+    ) {
+        doPlayerListener {
+            it.onVideoSizeChange(
+                width,
+                height,
+                unappliedRotationDegrees,
+                pixelWidthHeightRatio,
+                currentPlayModel
+            )
         }
     }
 }

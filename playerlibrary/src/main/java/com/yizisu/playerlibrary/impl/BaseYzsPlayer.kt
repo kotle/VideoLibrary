@@ -140,9 +140,18 @@ abstract class BaseYzsPlayer : IYzsPlayer {
     /**
      * 回调播放器
      */
-    fun doPlayerListener(model: (SimplePlayerListener) -> Unit) {
+    fun doPlayerListener(model: Function1<SimplePlayerListener, Unit>) {
         playerListener.forEach {
             model.invoke(it)
         }
+    }
+
+    /**
+     * 如果添加生命周期
+     * 当不可见的时候，暂停播放
+     */
+    override fun onStop() {
+        super.onStop()
+        pause()
     }
 }
