@@ -29,7 +29,6 @@ import com.yizisu.playerlibrary.helper.PlayerModel
     if (models.isEmpty()) {
         throw IllegalArgumentException("PlayerModel 集合不能为kong")
     }
-    stop(true)
     val source = if (models.count() == 1) {
         models[0].buildMediaSource(context)
     } else {
@@ -48,7 +47,6 @@ internal fun SimpleExoPlayer.createSingleSource(
     context: Context,
     model: PlayerModel
 ) {
-    stop(true)
     model.callMediaUri { mediaUri ->
         context.runOnUiThread {
             prepare(model.buildMediaSource(mediaUri, context))

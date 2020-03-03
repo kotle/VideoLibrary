@@ -1,26 +1,25 @@
 package com.yizisu.playerlibrary.impl.exoplayer
 
 import android.content.Context
+import android.media.AudioManager
 import android.support.v4.media.session.MediaSessionCompat
 import android.view.TextureView
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.audio.AudioListener
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.video.VideoListener
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.impl.BaseYzsPlayer
 import com.yizisu.playerlibrary.helper.logI
 
-
 /**
  * ExoPlayer实现类，可以用于其他播放器替换
  */
-class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(), Player.EventListener,
-    VideoListener {
-
+class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(context), Player.EventListener,
+    VideoListener, AudioListener {
     //创建播放器
     private val player = createSimpleExoPlayer(context).apply {
-        setHandleWakeLock(true)
         addListener(this@ExoPlayerImpl)
         addVideoListener(this@ExoPlayerImpl)
     }
@@ -37,44 +36,57 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(), Player.Even
     override fun prepareAndPlay(
         models: MutableList<PlayerModel>,
         playIndex: Int,
+        isStopLastMedia: Boolean,
         listener: ((PlayerModel?) -> Unit)?
     ) {
         play(null)
-        prepare(models, playIndex, listener)
+        prepare(models, playIndex, isStopLastMedia, listener)
     }
 
     override fun prepare(
         models: MutableList<PlayerModel>,
         playIndex: Int,
+        isStopLastMedia: Boolean,
         listener: ((PlayerModel?) -> Unit)?
     ) {
-        super.prepare(models, playIndex, listener)
-        startPrepare(listener)
+        super.prepare(models, playIndex, isStopLastMedia, listener)
+        startPrepare(listener, isStopLastMedia)
     }
 
     override fun play(listener: ((PlayerModel?) -> Unit)?) {
-        player.playWhenReady = true
+        //判断是否启用了音频焦点处理
+        if (!requestAudioFocus()) {
+            player.playWhenReady = true
+        }
         listener?.invoke(currentPlayModel)
     }
 
     override fun stop(listener: ((PlayerModel?) -> Unit)?) {
+        super.stop(listener)
         player.stop()
     }
 
     override fun pause(listener: ((PlayerModel?) -> Unit)?) {
+        super.pause(listener)
         player.playWhenReady = false
         listener?.invoke(currentPlayModel)
     }
 
     override fun next(listener: ((PlayerModel?) -> Unit)?) {
         currentIndex++
-        startPrepare(listener)
+        startPrepare(listener, true)
     }
 
     /**
      * 准备资源和播放
      */
-    private fun startPrepare(listener: ((PlayerModel?) -> Unit)?) {
+    private fun startPrepare(
+        listener: ((PlayerModel?) -> Unit)?,
+        isStopLastMedia: Boolean
+    ) {
+        if (isStopLastMedia) {
+            player.stop(true)
+        }
         val playModel = currentPlayModel?.apply {
             player.createSingleSource(context, this)
             doPlayerListener {
@@ -86,7 +98,7 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(), Player.Even
 
     override fun previous(listener: ((PlayerModel?) -> Unit)?) {
         currentIndex--
-        startPrepare(listener)
+        startPrepare(listener, true)
     }
 
     override fun attachView(view: TextureView) {
@@ -128,12 +140,31 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(), Player.Even
         MediaSessionConnector(session).setPlayer(player)
     }
 
+    override fun setHandleWakeLock(handleWakeLock: Boolean) {
+        player.setHandleWakeLock(true)
+    }
+
+    override fun setVolume(volume: Float) {
+        player.volume = volume
+    }
+
+    override fun getVolume(volume: Float): Float {
+        return player.volume
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         player.stop(true)
         player.release()
     }
 
+    override fun getAudioForceListener(): AudioManager.OnAudioFocusChangeListener {
+        return audioFocusListener
+    }
+
+    /**
+     * EXOPlayer监听-播放状态改变
+     */
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
         if (playbackState == Player.STATE_BUFFERING) {
             doPlayerListener {
@@ -166,7 +197,7 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(), Player.Even
     }
 
     /**
-     * 播放状态变化
+     * EXOPlayer监听-播放状态变化
      */
     override fun onIsPlayingChanged(isPlaying: Boolean) {
         logI("--->isPlaying:${isPlaying}")
@@ -181,6 +212,9 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(), Player.Even
         }
     }
 
+    /**
+     * EXOPlayer监听-视频大小变化
+     */
     override fun onVideoSizeChanged(
         width: Int,
         height: Int,
@@ -197,4 +231,26 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(), Player.Even
             )
         }
     }
+
+    /**
+     * 音频焦点处理
+     * 每个对象都会获取一个焦点，创建的其他对象会失去焦点
+     */
+    private val audioFocusListener =
+        AudioManager.OnAudioFocusChangeListener { focusChange ->
+            when (focusChange) {
+                AudioManager.AUDIOFOCUS_GAIN -> {
+                    player.playWhenReady = true
+                }
+                AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
+                    player.playWhenReady = false
+                }
+                AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                    player.playWhenReady = false
+                }
+                AudioManager.AUDIOFOCUS_LOSS -> {
+                    player.playWhenReady = false
+                }
+            }
+        }
 }

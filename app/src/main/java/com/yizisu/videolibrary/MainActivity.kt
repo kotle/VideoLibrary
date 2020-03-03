@@ -9,6 +9,7 @@ import android.view.*
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import com.yizisu.playerlibrary.SimplePlayer
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
 import com.yizisu.playerlibrary.helper.createLifecycleSimplePlayer
@@ -23,11 +24,13 @@ class MainActivity : AppCompatActivity() {
         onClick()
     }
 
-    private val simplePlayer by lazy { createLifecycleSimplePlayer(this) }
+//    private val simplePlayer by lazy { createLifecycleSimplePlayer(this) }
+    private lateinit var simplePlayer :SimplePlayer
     private var videoHeight = 0
     private var videoWidth = 0
     private val point = Point()
     private fun onClick() {
+        simplePlayer = SimplePlayer(this)
         window.windowManager.defaultDisplay.getRealSize(point)
         simplePlayer.attachView(playerView)
         simplePlayer.addPlayerListener(object : SimplePlayerListener {
@@ -52,6 +55,8 @@ class MainActivity : AppCompatActivity() {
             }
         })
         play.setOnClickListener {
+             simplePlayer = SimplePlayer(this)
+            simplePlayer.setAudioForceEnable(true)
             simplePlayer.prepareAndPlay(
                 mutableListOf(
                     Mp4PlayerModel("http://html5videoformatconverter.com/data/images/happyfit2.mp4"),

@@ -1,5 +1,7 @@
 package com.yizisu.playerlibrary.impl
 
+import android.content.Context
+import android.media.AudioManager
 import com.yizisu.playerlibrary.IYzsPlayer
 import com.yizisu.playerlibrary.SimplePlayer
 import com.yizisu.playerlibrary.helper.PlayerModel
@@ -7,7 +9,7 @@ import com.yizisu.playerlibrary.helper.SimplePlayerListener
 import com.yizisu.playerlibrary.impl.exoplayer.mainHandler
 import java.util.*
 
-abstract class BaseYzsPlayer : IYzsPlayer {
+abstract class BaseYzsPlayer(private val context: Context) : IYzsPlayer {
     //当前播放模式，支持四种
     private var currentLoopMode = SimplePlayer.LOOP_MODO_NONE
     //这个索引，不经过各种判断直接赋值
@@ -78,6 +80,10 @@ abstract class BaseYzsPlayer : IYzsPlayer {
         timer.schedule(timerTask, 0, 1000)
     }
 
+    //是否支持处理音频焦点
+    //若处理，则有焦点才播放，失去焦点停止播放
+    private var audioFocusHelper: AudioFocusHelper? = null
+
     //当前播放列表集合
     protected val playModelList = mutableListOf<PlayerModel>()
     //当前播放的model
@@ -100,6 +106,7 @@ abstract class BaseYzsPlayer : IYzsPlayer {
     override fun prepare(
         models: MutableList<PlayerModel>,
         playIndex: Int,
+        isStopLastMedia: Boolean,
         listener: ((PlayerModel?) -> Unit)?
     ) {
         playModelList.clear()
@@ -113,6 +120,7 @@ abstract class BaseYzsPlayer : IYzsPlayer {
         playModelList.clear()
         timerTask.cancel()
         timer.cancel()
+        abandonAudioFocus()
     }
 
     final override fun addPlayerListener(listener: SimplePlayerListener) {
@@ -133,11 +141,11 @@ abstract class BaseYzsPlayer : IYzsPlayer {
 
     final override fun getCurrentPlayIndex(): Int = currentIndex
 
-    override fun getRepeatMode(): Int {
+    final override fun getRepeatMode(): Int {
         return currentLoopMode
     }
 
-    override fun setRepeatMode(mode: Int) {
+    final override fun setRepeatMode(mode: Int) {
         currentLoopMode = mode
     }
 
@@ -150,6 +158,39 @@ abstract class BaseYzsPlayer : IYzsPlayer {
         }
     }
 
+    final override fun setAudioForceEnable(enable: Boolean) {
+        if (enable) {
+            if (audioFocusHelper == null) {
+                audioFocusHelper = AudioFocusHelper(context, getAudioForceListener())
+            }
+        } else {
+            audioFocusHelper = null
+        }
+    }
+
+    /**
+     * 请求焦点
+     * 返回值是否启用焦点处理
+     */
+    internal fun requestAudioFocus(): Boolean {
+        audioFocusHelper?.requestAudioFocus()
+        return audioFocusHelper != null
+    }
+
+    /**
+     * 中断焦点
+     * 返回值是否启用焦点处理
+     */
+    private fun abandonAudioFocus(): Boolean {
+        audioFocusHelper?.abandonAudioFocus()
+        return audioFocusHelper != null
+    }
+
+    /**
+     * 获取音频焦点监听
+     */
+    internal abstract fun getAudioForceListener(): AudioManager.OnAudioFocusChangeListener
+
     /**
      * 如果添加生命周期
      * 当不可见的时候，暂停播放
@@ -157,5 +198,13 @@ abstract class BaseYzsPlayer : IYzsPlayer {
     override fun onStop() {
         super.onStop()
         pause()
+    }
+
+    override fun pause(listener: ((PlayerModel?) -> Unit)?) {
+        abandonAudioFocus()
+    }
+
+    override fun stop(listener: ((PlayerModel?) -> Unit)?) {
+        abandonAudioFocus()
     }
 }

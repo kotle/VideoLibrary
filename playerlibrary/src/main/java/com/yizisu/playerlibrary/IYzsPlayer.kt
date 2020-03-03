@@ -32,6 +32,7 @@ interface IYzsPlayer : PlayerLifecycleObserver {
     fun prepare(
         models: MutableList<PlayerModel>,
         playIndex: Int = 0,
+        isStopLastMedia: Boolean = true,
         listener: Function1<PlayerModel?, Unit>? = null
     )
 
@@ -41,8 +42,9 @@ interface IYzsPlayer : PlayerLifecycleObserver {
     fun prepareAndPlay(
         models: MutableList<PlayerModel>,
         playIndex: Int = 0,
+        isStopLastMedia: Boolean = true,
         listener: Function1<PlayerModel?, Unit>? = null
-    )
+        )
 
     /**
      * 暂停播放
@@ -127,4 +129,25 @@ interface IYzsPlayer : PlayerLifecycleObserver {
      */
     @SimplePlayerRepeatMode
     fun getRepeatMode(): Int
+
+    /**
+     * 是否设置锁屏任然唤醒cup
+     */
+    fun setHandleWakeLock(handleWakeLock: Boolean)
+
+    /**
+     * 设置音量
+     *  0.0-1.0
+     */
+    fun setVolume(volume: Float)
+
+    /**
+     * 获取音量
+     */
+    fun getVolume(volume: Float): Float
+
+    /**
+     * 是否启用音频焦点管理
+     */
+    fun setAudioForceEnable(enable:Boolean)
 }
