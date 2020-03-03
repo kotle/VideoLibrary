@@ -2,12 +2,16 @@ package com.yizisu.playerlibrary.impl.exoplayer
 
 import android.content.Context
 import android.media.AudioManager
+import android.os.Bundle
+import android.support.v4.media.MediaDescriptionCompat
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.view.TextureView
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.audio.AudioListener
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
+import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.google.android.exoplayer2.video.VideoListener
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.impl.BaseYzsPlayer
@@ -63,7 +67,11 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(context), Play
 
     override fun stop(listener: ((PlayerModel?) -> Unit)?) {
         super.stop(listener)
+        pause(listener)
         player.stop()
+        doPlayerListener {
+            it.onStop(player.playWhenReady, currentPlayModel)
+        }
     }
 
     override fun pause(listener: ((PlayerModel?) -> Unit)?) {
@@ -136,8 +144,23 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(context), Play
         return player.playWhenReady
     }
 
-    override fun setMediaSession(session: MediaSessionCompat) {
-        MediaSessionConnector(session).setPlayer(player)
+    override fun setMediaSession(
+        session: MediaSessionCompat,
+        bundleCall: (PlayerModel?) -> MediaDescriptionCompat
+    ) {
+        MediaSessionConnector(session).apply {
+            setQueueNavigator(QueueNavigator(mediaSession, bundleCall))
+            setPlayer(player)
+        }
+    }
+
+    private inner class QueueNavigator(
+        mediaSession: MediaSessionCompat,
+        val bundleCall: (PlayerModel?) -> MediaDescriptionCompat
+    ) : TimelineQueueNavigator(mediaSession) {
+        override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
+            return bundleCall(currentPlayModel)
+        }
     }
 
     override fun setHandleWakeLock(handleWakeLock: Boolean) {
@@ -238,6 +261,9 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(context), Play
      */
     private val audioFocusListener =
         AudioManager.OnAudioFocusChangeListener { focusChange ->
+            doPlayerListener {
+                it.onAudioFocusChange(focusChange)
+            }
             when (focusChange) {
                 AudioManager.AUDIOFOCUS_GAIN -> {
                     player.playWhenReady = true

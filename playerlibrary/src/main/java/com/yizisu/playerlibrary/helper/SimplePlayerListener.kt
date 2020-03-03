@@ -1,6 +1,8 @@
 package com.yizisu.playerlibrary.helper
 
-interface SimplePlayerListener {
+import android.media.AudioManager
+
+interface SimplePlayerListener : AudioManager.OnAudioFocusChangeListener {
     /**
      * 每秒钟回调一次
      */
@@ -25,6 +27,12 @@ interface SimplePlayerListener {
     fun onPause(playStatus: Boolean, playerModel: PlayerModel?) {}
 
     /**
+     * 停止播放
+     * 播放器调用停止播放的时候回调
+     */
+    fun onStop(playStatus: Boolean, playerModel: PlayerModel?) {}
+
+    /**
      * 当缓存状态发生变化
      */
     fun onBufferStateChange(isBuffering: Boolean, playStatus: Boolean, playerModel: PlayerModel?) {}
@@ -44,6 +52,15 @@ interface SimplePlayerListener {
         pixelWidthHeightRatio: Float,
         playerModel: PlayerModel?
     ) {
+
+    }
+
+    /**
+     * 视频焦点回调
+     * 需要先启用
+     * 调用IYzsPlayer.setAudioForceEnable(true)
+     */
+    override fun onAudioFocusChange(focusChange: Int) {
 
     }
 }

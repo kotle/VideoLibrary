@@ -1,8 +1,11 @@
 package com.yizisu.playerlibrary
 
+import android.os.Bundle
+import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.view.TextureView
 import androidx.annotation.IntDef
+import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
 
@@ -44,13 +47,12 @@ interface IYzsPlayer : PlayerLifecycleObserver {
         playIndex: Int = 0,
         isStopLastMedia: Boolean = true,
         listener: Function1<PlayerModel?, Unit>? = null
-        )
+    )
 
     /**
      * 暂停播放
      */
     fun pause(listener: Function1<PlayerModel?, Unit>? = null)
-
 
     /**
      * 停止播放
@@ -114,7 +116,7 @@ interface IYzsPlayer : PlayerLifecycleObserver {
     /**
      * 安卓媒体框架
      */
-    fun setMediaSession(session: MediaSessionCompat)
+    fun setMediaSession(session: MediaSessionCompat,bundleCall:(PlayerModel?)-> MediaDescriptionCompat)
 
     /**
      * 循环模式
@@ -149,5 +151,5 @@ interface IYzsPlayer : PlayerLifecycleObserver {
     /**
      * 是否启用音频焦点管理
      */
-    fun setAudioForceEnable(enable:Boolean)
+    fun setAudioForceEnable(enable: Boolean)
 }
