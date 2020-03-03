@@ -1,11 +1,10 @@
 package com.yizisu.playerlibrary.impl
 
-import android.os.Handler
-import android.os.Looper
 import com.yizisu.playerlibrary.IYzsPlayer
 import com.yizisu.playerlibrary.SimplePlayer
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
+import com.yizisu.playerlibrary.impl.exoplayer.mainHandler
 import java.util.*
 
 abstract class BaseYzsPlayer : IYzsPlayer {
@@ -56,7 +55,6 @@ abstract class BaseYzsPlayer : IYzsPlayer {
 
     //监听器集合
     private val playerListener = mutableListOf<SimplePlayerListener>()
-    private val mainHandler = Handler(Looper.getMainLooper())
     //定时任务
     private val timerTask = object : TimerTask() {
         override fun run() {
@@ -134,6 +132,14 @@ abstract class BaseYzsPlayer : IYzsPlayer {
     }
 
     final override fun getCurrentPlayIndex(): Int = currentIndex
+
+    override fun getRepeatMode(): Int {
+        return currentLoopMode
+    }
+
+    override fun setRepeatMode(mode: Int) {
+        currentLoopMode = mode
+    }
 
     /**
      * 回调播放器

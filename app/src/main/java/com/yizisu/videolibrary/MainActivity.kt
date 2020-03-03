@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         onClick()
     }
+
     private val simplePlayer by lazy { createLifecycleSimplePlayer(this) }
     private var videoHeight = 0
     private var videoWidth = 0
@@ -96,19 +97,19 @@ class MainActivity : AppCompatActivity() {
             view.layoutParams = FrameLayout.LayoutParams(
                 oldViewWidth, oldViewWidth * videoHeight / videoWidth
             ).apply {
-                gravity=Gravity.CENTER
+                gravity = Gravity.CENTER
             }
         }
     }
 
     class Mp4PlayerModel(private val url: String) : PlayerModel() {
-        override fun getMediaUri(): Uri {
-            return Uri.parse(url)
+        override fun callMediaUri(uriCall: (Uri) -> Unit) {
+            uriCall.invoke(Uri.parse(url))
+        }
 //            return "http://vjs.zencdn.net/v/oceans.mp4"
 //            return Uri.parse("http://html5videoformatconverter.com/data/images/happyfit2.mp4")
 //            return "https://media.w3.org/2010/05/sintel/trailer.mp4"
 //            return "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
-        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

@@ -5,7 +5,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 
-internal interface PlayerLifecycleObserver : LifecycleObserver {
+interface PlayerLifecycleObserver : LifecycleObserver {
     /**
      * 可以不需要参数
      * 或者最多需要一个参数

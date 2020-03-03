@@ -1,9 +1,11 @@
 package com.yizisu.playerlibrary.impl.exoplayer
 
 import android.content.Context
+import android.support.v4.media.session.MediaSessionCompat
 import android.view.TextureView
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.video.VideoListener
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.impl.BaseYzsPlayer
@@ -18,6 +20,7 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(), Player.Even
 
     //创建播放器
     private val player = createSimpleExoPlayer(context).apply {
+        setHandleWakeLock(true)
         addListener(this@ExoPlayerImpl)
         addVideoListener(this@ExoPlayerImpl)
     }
@@ -36,8 +39,8 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(), Player.Even
         playIndex: Int,
         listener: ((PlayerModel?) -> Unit)?
     ) {
-        prepare(models, playIndex, null)
-        play(listener)
+        play(null)
+        prepare(models, playIndex, listener)
     }
 
     override fun prepare(
@@ -115,6 +118,14 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(), Player.Even
         doPlayerListener {
             it.onError(error, currentPlayModel)
         }
+    }
+
+    override fun isPlaying(): Boolean {
+        return player.playWhenReady
+    }
+
+    override fun setMediaSession(session: MediaSessionCompat) {
+        MediaSessionConnector(session).setPlayer(player)
     }
 
     override fun onDestroy() {

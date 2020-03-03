@@ -30,6 +30,10 @@ abstract class PlayerModel {
     val currentBufferDurationText: String
         get() = getCountTimeByLong(_currentBufferDuration)
 
-    //播放链接
-    abstract fun getMediaUri(): Uri
+    /**
+     * 回调播放链接地址
+     * 支持子线程回调
+     * 回调完毕才会播放
+     */
+    abstract fun callMediaUri(uriCall: (Uri) -> Unit)
 }

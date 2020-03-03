@@ -2,9 +2,10 @@ package com.yizisu.playerlibrary.impl.exoplayer
 
 import android.content.Context
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.ext.rtmp.RtmpDataSource
 import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.MediaSource
@@ -21,7 +22,7 @@ import com.yizisu.playerlibrary.helper.PlayerModel
 /**
  * 创建默认的播放资源
  */
-internal fun SimpleExoPlayer.createDefaultSource(
+/*internal fun SimpleExoPlayer.createDefaultSource(
     context: Context,
     models: MutableList<PlayerModel>
 ): MediaSource {
@@ -38,7 +39,7 @@ internal fun SimpleExoPlayer.createDefaultSource(
     }
     prepare(source)
     return source
-}
+}*/
 
 /**
  * 创建MediaSource
@@ -46,11 +47,13 @@ internal fun SimpleExoPlayer.createDefaultSource(
 internal fun SimpleExoPlayer.createSingleSource(
     context: Context,
     model: PlayerModel
-): MediaSource {
+) {
     stop(true)
-    val source = model.buildMediaSource(context)
-    prepare(source)
-    return source
+    model.callMediaUri { mediaUri ->
+        context.runOnUiThread {
+            prepare(model.buildMediaSource(mediaUri, context))
+        }
+    }
 }
 
 /**
@@ -62,12 +65,26 @@ internal fun createSimpleExoPlayer(context: Context): SimpleExoPlayer {
         .build()
 }
 
-private fun PlayerModel.buildMediaSource(context: Context): MediaSource {
+internal val mainHandler = Handler(Looper.getMainLooper())
+
+/**
+ * 是否是主线程
+ */
+private fun isMainThread() = Looper.getMainLooper() === Looper.myLooper()
+
+/**
+ * 代码运行在主线程
+ */
+private fun Context.runOnUiThread(f: Context.() -> Unit) {
+    if (isMainThread()) f() else mainHandler.post { f() }
+}
+
+private fun PlayerModel.buildMediaSource(mediaUri: Uri, context: Context): MediaSource {
     //判断是否是rtmp流,已经测试支持rtmp
-    if (isRtmpSource(getMediaUri(), overrideExtension)) {
+    if (isRtmpSource(mediaUri, overrideExtension)) {
         return ProgressiveMediaSource.Factory(
             RtmpDataSourceFactory()
-        ).createMediaSource(getMediaUri())
+        ).createMediaSource(mediaUri)
     }
     //判断是否是rtsp流
 //    if (isRtspSource(getMediaUri(), overrideExtension)) {
@@ -75,32 +92,32 @@ private fun PlayerModel.buildMediaSource(context: Context): MediaSource {
 //            DefaultHttpDataSourceFactory(Util.getUserAgent(context, context.packageName))
 //        ).createMediaSource(getMediaUri())
 //    }
-    if (isRtmpSource(getMediaUri(), overrideExtension)) {
+    if (isRtmpSource(mediaUri, overrideExtension)) {
         return ProgressiveMediaSource.Factory(
             RtmpDataSourceFactory()
-        ).createMediaSource(getMediaUri())
+        ).createMediaSource(mediaUri)
     }
-    return when (val type = Util.inferContentType(getMediaUri(), overrideExtension)) {
+    return when (val type = Util.inferContentType(mediaUri, overrideExtension)) {
         C.TYPE_SS -> {
             SsMediaSource.Factory(
                 DefaultHttpDataSourceFactory(
                     Util.getUserAgent(context, context.packageName)
                 )
-            ).createMediaSource(getMediaUri())
+            ).createMediaSource(mediaUri)
         }
         C.TYPE_DASH -> {
             DashMediaSource.Factory(
                 DefaultHttpDataSourceFactory(
                     Util.getUserAgent(context, context.packageName)
                 )
-            ).createMediaSource(getMediaUri())
+            ).createMediaSource(mediaUri)
         }
         C.TYPE_HLS -> {
             HlsMediaSource.Factory(
                 DefaultHttpDataSourceFactory(
                     Util.getUserAgent(context, context.packageName)
                 )
-            ).createMediaSource(getMediaUri())
+            ).createMediaSource(mediaUri)
         }
         C.TYPE_OTHER -> {
             ProgressiveMediaSource.Factory(
@@ -108,7 +125,7 @@ private fun PlayerModel.buildMediaSource(context: Context): MediaSource {
                     context,
                     Util.getUserAgent(context, context.packageName)
                 )
-            ).createMediaSource(getMediaUri())
+            ).createMediaSource(mediaUri)
         }
         else -> {
             throw java.lang.IllegalArgumentException("Unsupported type: $type")

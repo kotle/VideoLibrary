@@ -1,17 +1,27 @@
 package com.yizisu.playerlibrary
 
+import android.support.v4.media.session.MediaSessionCompat
 import android.view.TextureView
+import androidx.annotation.IntDef
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
 
 /**
  * 播放器操作类
  */
-internal interface IYzsPlayer : PlayerLifecycleObserver {
+interface IYzsPlayer : PlayerLifecycleObserver {
+    @MustBeDocumented
+    @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
+    @IntDef(
+        SimplePlayer.LOOP_MODO_LIST,
+        SimplePlayer.LOOP_MODO_NONE,
+        SimplePlayer.LOOP_MODO_SHUFF,
+        SimplePlayer.LOOP_MODO_SINGLE
+    )
+    annotation class SimplePlayerRepeatMode
 
     /**
      * 开始播放
-     * 返回值，是否成功播放
      */
     fun play(listener: Function1<PlayerModel?, Unit>? = null)
 
@@ -36,14 +46,12 @@ internal interface IYzsPlayer : PlayerLifecycleObserver {
 
     /**
      * 暂停播放
-     * 返回值，是否成功暂停
      */
     fun pause(listener: Function1<PlayerModel?, Unit>? = null)
 
 
     /**
      * 停止播放
-     * reset：是否清空资源
      */
     fun stop(listener: Function1<PlayerModel?, Unit>? = null)
 
@@ -82,12 +90,12 @@ internal interface IYzsPlayer : PlayerLifecycleObserver {
     fun removePlayerListener(listener: SimplePlayerListener)
 
     /**
-     * 当前播放的model
+     * 当前播放的model对象
      */
     fun getCurrentModel(): PlayerModel?
 
     /**
-     * 获取所以列表
+     * 获取播放列表
      */
     fun getAllPlayModel(): MutableList<PlayerModel>
 
@@ -96,4 +104,27 @@ internal interface IYzsPlayer : PlayerLifecycleObserver {
      */
     fun getCurrentPlayIndex(): Int
 
+    /**
+     * 获取当前播放状态
+     */
+    fun isPlaying(): Boolean
+
+    /**
+     * 安卓媒体框架
+     */
+    fun setMediaSession(session: MediaSessionCompat)
+
+    /**
+     * 循环模式
+     *
+     */
+    fun setRepeatMode(@SimplePlayerRepeatMode mode: Int)
+
+    /**
+     * 循环模式
+     * SimplePlayer.LOOP_MODO_NONE
+     *
+     */
+    @SimplePlayerRepeatMode
+    fun getRepeatMode(): Int
 }
