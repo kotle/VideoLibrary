@@ -5,14 +5,15 @@ import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory
-import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
+import com.google.android.exoplayer2.upstream.DefaultAllocator
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.util.Util
@@ -60,8 +61,19 @@ internal fun SimpleExoPlayer.createSingleSource(
 internal fun createSimpleExoPlayer(context: Context): SimpleExoPlayer {
     return SimpleExoPlayer
         .Builder(context)
+        .setLoadControl(MyLoadController())
         .build()
 }
+
+class MyLoadController : DefaultLoadControl() {
+    /**
+     * 返回缓存时间
+     */
+    override fun getBackBufferDurationUs(): Long {
+        return C.msToUs(30_60_1000)
+    }
+}
+
 
 internal val mainHandler = Handler(Looper.getMainLooper())
 
@@ -126,7 +138,7 @@ private fun PlayerModel.buildMediaSource(mediaUri: Uri, context: Context): Media
             ).createMediaSource(mediaUri)
         }
         else -> {
-            throw java.lang.IllegalArgumentException("Unsupported type: $type")
+            throw IllegalArgumentException("Unsupported type: $type")
         }
     }
 }

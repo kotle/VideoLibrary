@@ -118,6 +118,7 @@ abstract class BaseYzsPlayer(private val context: Context) : IYzsPlayer {
     override fun onDestroy() {
         super.onDestroy()
         playModelList.clear()
+        playModelList.clear()
         timerTask.cancel()
         timer.cancel()
         abandonAudioFocus()
