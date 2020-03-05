@@ -10,6 +10,7 @@ import android.util.AttributeSet
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.SeekBar
 import android.widget.TextView
 import com.yizisu.playerlibrary.R
 import com.yizisu.playerlibrary.helper.*
@@ -20,6 +21,7 @@ import kotlinx.android.synthetic.main.layout_simple_player_view.view.*
 import kotlin.math.abs
 
 class SimplePlayerView : FrameLayout {
+
     private val gestureDetectorHelper by lazy { GestureDetectorHelper(this, false) }
     /**
      * 手指离开屏幕处理操作
@@ -47,6 +49,18 @@ class SimplePlayerView : FrameLayout {
     //当前是否正在播放
     private var isPlaying = false
     private var scrollOrientation: Int? = null
+    //横向拖动进度条监听
+    private var onSeekListener: Function2<Boolean/*是否拖动完成*/,
+            Float/*拖动的比例*/, Unit>? = null
+    //本地拖动完成的长度
+    private var seekLenght = 0f
+    //视频总长度
+    private var totalVideoDuration: Long = 0L
+    //当前长度
+    private var currentVideoDuration: Long = 0L
+    //有值得时候代表是在手动拖动进度条，不允许再对进度条复制
+    private var oldTouchSeekBarProgress: Int? = null
+    private val mAudioManager by lazy { context.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
 
     init {
         View.inflate(context, R.layout.layout_simple_player_view, this)
@@ -72,11 +86,10 @@ class SimplePlayerView : FrameLayout {
             }
         }
         gestureDetectorHelper.setOnClickListener(OnClickListener {
-            isShowFull = !isShowFull
-            if (isShowFull) {
-                hideUiView()
-            } else {
+            if (!isShowFull) {
                 showUiView()
+            } else {
+                hideUiView()
             }
         })
         playerBack.setOnClickListener {
@@ -84,14 +97,28 @@ class SimplePlayerView : FrameLayout {
                 (context as Activity).finish()
             }
         }
-        post(hideUiRunnable)
+        isShowFull = true
+        postDelayed(hideUiRunnable, 3000)
     }
 
     /**
      * 横向滑动，调节进度
      */
     private fun adjustProgress(e1: MotionEvent?, e2: MotionEvent?, x: Float, y: Float) {
+        seekLenght += x
+        if (totalVideoDuration > 0) {
+            lightView.visibility = View.VISIBLE
+            if (seekLenght > 0) {
+                lightView.text = "快退\n-${getMsByVideoDuration(seekLenght, width)}"
+            } else {
+                lightView.text = "快进\n+${getMsByVideoDuration(seekLenght, width)}"
+            }
+        }
+        onSeekListener?.invoke(false, seekLenght / width)
+    }
 
+    private fun getMsByVideoDuration(seekLenght: Float, width: Int): String {
+        return getCountTimeByLong(((abs(seekLenght) * totalVideoDuration) / (width * 1000)).toLong() * 1000L)
     }
 
     /**
@@ -111,20 +138,26 @@ class SimplePlayerView : FrameLayout {
 
 
     /**
-     * 隐藏界面操作
+     * 显示界面操作
      */
     private fun showUiView() {
-        isShowFull = false
-        setDisplayInNotch()
-        startViewAnim(progressLl, 0f)
-        startViewAnim(topLl, 0f)
+        if (!isShowFull) {
+            isShowFull = true
+            setDisplayInNotch()
+            startViewAnim(progressLl, 0f)
+            startViewAnim(topLl, 0f)
+        }
     }
 
     /**
-     * 显示界面操作
+     * 隐藏界面操作
      */
     private fun hideUiView() {
+        if (height == 0) {
+            return
+        }
         if (isPlaying && isShowFull) {
+            isShowFull = false
             removeCallbacks(hideUiRunnable)
             startViewAnim(progressLl, progressLl.height.toFloat())
             startViewAnim(topLl, -topLl.height.toFloat())
@@ -148,12 +181,30 @@ class SimplePlayerView : FrameLayout {
 
 
     private fun actionUp() {
-        scrollOrientation = null
+        seekComplete(seekLenght / width)
         clearAdjustVolume()
         lightView.visibility = View.GONE
-        if (isPlaying && isShowFull) {
-            postDelayed(hideUiRunnable, 3000)
+        if (isPlaying) {
+            postDelayed(hideUiRunnable, 5000)
         }
+    }
+
+    private fun seekComplete(ratio: Float) {
+        //托动完成
+        if (ratio != 0f) {
+            if (scrollOrientation == LinearLayout.HORIZONTAL) {
+                onSeekListener?.invoke(true, ratio)
+            }
+            if (totalVideoDuration > 0) {
+                setProgress(
+                    (-totalVideoDuration * ratio).toLong() + currentVideoDuration,
+                    null, totalVideoDuration
+                )
+            }
+        }
+        seekLenght = 0f
+        scrollOrientation = null
+        oldTouchSeekBarProgress = null
     }
 
 
@@ -184,7 +235,6 @@ class SimplePlayerView : FrameLayout {
     /**
      * 调节亮度
      */
-    private val mAudioManager by lazy { context.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
 
     @SuppressLint("SetTextI18n")
     private fun setScreenLight(offY: Float) {
@@ -205,11 +255,25 @@ class SimplePlayerView : FrameLayout {
     /**
      * 设置进度
      */
-    fun setProgress(t1: String, t2: String, progress: Int, secondPro: Int) {
-        currentProgressTv.text = t1
-        totalProgressTv.text = t2
-        progressBar.progress = progress
-        progressBar.secondaryProgress = secondPro
+
+    fun setProgress(
+        currentProgress: Long?,
+        bufferProgress: Long?,
+        allProgress: Long
+    ) {
+        val max = progressBar.max
+        if (currentProgress != null) {
+            currentVideoDuration = currentProgress
+            currentProgressTv.text = getCountTimeByLong(currentProgress)
+            if (oldTouchSeekBarProgress == null) {
+                progressBar.progress = (currentProgress * max / allProgress).toInt()
+            }
+        }
+        if (bufferProgress != null) {
+            progressBar.secondaryProgress = (bufferProgress * max / allProgress).toInt()
+        }
+        totalVideoDuration = allProgress
+        totalProgressTv.text = getCountTimeByLong(allProgress)
     }
 
     /**
@@ -245,15 +309,57 @@ class SimplePlayerView : FrameLayout {
      */
 
     fun setPlay(isPlay: Boolean) {
+        if (isPlaying == isPlay) {
+            return
+        }
         eNPlayView.setDuration(500)
         if (isPlay) {
             isPlaying = true
             eNPlayView.play()
-            actionUp()
+            hideUiView()
         } else {
             isPlaying = false
             eNPlayView.pause()
             showUiView()
         }
     }
+
+    /**
+     * 设置进度条回调
+     */
+    fun setOnSeekBarListener(l: Function2<Boolean, Float, Unit>) {
+        onSeekListener = l
+        progressBar.setOnSeekBarChangeListener(onSeekChange)
+    }
+
+
+    private val onSeekChange = object : SeekBar.OnSeekBarChangeListener {
+        override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+            val oldProgress = oldTouchSeekBarProgress
+            if (fromUser && totalVideoDuration > 0 && oldProgress != null) {
+                lightView.visibility = View.VISIBLE
+                val seekLenght = (oldProgress - progress).toFloat()
+                if (seekLenght > 0) {
+                    lightView.text = "快退\n-${getMsByVideoDuration(seekLenght, progressBar.max)}"
+                } else {
+                    lightView.text = "快进\n+${getMsByVideoDuration(seekLenght, progressBar.max)}"
+                }
+                onSeekListener?.invoke(false, seekLenght / progressBar.max)
+            }
+        }
+
+        override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            oldTouchSeekBarProgress = progressBar.progress
+        }
+
+        override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            val oldProgress = oldTouchSeekBarProgress
+            if (oldProgress != null) {
+                scrollOrientation = LinearLayout.HORIZONTAL
+                lightView.visibility = View.INVISIBLE
+                seekComplete((oldProgress - progressBar.progress).toFloat() / progressBar.max)
+            }
+        }
+    }
+
 }

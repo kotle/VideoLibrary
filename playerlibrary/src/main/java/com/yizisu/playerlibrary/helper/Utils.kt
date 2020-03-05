@@ -100,3 +100,63 @@ fun setDisplayInNotch(activity: Activity) {
             or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
             or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
 }
+
+/**
+ * 毫秒换成00:00:00
+ */
+internal fun getCountTimeByLong(finishTime: Long): String {
+    var totalTime = (finishTime / 1000).toInt()//秒
+    var hour = 0
+    var minute = 0
+    var second = 0
+
+    if (3600 <= totalTime) {
+        hour = totalTime / 3600
+        totalTime -= 3600 * hour
+    }
+    return getCountTimeByLong(finishTime, hour > 0)
+}
+
+/**
+ * 毫秒换成00:00:00
+ */
+internal fun getCountTimeByLong(finishTime: Long, isNeedHour: Boolean): String {
+    if (finishTime <= 0) {
+        return "00:00"
+    }
+    var totalTime = (finishTime / 1000).toInt()//秒
+    var hour = 0
+    var minute = 0
+    var second = 0
+
+    if (3600 <= totalTime) {
+        hour = totalTime / 3600
+        totalTime -= 3600 * hour
+    }
+    if (60 <= totalTime) {
+        minute = totalTime / 60
+        totalTime -= 60 * minute
+    }
+    if (0 <= totalTime) {
+        second = totalTime
+    }
+    val sb = StringBuilder()
+    if (isNeedHour) {
+        if (hour < 10) {
+            sb.append("0").append(hour).append(":")
+        } else {
+            sb.append(hour).append(":")
+        }
+    }
+    if (minute < 10) {
+        sb.append("0").append(minute).append(":")
+    } else {
+        sb.append(minute).append(":")
+    }
+    if (second < 10) {
+        sb.append("0").append(second)
+    } else {
+        sb.append(second)
+    }
+    return sb.toString()
+}
