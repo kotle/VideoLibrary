@@ -55,6 +55,7 @@ class AudioFocusHelper(
             audioManager.requestAudioFocus(
                 audioFocusListener,
                 audioAttributes.legacyStreamType,
+                //请求焦点类型
                 AudioManager.AUDIOFOCUS_GAIN
             )
         }

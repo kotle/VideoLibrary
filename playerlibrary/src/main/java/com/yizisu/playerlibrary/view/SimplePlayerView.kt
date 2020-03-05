@@ -19,6 +19,8 @@ import com.yizisu.playerlibrary.helper.adjustVolume
 import com.yizisu.playerlibrary.helper.logI
 import kotlinx.android.synthetic.main.layout_simple_player_view.view.*
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 class SimplePlayerView : FrameLayout {
 
@@ -26,9 +28,18 @@ class SimplePlayerView : FrameLayout {
     /**
      * 手指离开屏幕处理操作
      */
-    private val hideUiRunnable = Runnable {
-        isShowFull = true
-        hideUiView()
+    private var hideUiRunnable: Runnable? = null
+
+
+    private fun getHideRunable(): Runnable? {
+        if (hideUiRunnable != null) {
+            removeCallbacks(hideUiRunnable)
+        }
+        hideUiRunnable = Runnable {
+            isShowFull = true
+            hideUiView()
+        }
+        return hideUiRunnable
     }
 
     constructor(context: Context) : super(context)
@@ -73,14 +84,18 @@ class SimplePlayerView : FrameLayout {
                     adjustProgress(e1, e2, x, y)
                 }
                 else -> {
-                    if (abs(x) > abs(y)) {
-                        //横向滑动
-                        scrollOrientation = LinearLayout.HORIZONTAL
-                        adjustProgress(e1, e2, x, y)
-                    } else {
-                        //纵向滑动
-                        scrollOrientation = LinearLayout.VERTICAL
-                        adjustVolumeOrLight(e1, e2, x, y)
+                    val touchX = e1?.x ?: return@setOnScrollListener
+                    val touchY = e1.y
+                    if (checkTouchArea(touchX, touchY)) {
+                        if (abs(x) > abs(y)) {
+                            //横向滑动
+                            scrollOrientation = LinearLayout.HORIZONTAL
+                            adjustProgress(e1, e2, x, y)
+                        } else {
+                            //纵向滑动
+                            scrollOrientation = LinearLayout.VERTICAL
+                            adjustVolumeOrLight(e1, e2, x, y)
+                        }
                     }
                 }
             }
@@ -98,7 +113,18 @@ class SimplePlayerView : FrameLayout {
             }
         }
         isShowFull = true
-        postDelayed(hideUiRunnable, 3000)
+        postDelayed(getHideRunable(), 3000)
+    }
+
+    /**
+     * 检查是否在允许滑动区域
+     * 由于全面屏手势，边缘部分不允许响应手势
+     */
+    private fun checkTouchArea(touchX: Float, touchY: Float): Boolean {
+        val offX = width.toFloat() / 20
+        val offY = height.toFloat() / 10
+        return touchX > offX && touchX < (width - offX)
+                && touchY > offY && touchY < (height - offY)
     }
 
     /**
@@ -142,8 +168,8 @@ class SimplePlayerView : FrameLayout {
      */
     private fun showUiView() {
         if (!isShowFull) {
-            isShowFull = true
             setDisplayInNotch()
+            isShowFull = true
             startViewAnim(progressLl, 0f)
             startViewAnim(topLl, 0f)
         }
@@ -156,6 +182,7 @@ class SimplePlayerView : FrameLayout {
         if (height == 0) {
             return
         }
+        setDisplayInNotch()
         if (isPlaying && isShowFull) {
             isShowFull = false
             removeCallbacks(hideUiRunnable)
@@ -182,11 +209,6 @@ class SimplePlayerView : FrameLayout {
 
     private fun actionUp() {
         seekComplete(seekLenght / width)
-        clearAdjustVolume()
-        lightView.visibility = View.GONE
-        if (isPlaying) {
-            postDelayed(hideUiRunnable, 5000)
-        }
     }
 
     private fun seekComplete(ratio: Float) {
@@ -205,6 +227,11 @@ class SimplePlayerView : FrameLayout {
         seekLenght = 0f
         scrollOrientation = null
         oldTouchSeekBarProgress = null
+        clearAdjustVolume()
+        lightView.visibility = View.GONE
+        if (isPlaying) {
+            postDelayed(getHideRunable(), 5000)
+        }
     }
 
 
@@ -286,12 +313,20 @@ class SimplePlayerView : FrameLayout {
     /**
      * 设置视频尺寸
      */
-    fun setVideoSize(videoWidth: Int, videoHeight: Int) {
-        textureView.layoutParams = changePlayerSize(
-            width,
-            height,
-            videoWidth, videoHeight
-        )
+    fun setVideoSize(videoWidth: Int, videoHeight: Int, portraitScreen: Boolean) {
+        textureView.layoutParams = if (portraitScreen) {
+            changePlayerSize(
+                min(width, height),
+                max(width, height),
+                videoWidth, videoHeight
+            )
+        } else {
+            changePlayerSize(
+                max(width, height),
+                min(width, height),
+                videoWidth, videoHeight
+            )
+        }
     }
 
     /**
@@ -349,6 +384,7 @@ class SimplePlayerView : FrameLayout {
         }
 
         override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            removeCallbacks(hideUiRunnable)
             oldTouchSeekBarProgress = progressBar.progress
         }
 
@@ -356,7 +392,6 @@ class SimplePlayerView : FrameLayout {
             val oldProgress = oldTouchSeekBarProgress
             if (oldProgress != null) {
                 scrollOrientation = LinearLayout.HORIZONTAL
-                lightView.visibility = View.INVISIBLE
                 seekComplete((oldProgress - progressBar.progress).toFloat() / progressBar.max)
             }
         }

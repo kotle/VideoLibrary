@@ -8,6 +8,7 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.view.TextureView
 import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.PlaybackParameters
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.audio.AudioListener
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
@@ -173,6 +174,10 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(context), Play
 
     override fun getVolume(volume: Float): Float {
         return player.volume
+    }
+
+    override fun setVideoSpeed(speed: Float) {
+        player.setPlaybackParameters(PlaybackParameters(speed))
     }
 
     override fun onDestroy() {

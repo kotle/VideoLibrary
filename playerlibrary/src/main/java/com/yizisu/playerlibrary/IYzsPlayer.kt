@@ -152,4 +152,6 @@ interface IYzsPlayer : PlayerLifecycleObserver {
      * 是否启用音频焦点管理
      */
     fun setAudioForceEnable(enable: Boolean)
+
+    fun setVideoSpeed(speed:Float)
 }
