@@ -14,6 +14,7 @@ import com.google.android.exoplayer2.audio.AudioListener
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.google.android.exoplayer2.video.VideoListener
+import com.yizisu.playerlibrary.SimplePlayer
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.impl.BaseYzsPlayer
 import com.yizisu.playerlibrary.helper.logI
@@ -82,8 +83,14 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(context), Play
     }
 
     override fun next(listener: ((PlayerModel?) -> Unit)?) {
-        currentIndex++
-        startPrepare(listener, true)
+        val index = getCurrentPlayIndex()
+        //如果播放的是最后一个，播放完之后就停止播放
+        if (getRepeatMode() == SimplePlayer.LOOP_MODO_NONE && (index + 1) >= playModelList.count()) {
+            stop()
+        } else {
+            currentIndex++
+            startPrepare(listener, true)
+        }
     }
 
     /**
@@ -124,11 +131,12 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(context), Play
             }
             //注意这里，这里赋值，不受播放模式判断影响，所以直接赋值
             _currentIndex = index
-            currentPlayModel?.apply {
-                player.createSingleSource(context, this)
-            }
-            listener?.invoke(currentPlayModel)
+            startPrepare(listener, true)
         }
+    }
+
+    override fun seekRatioTo(ratio: Float, listener: ((PlayerModel?) -> Unit)?) {
+        seekTo((totalDuration * ratio).toLong(), null, listener)
     }
 
     /**

@@ -43,6 +43,11 @@ interface SimplePlayerListener : AudioManager.OnAudioFocusChangeListener {
     fun onPlayerModelChange(playerModel: PlayerModel) {}
 
     /**
+     * 当播放列表发生变化
+     */
+    fun onPlayerListChange(playerModels: MutableList<PlayerModel>) {}
+
+    /**
      * 获取视频尺寸
      */
     fun onVideoSizeChange(

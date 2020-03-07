@@ -62,18 +62,23 @@ abstract class BaseYzsPlayer(private val context: Context) : IYzsPlayer {
         override fun run() {
             if (playModelList.isNotEmpty()) {
                 mainHandler.post {
-                    currentPlayModel?.let { model ->
-                        doPlayerListener {
-                            model._totalDuration = totalDuration
-                            model._currentDuration = currentDuration
-                            model._currentBufferDuration = currentBufferDuration
-                            it.onTick(model)
-                        }
-                    }
+                    postTickEvent()
                 }
             }
         }
     }
+
+    private fun postTickEvent() {
+        currentPlayModel?.let { model ->
+            doPlayerListener {
+                model._totalDuration = totalDuration
+                model._currentDuration = currentDuration
+                model._currentBufferDuration = currentBufferDuration
+                it.onTick(model)
+            }
+        }
+    }
+
     private val timer = Timer()
 
     init {
@@ -112,6 +117,9 @@ abstract class BaseYzsPlayer(private val context: Context) : IYzsPlayer {
         playModelList.clear()
         playModelList.addAll(models)
         _currentIndex = playIndex
+        doPlayerListener {
+            it.onPlayerListChange(playModelList)
+        }
     }
 
 

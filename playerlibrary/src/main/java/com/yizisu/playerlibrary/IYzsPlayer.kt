@@ -84,6 +84,14 @@ interface IYzsPlayer : PlayerLifecycleObserver {
     )
 
     /**
+     * 跳转
+     */
+    fun seekRatioTo(
+        ratio: Float,
+        listener: Function1<PlayerModel?, Unit>? = null
+    )
+
+    /**
      * 添加监听
      */
     fun addPlayerListener(listener: SimplePlayerListener)
@@ -116,7 +124,10 @@ interface IYzsPlayer : PlayerLifecycleObserver {
     /**
      * 安卓媒体框架
      */
-    fun setMediaSession(session: MediaSessionCompat,bundleCall:(PlayerModel?)-> MediaDescriptionCompat)
+    fun setMediaSession(
+        session: MediaSessionCompat,
+        bundleCall: (PlayerModel?) -> MediaDescriptionCompat
+    )
 
     /**
      * 循环模式
@@ -153,5 +164,5 @@ interface IYzsPlayer : PlayerLifecycleObserver {
      */
     fun setAudioForceEnable(enable: Boolean)
 
-    fun setVideoSpeed(speed:Float)
+    fun setVideoSpeed(speed: Float)
 }

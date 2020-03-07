@@ -61,7 +61,7 @@ internal fun SimpleExoPlayer.createSingleSource(
 internal fun createSimpleExoPlayer(context: Context): SimpleExoPlayer {
     return SimpleExoPlayer
         .Builder(context)
-        .setLoadControl(MyLoadController())
+//        .setLoadControl(MyLoadController())
         .build()
 }
 
