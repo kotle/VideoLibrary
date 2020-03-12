@@ -24,8 +24,8 @@ class MainActivity : AppCompatActivity() {
         onClick()
     }
 
-//    private val simplePlayer by lazy { createLifecycleSimplePlayer(this) }
-    private lateinit var simplePlayer :SimplePlayer
+    //    private val simplePlayer by lazy { createLifecycleSimplePlayer(this) }
+    private lateinit var simplePlayer: SimplePlayer
     private var videoHeight = 0
     private var videoWidth = 0
     private val point = Point()
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
         play.setOnClickListener {
-             simplePlayer = SimplePlayer(this)
+            simplePlayer = SimplePlayer(this)
             simplePlayer.setAudioForceEnable(true)
             simplePlayer.prepareAndPlay(
                 mutableListOf(
@@ -108,8 +108,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     class Mp4PlayerModel(private val url: String) : PlayerModel() {
-        override fun callMediaUri(uriCall: (Uri) -> Unit) {
-            uriCall.invoke(Uri.parse(url))
+        override fun callMediaUri(uriCall: (Uri?, Throwable?, Boolean) -> Unit) {
+            uriCall.invoke(Uri.parse(url), null, false)
         }
 //            return "http://vjs.zencdn.net/v/oceans.mp4"
 //            return Uri.parse("http://html5videoformatconverter.com/data/images/happyfit2.mp4")

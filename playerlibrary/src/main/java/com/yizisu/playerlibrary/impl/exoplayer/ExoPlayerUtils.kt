@@ -46,11 +46,21 @@ import com.yizisu.playerlibrary.helper.PlayerModel
  */
 internal fun SimpleExoPlayer.createSingleSource(
     context: Context,
-    model: PlayerModel
+    model: PlayerModel,
+    errorListener: Function2<Throwable?,Boolean, Unit>
 ) {
-    model.callMediaUri { mediaUri ->
+    model.callMediaUri { mediaUri, error,isCallOnPlayChange ->
         context.runOnUiThread {
-            prepare(model.buildMediaSource(mediaUri, context))
+            if (mediaUri == null) {
+                if (error == null) {
+                    errorListener.invoke(Throwable("Uri is null"),false)
+                } else {
+                    errorListener.invoke(error,false)
+                }
+            } else {
+                prepare(model.buildMediaSource(mediaUri, context))
+                errorListener.invoke(null,isCallOnPlayChange)
+            }
         }
     }
 }

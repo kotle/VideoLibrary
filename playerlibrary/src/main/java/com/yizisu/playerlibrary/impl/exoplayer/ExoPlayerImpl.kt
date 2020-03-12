@@ -104,7 +104,24 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(context), Play
             player.stop(true)
         }
         val playModel = currentPlayModel?.apply {
-            player.createSingleSource(context, this)
+            player.createSingleSource(context, this) { error, isCallOnPlayChange ->
+                //错误监听
+                if (error != null) {
+                    doPlayerListener {
+                        it.onError(error, currentPlayModel)
+                    }
+                } else {
+                    //因为获取url是异步的，而且还有可能从网络获取其他信息
+                    //所以获取url后再通知一次
+                    if (isCallOnPlayChange) {
+                        currentPlayModel?.let { model ->
+                            doPlayerListener {
+                                it.onPlayerModelChange(model)
+                            }
+                        }
+                    }
+                }
+            }
             doPlayerListener {
                 it.onPlayerModelChange(this)
             }
