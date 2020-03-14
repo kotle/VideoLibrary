@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     //    private val simplePlayer by lazy { createLifecycleSimplePlayer(this) }
-    private lateinit var simplePlayer: SimplePlayer
+    private lateinit var simplePlayer: SimplePlayer<Mp4PlayerModel>
     private var videoHeight = 0
     private var videoWidth = 0
     private val point = Point()
@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity() {
         simplePlayer = SimplePlayer(this)
         window.windowManager.defaultDisplay.getRealSize(point)
         simplePlayer.attachView(playerView)
-        simplePlayer.addPlayerListener(object : SimplePlayerListener {
-            override fun onTick(playerModel: PlayerModel) {
+        simplePlayer.addPlayerListener(object : SimplePlayerListener<Mp4PlayerModel> {
+            override fun onTick(playerModel: Mp4PlayerModel) {
                 progressTv.text = "当前进度：${playerModel.currentDurationText}\n" +
                         "缓存进度：${playerModel.currentBufferDurationText}\n" +
                         "总进度：${playerModel.totalDurationText}"
@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
                 height: Int,
                 unappliedRotationDegrees: Int,
                 pixelWidthHeightRatio: Float,
-                playerModel: PlayerModel?
+                playerModel: Mp4PlayerModel?
             ) {
                 if (videoWidth != width || videoHeight != height) {
                     videoHeight = height

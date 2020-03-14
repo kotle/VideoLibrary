@@ -4,16 +4,17 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.impl.BaseYzsPlayer
 import com.yizisu.playerlibrary.impl.exoplayer.ExoPlayerImpl
 
 /**
  * 一个简单的播放器
  */
-class SimplePlayer(
+class SimplePlayer<Model:PlayerModel>(
     private val context: Context,
-    private val playerImpl: BaseYzsPlayer = ExoPlayerImpl(context)
-) : IYzsPlayer by playerImpl{
+    private val playerImpl: BaseYzsPlayer<Model> = ExoPlayerImpl(context)
+) : IYzsPlayer<Model> by playerImpl{
     companion object{
         //单个循环
         const val LOOP_MODO_SINGLE=1

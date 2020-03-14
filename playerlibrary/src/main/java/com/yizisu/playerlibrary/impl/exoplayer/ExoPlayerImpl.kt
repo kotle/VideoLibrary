@@ -22,7 +22,7 @@ import com.yizisu.playerlibrary.helper.logI
 /**
  * ExoPlayer实现类，可以用于其他播放器替换
  */
-class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(context), Player.EventListener,
+class ExoPlayerImpl<Model:PlayerModel>(private val context: Context) : BaseYzsPlayer<Model>(context), Player.EventListener,
     VideoListener, AudioListener {
     //创建播放器
     private val player = createSimpleExoPlayer(context).apply {
@@ -39,27 +39,27 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(context), Play
     override val currentBufferDuration: Long
         get() = player.bufferedPosition
 
-    override fun prepareAndPlay(
-        models: MutableList<PlayerModel>,
+    override fun  prepareAndPlay(
+        models: MutableList<Model>,
         playIndex: Int,
         isStopLastMedia: Boolean,
-        listener: ((PlayerModel?) -> Unit)?
+        listener: ((Model?) -> Unit)?
     ) {
         play(null)
         prepare(models, playIndex, isStopLastMedia, listener)
     }
 
-    override fun prepare(
-        models: MutableList<PlayerModel>,
+    override fun  prepare(
+        models: MutableList<Model>,
         playIndex: Int,
         isStopLastMedia: Boolean,
-        listener: ((PlayerModel?) -> Unit)?
+        listener: ((Model?) -> Unit)?
     ) {
         super.prepare(models, playIndex, isStopLastMedia, listener)
         startPrepare(listener, isStopLastMedia)
     }
 
-    override fun play(listener: ((PlayerModel?) -> Unit)?) {
+    override fun play(listener: ((Model?) -> Unit)?) {
         //判断是否启用了音频焦点处理
         if (!requestAudioFocus()) {
             player.playWhenReady = true
@@ -67,7 +67,7 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(context), Play
         listener?.invoke(currentPlayModel)
     }
 
-    override fun stop(listener: ((PlayerModel?) -> Unit)?) {
+    override fun stop(listener: ((Model?) -> Unit)?) {
         super.stop(listener)
         pause(listener)
         player.stop()
@@ -76,13 +76,13 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(context), Play
         }
     }
 
-    override fun pause(listener: ((PlayerModel?) -> Unit)?) {
+    override fun pause(listener: ((Model?) -> Unit)?) {
         super.pause(listener)
         player.playWhenReady = false
         listener?.invoke(currentPlayModel)
     }
 
-    override fun next(listener: ((PlayerModel?) -> Unit)?) {
+    override fun next(listener: ((Model?) -> Unit)?) {
         val index = getCurrentPlayIndex()
         //如果播放的是最后一个，播放完之后就停止播放
         if (getRepeatMode() == SimplePlayer.LOOP_MODO_NONE && (index + 1) >= playModelList.count()) {
@@ -97,7 +97,7 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(context), Play
      * 准备资源和播放
      */
     private fun startPrepare(
-        listener: ((PlayerModel?) -> Unit)?,
+        listener: ((Model?) -> Unit)?,
         isStopLastMedia: Boolean
     ) {
         if (isStopLastMedia) {
@@ -129,7 +129,7 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(context), Play
         listener?.invoke(playModel)
     }
 
-    override fun previous(listener: ((PlayerModel?) -> Unit)?) {
+    override fun previous(listener: ((Model?) -> Unit)?) {
         currentIndex--
         startPrepare(listener, true)
     }
@@ -138,7 +138,7 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(context), Play
         player.setVideoTextureView(view)
     }
 
-    override fun seekTo(positionMs: Long, index: Int?, listener: ((PlayerModel?) -> Unit)?) {
+    override fun seekTo(positionMs: Long, index: Int?, listener: ((Model?) -> Unit)?) {
         if (index == null) {
             player.seekTo(positionMs)
         } else {
@@ -152,7 +152,7 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(context), Play
         }
     }
 
-    override fun seekRatioTo(ratio: Float, listener: ((PlayerModel?) -> Unit)?) {
+    override fun seekRatioTo(ratio: Float, listener: ((Model?) -> Unit)?) {
         seekTo((totalDuration * ratio).toLong(), null, listener)
     }
 
@@ -172,7 +172,7 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(context), Play
 
     override fun setMediaSession(
         session: MediaSessionCompat,
-        bundleCall: (PlayerModel?) -> MediaDescriptionCompat
+        bundleCall: (Model?) -> MediaDescriptionCompat
     ) {
         MediaSessionConnector(session).apply {
             setQueueNavigator(QueueNavigator(mediaSession, bundleCall))
@@ -182,7 +182,7 @@ class ExoPlayerImpl(private val context: Context) : BaseYzsPlayer(context), Play
 
     private inner class QueueNavigator(
         mediaSession: MediaSessionCompat,
-        val bundleCall: (PlayerModel?) -> MediaDescriptionCompat
+        val bundleCall: (Model?) -> MediaDescriptionCompat
     ) : TimelineQueueNavigator(mediaSession) {
         override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
             return bundleCall(currentPlayModel)

@@ -9,7 +9,7 @@ import com.yizisu.playerlibrary.helper.SimplePlayerListener
 import com.yizisu.playerlibrary.impl.exoplayer.mainHandler
 import java.util.*
 
-abstract class BaseYzsPlayer(private val context: Context) : IYzsPlayer {
+abstract class BaseYzsPlayer<Model:PlayerModel>(private val context: Context) : IYzsPlayer<Model> {
     //当前播放模式，支持四种
     private var currentLoopMode = SimplePlayer.LOOP_MODO_NONE
     //这个索引，不经过各种判断直接赋值
@@ -56,7 +56,7 @@ abstract class BaseYzsPlayer(private val context: Context) : IYzsPlayer {
         }
 
     //监听器集合
-    private val playerListener = mutableListOf<SimplePlayerListener>()
+    private val playerListener = mutableListOf<SimplePlayerListener<Model>>()
     //定时任务
     private val timerTask = object : TimerTask() {
         override fun run() {
@@ -82,7 +82,7 @@ abstract class BaseYzsPlayer(private val context: Context) : IYzsPlayer {
     private val timer = Timer()
 
     init {
-        timer.schedule(timerTask, 0, 1000)
+        timer.schedule(timerTask, 0, 500)
     }
 
     //是否支持处理音频焦点
@@ -90,9 +90,9 @@ abstract class BaseYzsPlayer(private val context: Context) : IYzsPlayer {
     private var audioFocusHelper: AudioFocusHelper? = null
 
     //当前播放列表集合
-    protected val playModelList = mutableListOf<PlayerModel>()
+    protected val playModelList = mutableListOf<Model>()
     //当前播放的model
-    val currentPlayModel: PlayerModel?
+    val currentPlayModel: Model?
         get() {
             return if (currentIndex < playModelList.count() && currentIndex >= 0) {
                 playModelList[currentIndex]
@@ -107,12 +107,11 @@ abstract class BaseYzsPlayer(private val context: Context) : IYzsPlayer {
     //当前已经缓存的时间
     open val currentBufferDuration: Long = 0
 
-
-    override fun prepare(
-        models: MutableList<PlayerModel>,
+    override fun  prepare(
+        models: MutableList<Model>,
         playIndex: Int,
         isStopLastMedia: Boolean,
-        listener: ((PlayerModel?) -> Unit)?
+        listener: ((Model?) -> Unit)?
     ) {
         playModelList.clear()
         playModelList.addAll(models)
@@ -132,19 +131,19 @@ abstract class BaseYzsPlayer(private val context: Context) : IYzsPlayer {
         abandonAudioFocus()
     }
 
-    final override fun addPlayerListener(listener: SimplePlayerListener) {
+    final override fun addPlayerListener(listener: SimplePlayerListener<Model>) {
         if (!playerListener.contains(listener)) {
             playerListener.add(listener)
         }
     }
 
-    final override fun removePlayerListener(listener: SimplePlayerListener) {
+    final override fun removePlayerListener(listener: SimplePlayerListener<Model>) {
         playerListener.remove(listener)
     }
 
-    final override fun getCurrentModel(): PlayerModel? = currentPlayModel
+    final override fun getCurrentModel(): Model? = currentPlayModel
 
-    final override fun getAllPlayModel(): MutableList<PlayerModel> {
+    final override fun getAllPlayModel(): MutableList<Model> {
         return playModelList
     }
 
@@ -161,8 +160,9 @@ abstract class BaseYzsPlayer(private val context: Context) : IYzsPlayer {
     /**
      * 回调播放器
      */
-    fun doPlayerListener(model: Function1<SimplePlayerListener, Unit>) {
-        playerListener.forEach {
+    fun doPlayerListener(model: Function1<SimplePlayerListener<Model>, Unit>) {
+        val listenerListener = playerListener.subList(0, playerListener.count())
+        listenerListener.forEach {
             model.invoke(it)
         }
     }
@@ -209,11 +209,11 @@ abstract class BaseYzsPlayer(private val context: Context) : IYzsPlayer {
         pause()
     }
 
-    override fun pause(listener: ((PlayerModel?) -> Unit)?) {
+    override fun pause(listener: ((Model?) -> Unit)?) {
         abandonAudioFocus()
     }
 
-    override fun stop(listener: ((PlayerModel?) -> Unit)?) {
+    override fun stop(listener: ((Model?) -> Unit)?) {
         abandonAudioFocus()
     }
 }

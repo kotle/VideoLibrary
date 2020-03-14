@@ -18,8 +18,8 @@ internal fun Any.logI(message: String?) {
 /**
  * 创建带有生命周期的SimplePlayer
  */
-fun createLifecycleSimplePlayer(lifecycle: AppCompatActivity): SimplePlayer {
-    val player = SimplePlayer(lifecycle)
+fun <Model : PlayerModel> createLifecycleSimplePlayer(lifecycle: AppCompatActivity): SimplePlayer<Model> {
+    val player = SimplePlayer<Model>(lifecycle)
     lifecycle.lifecycle.addObserver(player)
     return player
 }
@@ -27,8 +27,8 @@ fun createLifecycleSimplePlayer(lifecycle: AppCompatActivity): SimplePlayer {
 /**
  * 创建带有生命周期的SimplePlayer
  */
-fun createLifecycleSimplePlayer(lifecycle: Fragment): SimplePlayer {
-    val player = SimplePlayer(lifecycle.context!!)
+fun <Model : PlayerModel> createLifecycleSimplePlayer(lifecycle: Fragment): SimplePlayer<Model> {
+    val player = SimplePlayer<Model>(lifecycle.context!!)
     lifecycle.lifecycle.addObserver(player)
     return player
 }

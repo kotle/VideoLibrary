@@ -1,18 +1,17 @@
 package com.yizisu.playerlibrary
 
-import android.os.Bundle
+
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.view.TextureView
 import androidx.annotation.IntDef
-import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
 
 /**
  * 播放器操作类
  */
-interface IYzsPlayer : PlayerLifecycleObserver {
+interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
     @MustBeDocumented
     @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
     @IntDef(
@@ -26,48 +25,48 @@ interface IYzsPlayer : PlayerLifecycleObserver {
     /**
      * 开始播放
      */
-    fun play(listener: Function1<PlayerModel?, Unit>? = null)
+    fun play(listener: Function1<Model?, Unit>? = null)
 
     /**
      * 准备资源
      * 需要手动再调用播放
      */
     fun prepare(
-        models: MutableList<PlayerModel>,
+        models: MutableList<Model>,
         playIndex: Int = 0,
         isStopLastMedia: Boolean = true,
-        listener: Function1<PlayerModel?, Unit>? = null
+        listener: Function1<Model?, Unit>? = null
     )
 
     /**
      * 准备完毕就播放
      */
     fun prepareAndPlay(
-        models: MutableList<PlayerModel>,
+        models: MutableList<Model>,
         playIndex: Int = 0,
         isStopLastMedia: Boolean = true,
-        listener: Function1<PlayerModel?, Unit>? = null
+        listener: Function1<Model?, Unit>? = null
     )
 
     /**
      * 暂停播放
      */
-    fun pause(listener: Function1<PlayerModel?, Unit>? = null)
+    fun pause(listener: Function1<Model?, Unit>? = null)
 
     /**
      * 停止播放
      */
-    fun stop(listener: Function1<PlayerModel?, Unit>? = null)
+    fun stop(listener: Function1<Model?, Unit>? = null)
 
     /**
      * 下一个
      */
-    fun next(listener: Function1<PlayerModel?, Unit>? = null)
+    fun next(listener: Function1<Model?, Unit>? = null)
 
     /**
      * 上一个
      */
-    fun previous(listener: Function1<PlayerModel?, Unit>? = null)
+    fun previous(listener: Function1<Model?, Unit>? = null)
 
     /**
      * 设置一个界面
@@ -80,7 +79,7 @@ interface IYzsPlayer : PlayerLifecycleObserver {
     fun seekTo(
         positionMs: Long,
         index: Int? = null,
-        listener: Function1<PlayerModel?, Unit>? = null
+        listener: Function1<Model?, Unit>? = null
     )
 
     /**
@@ -88,28 +87,28 @@ interface IYzsPlayer : PlayerLifecycleObserver {
      */
     fun seekRatioTo(
         ratio: Float,
-        listener: Function1<PlayerModel?, Unit>? = null
+        listener: Function1<Model?, Unit>? = null
     )
 
     /**
      * 添加监听
      */
-    fun addPlayerListener(listener: SimplePlayerListener)
+    fun addPlayerListener(listener: SimplePlayerListener<Model>)
 
     /**
      * 移除监听
      */
-    fun removePlayerListener(listener: SimplePlayerListener)
+    fun removePlayerListener(listener: SimplePlayerListener<Model>)
 
     /**
      * 当前播放的model对象
      */
-    fun getCurrentModel(): PlayerModel?
+    fun getCurrentModel(): Model?
 
     /**
      * 获取播放列表
      */
-    fun getAllPlayModel(): MutableList<PlayerModel>
+    fun getAllPlayModel(): MutableList<Model>
 
     /**
      * 当前播放索引
@@ -126,7 +125,7 @@ interface IYzsPlayer : PlayerLifecycleObserver {
      */
     fun setMediaSession(
         session: MediaSessionCompat,
-        bundleCall: (PlayerModel?) -> MediaDescriptionCompat
+        bundleCall: (Model?) -> MediaDescriptionCompat
     )
 
     /**

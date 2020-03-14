@@ -2,21 +2,21 @@ package com.yizisu.playerlibrary.helper
 
 import android.media.AudioManager
 
-interface SimplePlayerListener : AudioManager.OnAudioFocusChangeListener {
+interface SimplePlayerListener<Model:PlayerModel> : AudioManager.OnAudioFocusChangeListener {
     /**
      * 每秒钟回调一次
      */
-    fun onTick(playerModel: PlayerModel)
+    fun onTick(playerModel: Model)
 
     /**
      * 当视频发生错误
      */
-    fun onError(throwable: Throwable, playerModel: PlayerModel?) {}
+    fun onError(throwable: Throwable, playerModel: Model?) {}
 
     /**
      * 当视频播放
      */
-    fun onPlay(playStatus: Boolean, playerModel: PlayerModel?) {}
+    fun onPlay(playStatus: Boolean, playerModel: Model?) {}
 
     /**
      * 可能由于
@@ -24,28 +24,28 @@ interface SimplePlayerListener : AudioManager.OnAudioFocusChangeListener {
      * 2.手动暂停
      * playStatus：当前播放状态 true 播放 false 暂停
      */
-    fun onPause(playStatus: Boolean, playerModel: PlayerModel?) {}
+    fun onPause(playStatus: Boolean, playerModel: Model?) {}
 
     /**
      * 停止播放
      * 播放器调用停止播放的时候回调
      */
-    fun onStop(playStatus: Boolean, playerModel: PlayerModel?) {}
+    fun onStop(playStatus: Boolean, playerModel: Model?) {}
 
     /**
      * 当缓存状态发生变化
      */
-    fun onBufferStateChange(isBuffering: Boolean, playStatus: Boolean, playerModel: PlayerModel?) {}
+    fun onBufferStateChange(isBuffering: Boolean, playStatus: Boolean, playerModel: Model?) {}
 
     /**
      * 当播放发生变化
      */
-    fun onPlayerModelChange(playerModel: PlayerModel) {}
+    fun onPlayerModelChange(playerModel: Model) {}
 
     /**
      * 当播放列表发生变化
      */
-    fun onPlayerListChange(playerModels: MutableList<PlayerModel>) {}
+    fun onPlayerListChange(playerModels: MutableList<Model>) {}
 
     /**
      * 获取视频尺寸
@@ -55,7 +55,7 @@ interface SimplePlayerListener : AudioManager.OnAudioFocusChangeListener {
         height: Int,
         unappliedRotationDegrees: Int,
         pixelWidthHeightRatio: Float,
-        playerModel: PlayerModel?
+        playerModel: Model?
     ) {
 
     }
