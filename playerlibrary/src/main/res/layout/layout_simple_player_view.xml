@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:parentTag="android.widget.FrameLayout">
+
+    <TextureView
+        android:id="@+id/simplePlayerTexture"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/adjustLightTv"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_dialog_adjust"
+        android:gravity="center"
+        android:lineSpacingExtra="2dp"
+        android:textColor="#fff"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:text="亮度\n100"
+        tools:visibility="visible" />
+
+    <TextView
+        android:layout_marginTop="40dp"
+        android:id="@+id/speedHintTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/bg_dialog_adjust"
+        android:gravity="center"
+        android:lineSpacingExtra="2dp"
+        android:padding="8dp"
+        android:text="2X 播放中"
+        android:textColor="#fff"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/progressLl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#8000"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="24dp"
+        android:paddingEnd="32dp"
+        android:visibility="visible"
+        tools:visibility="visible">
+
+        <FrameLayout
+            android:id="@+id/eNPlayClickView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:padding="8dp">
+
+            <com.yizisu.playerlibrary.view.ENPlayView
+                android:id="@+id/eNPlayView"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                app:play_bg_line_width="5"
+                app:play_line_width="5" />
+        </FrameLayout>
+
+
+        <TextView
+            android:id="@+id/currentProgressTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:textColor="#fff"
+            android:textSize="12sp"
+            tools:text="12354" />
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/progressBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:max="100"
+            android:progressBackgroundTint="#fff"
+            android:progressTint="#fff"
+            android:secondaryProgressTint="#888888"
+            android:splitTrack="false"
+            android:thumbTint="#fff"
+            tools:progress="50"
+            tools:secondaryProgress="80" />
+
+        <TextView
+            android:id="@+id/totalProgressTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="12sp"
+            tools:text="123456" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/topLl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#8000"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="16dp"
+        android:visibility="visible"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/playerBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?selectableItemBackground"
+            android:padding="16dp"
+            android:src="@drawable/player_view_back" />
+
+        <TextView
+            android:id="@+id/playerTitleTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="#fff"
+            android:textSize="14sp"
+            tools:text="这里是标题" />
+
+        <TextView
+            android:id="@+id/speedTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:padding="8dp"
+            android:textColor="#fff"
+            android:textSize="12sp"
+            tools:text="倍速 X1" />
+
+        <TextClock
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="12sp" />
+    </LinearLayout>
+</merge>
