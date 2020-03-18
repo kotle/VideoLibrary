@@ -2,4 +2,6 @@
     package="com.yizisu.playerlibrary">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
 </manifest>

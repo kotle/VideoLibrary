@@ -1,2 +1,2 @@
-include ':app', ':playerlibrary'
+include ':app', ':playerlibrary', ':roomdblibrary'
 rootProject.name='VideoLibrary'

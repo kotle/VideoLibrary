@@ -2,16 +2,21 @@ package com.yizisu.playerlibrary.view
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AppComponentFactory
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.graphics.Color
+import android.graphics.Point
 import android.graphics.drawable.GradientDrawable
 import android.media.AudioManager
+import android.os.Vibrator
 import android.util.AttributeSet
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.yizisu.playerlibrary.R
 import com.yizisu.playerlibrary.helper.*
 import com.yizisu.playerlibrary.helper.GestureDetectorHelper
@@ -42,6 +47,8 @@ class SimplePlayerView : FrameLayout {
         return hideUiRunnable
     }
 
+    private val vibrator by lazy { context?.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator }
+
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -67,6 +74,11 @@ class SimplePlayerView : FrameLayout {
     private var seekLenght = 0f
     //视频总长度
     private var totalVideoDuration: Long = 0L
+    //手指滑动的视频总长度,从左滑到有，最多可以滑动进度
+    //横屏十分钟，竖屏五分钟
+    private val maxDurationPoint = Point(300_000, 600_000)
+    private val swipeMaxWidth: Int
+        get() = (width.toFloat() * totalVideoDuration / getSwipeMaxDuration()).toInt()
     //当前长度
     private var currentVideoDuration: Long = 0L
     //有值得时候代表是在手动拖动进度条，不允许再对进度条复制
@@ -105,13 +117,18 @@ class SimplePlayerView : FrameLayout {
                 }
             }
         }
-        gestureDetectorHelper.setOnClickListener(OnClickListener {
+        gestureDetectorHelper.setOnClickListener {
             if (!isShowFull) {
                 showUiView()
             } else {
                 hideUiView()
             }
-        })
+        }
+        gestureDetectorHelper.setOnLongClickListener {
+            vibrator?.vibrate(200)
+            speedHintTv.visibility = View.VISIBLE
+            speedChangeListener?.invoke(2f)
+        }
         playerBack.setOnClickListener {
             if (context is Activity) {
                 (context as Activity).finish()
@@ -148,17 +165,20 @@ class SimplePlayerView : FrameLayout {
     /**
      * 横向滑动，调节进度
      */
+
+
     private fun adjustProgress(e1: MotionEvent?, e2: MotionEvent?, x: Float, y: Float) {
         seekLenght += x
         if (totalVideoDuration > 0) {
             lightView.visibility = View.VISIBLE
+
             if (seekLenght > 0) {
-                lightView.text = "快退\n-${getMsByVideoDuration(seekLenght, width)}"
+                lightView.text = "快退\n-${getMsByVideoDuration(seekLenght, swipeMaxWidth)}"
             } else {
-                lightView.text = "快进\n+${getMsByVideoDuration(seekLenght, width)}"
+                lightView.text = "快进\n+${getMsByVideoDuration(seekLenght, swipeMaxWidth)}"
             }
+            onSeekListener?.invoke(false, seekLenght / swipeMaxWidth)
         }
-        onSeekListener?.invoke(false, seekLenght / width)
     }
 
     private fun getMsByVideoDuration(seekLenght: Float, width: Int): String {
@@ -171,15 +191,40 @@ class SimplePlayerView : FrameLayout {
     private fun adjustVolumeOrLight(e1: MotionEvent?, e2: MotionEvent?, x: Float, y: Float) {
         val downEvent = e1 ?: return
         val moveEvent = e2 ?: return
-        if (downEvent.x < width.toFloat() / 2) {
-            logI("在左边滑动")
+        if (downEvent.x > width.toFloat() / 2) {
+            logI("在右边滑动")
             setVolume(y)
         } else {
-            logI("在右边滑动")
+            logI("在左边滑动")
             setScreenLight(y)
         }
     }
 
+    /**
+     * 获取可以滑动的最大长度
+     * 横屏10分钟 竖屏5分钟
+     *
+     */
+    private fun getSwipeMaxDuration(): Long {
+        var ctx = context
+        if (ctx is ContextThemeWrapper) {
+            //是在对话框
+            ctx = ctx.baseContext
+        }
+        return if (ctx is AppCompatActivity) {
+            if (ctx.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT ||
+                ctx.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+            ) {
+                //竖屏
+                min(totalVideoDuration, maxDurationPoint.x.toLong())
+            } else {
+                //横屏
+                min(totalVideoDuration, maxDurationPoint.y.toLong())
+            }
+        } else {
+            min(totalVideoDuration, maxDurationPoint.y.toLong())
+        }
+    }
 
     /**
      * 显示界面操作
@@ -224,11 +269,17 @@ class SimplePlayerView : FrameLayout {
         return gestureDetectorHelper.onTouchEvent(event)
     }
 
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        return super.onInterceptTouchEvent(ev)
+    }
+
     /**
      * 处理手指抬起
      */
     private fun actionUp() {
-        seekComplete(seekLenght / width)
+        //恢复倍速
+        setSpeed(currentSpeedIndex)
+        seekComplete(seekLenght / swipeMaxWidth)
     }
 
     /**
@@ -252,6 +303,7 @@ class SimplePlayerView : FrameLayout {
         oldTouchSeekBarProgress = null
         clearAdjustVolume()
         lightView.visibility = View.GONE
+        speedHintTv.visibility = View.GONE
         if (isPlaying) {
             postDelayed(getHideRunable(), 5000)
         }
@@ -393,13 +445,24 @@ class SimplePlayerView : FrameLayout {
         }
     }
 
+
+    /**
+     * 设置横竖屏下，最多可以滑动的视频时长
+     * 单位毫秒
+     * x横屏状态下的阈值
+     * y竖屏状态下的阈值
+     */
+    fun setSwipeMaxDuration(x: Int, y: Int) {
+        maxDurationPoint.set(x, y)
+    }
+
     /**
      * 设置双击事件
      */
-    fun setOnDoubleClickListener(l: View.OnClickListener?) {
+    fun setOnDoubleClickListener(l: Function1<MotionEvent?, Unit>?) {
         gestureDetectorHelper.setOnDoubleClickListener(l)
         eNPlayClickView.setOnClickListener {
-            l?.onClick(it)
+            l?.invoke(null)
         }
     }
 

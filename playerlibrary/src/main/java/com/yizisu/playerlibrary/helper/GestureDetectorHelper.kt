@@ -25,11 +25,11 @@ internal class GestureDetectorHelper(private val view: View, isSetOnTouchListene
     }
 
     //单击
-    private var onClickListener: View.OnClickListener? = null
+    private var onClickListener: Function1<MotionEvent?,Unit>? = null
     //长按
-    private var onLongClickListener: View.OnLongClickListener? = null
+    private var onLongClickListener: Function1<MotionEvent?,Unit>? = null
     //双击
-    private var onDoubleClickListener: View.OnClickListener? = null
+    private var onDoubleClickListener: Function1<MotionEvent?,Unit>? = null
     //滑动
     private var onScrollListener: Function4<MotionEvent?, MotionEvent?, Float, Float, Unit>? = null
 
@@ -59,21 +59,21 @@ internal class GestureDetectorHelper(private val view: View, isSetOnTouchListene
     /**
      * 设置单击事件
      */
-    fun setOnClickListener(l: View.OnClickListener?) {
+    fun setOnClickListener(l: Function1<MotionEvent?,Unit>?) {
         onClickListener = l
     }
 
     /**
      * 设置双击事件
      */
-    fun setOnDoubleClickListener(l: View.OnClickListener?) {
+    fun setOnDoubleClickListener(l: Function1<MotionEvent?,Unit>?) {
         onDoubleClickListener = l
     }
 
     /**
      * 设置长按事件
      */
-    fun setOnLongClickListener(l: View.OnLongClickListener?) {
+    fun setOnLongClickListener(l: Function1<MotionEvent?,Unit>?) {
         onLongClickListener = l
     }
 
@@ -115,7 +115,7 @@ internal class GestureDetectorHelper(private val view: View, isSetOnTouchListene
 
     override fun onDoubleTap(e: MotionEvent?): Boolean {
 //        logI("onDoubleTap")
-        onDoubleClickListener?.onClick(view)
+        onDoubleClickListener?.invoke(e)
         return super.onDoubleTap(e)
     }
 
@@ -136,7 +136,7 @@ internal class GestureDetectorHelper(private val view: View, isSetOnTouchListene
 
     override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
 //        logI("onSingleTapConfirmed：${e?.toString()}")
-        onClickListener?.onClick(view)
+        onClickListener?.invoke(e)
         return super.onSingleTapConfirmed(e)
     }
 
@@ -152,7 +152,7 @@ internal class GestureDetectorHelper(private val view: View, isSetOnTouchListene
 
     override fun onLongPress(e: MotionEvent?) {
 //        logI("onLongPress")
-        onLongClickListener?.onLongClick(view)
+        onLongClickListener?.invoke(e)
         super.onLongPress(e)
     }
     //****************************************手势检测回调end**************************************
