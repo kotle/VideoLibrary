@@ -17,7 +17,9 @@ import com.google.android.exoplayer2.upstream.DefaultAllocator
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import com.yizisu.playerlibrary.BuildConfig
 import com.yizisu.playerlibrary.helper.PlayerModel
+import com.yizisu.playerlibrary.helper.logI
 
 
 /**
@@ -47,19 +49,22 @@ import com.yizisu.playerlibrary.helper.PlayerModel
 internal fun SimpleExoPlayer.createSingleSource(
     context: Context,
     model: PlayerModel,
-    errorListener: Function2<Throwable?,Boolean, Unit>
+    errorListener: Function2<Throwable?, Boolean, Unit>
 ) {
-    model.callMediaUri { mediaUri, error,isCallOnPlayChange ->
+    model.callMediaUri { mediaUri, error, isCallOnPlayChange ->
+        if (BuildConfig.DEBUG) {
+            logI("ExoPlay播放准备资源：url:${mediaUri}\nerror:${error?.message}\nisCallOnPlayChange:${isCallOnPlayChange}")
+        }
         context.runOnUiThread {
             if (mediaUri == null) {
                 if (error == null) {
-                    errorListener.invoke(Throwable("Uri is null"),false)
+                    errorListener.invoke(Throwable("Uri is null"), false)
                 } else {
-                    errorListener.invoke(error,false)
+                    errorListener.invoke(error, false)
                 }
             } else {
                 prepare(model.buildMediaSource(mediaUri, context))
-                errorListener.invoke(null,isCallOnPlayChange)
+                errorListener.invoke(null, isCallOnPlayChange)
             }
         }
     }
