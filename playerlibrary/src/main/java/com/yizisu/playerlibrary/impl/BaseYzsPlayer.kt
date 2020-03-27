@@ -82,7 +82,7 @@ abstract class BaseYzsPlayer<Model:PlayerModel>(private val context: Context) : 
     private val timer = Timer()
 
     init {
-        timer.schedule(timerTask, 0, 500)
+        timer.schedule(timerTask, 0, 1000)
     }
 
     //是否支持处理音频焦点

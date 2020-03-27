@@ -76,7 +76,7 @@ class SimplePlayerView : FrameLayout {
     private var totalVideoDuration: Long = 0L
     //手指滑动的视频总长度,从左滑到有，最多可以滑动进度
     //横屏十分钟，竖屏五分钟
-    private val maxDurationPoint = Point(300_000, 600_000)
+    private val maxDurationPoint = Point(150_000, 300_000)
     private val swipeMaxWidth: Int
         get() = (width.toFloat() * totalVideoDuration / getSwipeMaxDuration()).toInt()
     //当前长度
@@ -125,7 +125,7 @@ class SimplePlayerView : FrameLayout {
             }
         }
         gestureDetectorHelper.setOnLongClickListener {
-            vibrator?.vibrate(200)
+            vibrator?.vibrate(100)
             speedHintTv.visibility = View.VISIBLE
             speedChangeListener?.invoke(2f)
         }
