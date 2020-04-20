@@ -4,16 +4,19 @@
 # 如何使用
 1.创建带有生命感知的播放器，在activity销毁后会自己清理数据，activity不可见的时候暂停播放。
 ```kotlin
-fun createLifecycleSimplePlayer(lifecycle: AppCompatActivity): SimplePlayer
+   PlayerFactory.createLifecyclePlayer(
+        lifecycle: AppCompatActivity,
+        playerImpl: Int
+    ): IYzsPlayer<Model> 
 
-fun createLifecycleSimplePlayer(lifecycle: Fragment): SimplePlayer
+   PlayerFactory.createLifecyclePlayer(
+        lifecycle: Fragment,
+        playerImpl: Int
+    ): IYzsPlayer<Model> 
 ```
 2.创建一般普通对象
 ```
-SimplePlayer(
-    private val context: Context,
-    private val playerImpl: BaseYzsPlayer = ExoPlayerImpl(context)
-) 
+ PlayerFactory.createPlayer(context: Context, playerImpl: Int): IYzsPlayer<Model>
 ```
 
 3.开始调用类[IYzsPlayer](https://github.com/kotle/VideoLibrary/blob/master/playerlibrary/src/main/java/com/yizisu/playerlibrary/IYzsPlayer.kt)中的方法<br/>
