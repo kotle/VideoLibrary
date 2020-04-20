@@ -2,9 +2,7 @@ package com.yizisu.playerlibrary.impl.exoplayer
 
 import android.content.Context
 import android.media.AudioManager
-import android.os.Bundle
 import android.support.v4.media.MediaDescriptionCompat
-import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.view.TextureView
 import com.google.android.exoplayer2.ExoPlaybackException
@@ -14,8 +12,7 @@ import com.google.android.exoplayer2.audio.AudioListener
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.google.android.exoplayer2.video.VideoListener
-import com.yizisu.playerlibrary.BuildConfig
-import com.yizisu.playerlibrary.SimplePlayer
+import com.yizisu.playerlibrary.PlayerFactory
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.impl.BaseYzsPlayer
 import com.yizisu.playerlibrary.helper.logI
@@ -23,7 +20,7 @@ import com.yizisu.playerlibrary.helper.logI
 /**
  * ExoPlayer实现类，可以用于其他播放器替换
  */
-class ExoPlayerImpl<Model:PlayerModel>(private val context: Context) : BaseYzsPlayer<Model>(context), Player.EventListener,
+internal class ExoPlayerImpl<Model:PlayerModel>(private val context: Context) : BaseYzsPlayer<Model>(context), Player.EventListener,
     VideoListener, AudioListener {
     //创建播放器
     private val player = createSimpleExoPlayer(context).apply {
@@ -61,6 +58,7 @@ class ExoPlayerImpl<Model:PlayerModel>(private val context: Context) : BaseYzsPl
     }
 
     override fun play(listener: ((Model?) -> Unit)?) {
+        super.play(listener)
         //判断是否启用了音频焦点处理
         if (!requestAudioFocus()) {
             player.playWhenReady = true
@@ -86,7 +84,7 @@ class ExoPlayerImpl<Model:PlayerModel>(private val context: Context) : BaseYzsPl
     override fun next(listener: ((Model?) -> Unit)?) {
         val index = getCurrentPlayIndex()
         //如果播放的是最后一个，播放完之后就停止播放
-        if (getRepeatMode() == SimplePlayer.LOOP_MODO_NONE && (index + 1) >= playModelList.count()) {
+        if (getRepeatMode() == PlayerFactory.LOOP_MODO_NONE && (index + 1) >= playModelList.count()) {
             stop()
         } else {
             currentIndex++

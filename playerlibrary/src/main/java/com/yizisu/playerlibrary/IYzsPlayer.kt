@@ -15,10 +15,10 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
     @MustBeDocumented
     @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
     @IntDef(
-        SimplePlayer.LOOP_MODO_LIST,
-        SimplePlayer.LOOP_MODO_NONE,
-        SimplePlayer.LOOP_MODO_SHUFF,
-        SimplePlayer.LOOP_MODO_SINGLE
+        PlayerFactory.LOOP_MODO_LIST,
+        PlayerFactory.LOOP_MODO_NONE,
+        PlayerFactory.LOOP_MODO_SHUFF,
+        PlayerFactory.LOOP_MODO_SINGLE
     )
     annotation class SimplePlayerRepeatMode
 

@@ -3,17 +3,20 @@ package com.yizisu.playerlibrary.impl
 import android.content.Context
 import android.media.AudioManager
 import com.yizisu.playerlibrary.IYzsPlayer
-import com.yizisu.playerlibrary.SimplePlayer
+import com.yizisu.playerlibrary.PlayerFactory
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
 import com.yizisu.playerlibrary.impl.exoplayer.mainHandler
 import java.util.*
 
-abstract class BaseYzsPlayer<Model:PlayerModel>(private val context: Context) : IYzsPlayer<Model> {
+internal abstract class BaseYzsPlayer<Model : PlayerModel>(private val context: Context) :
+    IYzsPlayer<Model> {
     //当前播放模式，支持四种
-    private var currentLoopMode = SimplePlayer.LOOP_MODO_NONE
+    private var currentLoopMode = PlayerFactory.LOOP_MODO_NONE
+
     //这个索引，不经过各种判断直接赋值
     protected var _currentIndex = 0
+
     //设置当前索引
     var currentIndex
         get() = _currentIndex
@@ -23,10 +26,10 @@ abstract class BaseYzsPlayer<Model:PlayerModel>(private val context: Context) : 
                 0
             } else {
                 when (currentLoopMode) {
-                    SimplePlayer.LOOP_MODO_SINGLE -> {
+                    PlayerFactory.LOOP_MODO_SINGLE -> {
                         _currentIndex
                     }
-                    SimplePlayer.LOOP_MODO_LIST -> {
+                    PlayerFactory.LOOP_MODO_LIST -> {
                         if (value < 0) {
                             count - 1
                         } else {
@@ -37,7 +40,7 @@ abstract class BaseYzsPlayer<Model:PlayerModel>(private val context: Context) : 
                             }
                         }
                     }
-                    SimplePlayer.LOOP_MODO_SHUFF -> {
+                    PlayerFactory.LOOP_MODO_SHUFF -> {
                         IntRange(0, count - 1).random()
                     }
                     else -> {
@@ -57,6 +60,7 @@ abstract class BaseYzsPlayer<Model:PlayerModel>(private val context: Context) : 
 
     //监听器集合
     private val playerListener = mutableListOf<SimplePlayerListener<Model>>()
+
     //定时任务
     private val timerTask = object : TimerTask() {
         override fun run() {
@@ -91,6 +95,7 @@ abstract class BaseYzsPlayer<Model:PlayerModel>(private val context: Context) : 
 
     //当前播放列表集合
     protected val playModelList = mutableListOf<Model>()
+
     //当前播放的model
     val currentPlayModel: Model?
         get() {
@@ -100,14 +105,17 @@ abstract class BaseYzsPlayer<Model:PlayerModel>(private val context: Context) : 
                 null
             }
         }
+
     //视频总时间
     open val totalDuration: Long = 0
+
     //当前播放时间
     open val currentDuration: Long = 0
+
     //当前已经缓存的时间
     open val currentBufferDuration: Long = 0
 
-    override fun  prepare(
+    override fun prepare(
         models: MutableList<Model>,
         playIndex: Int,
         isStopLastMedia: Boolean,
@@ -209,8 +217,17 @@ abstract class BaseYzsPlayer<Model:PlayerModel>(private val context: Context) : 
         pause()
     }
 
+    override fun play(listener: ((Model?) -> Unit)?) {
+        doPlayerListener {
+            it.onPlay(true, currentPlayModel)
+        }
+    }
+
     override fun pause(listener: ((Model?) -> Unit)?) {
         abandonAudioFocus()
+        doPlayerListener {
+            it.onPause(false, currentPlayModel)
+        }
     }
 
     override fun stop(listener: ((Model?) -> Unit)?) {

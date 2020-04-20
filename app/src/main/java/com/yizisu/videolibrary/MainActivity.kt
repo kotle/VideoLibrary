@@ -9,10 +9,10 @@ import android.view.*
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import com.yizisu.playerlibrary.SimplePlayer
+import com.yizisu.playerlibrary.IYzsPlayer
+import com.yizisu.playerlibrary.PlayerFactory
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
-import com.yizisu.playerlibrary.helper.createLifecycleSimplePlayer
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -25,12 +25,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     //    private val simplePlayer by lazy { createLifecycleSimplePlayer(this) }
-    private lateinit var simplePlayer: SimplePlayer<Mp4PlayerModel>
+    private lateinit var simplePlayer: IYzsPlayer<Mp4PlayerModel>
     private var videoHeight = 0
     private var videoWidth = 0
     private val point = Point()
     private fun onClick() {
-        simplePlayer = SimplePlayer(this)
+        simplePlayer = PlayerFactory.createPlayer(this,PlayerFactory.PLAYER_IMPL_EXO)
         window.windowManager.defaultDisplay.getRealSize(point)
         simplePlayer.attachView(playerView)
         simplePlayer.addPlayerListener(object : SimplePlayerListener<Mp4PlayerModel> {
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
         play.setOnClickListener {
-            simplePlayer = SimplePlayer(this)
+            simplePlayer = PlayerFactory.createPlayer(this,PlayerFactory.PLAYER_IMPL_EXO)
             simplePlayer.setAudioForceEnable(true)
             simplePlayer.prepareAndPlay(
                 mutableListOf(
