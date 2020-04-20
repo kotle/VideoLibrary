@@ -163,5 +163,8 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
      */
     fun setAudioForceEnable(enable: Boolean)
 
+    /**
+     * 设置播放速度
+     */
     fun setVideoSpeed(speed: Float)
 }
