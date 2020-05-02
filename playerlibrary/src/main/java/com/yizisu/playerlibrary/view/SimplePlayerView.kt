@@ -30,6 +30,7 @@ import kotlin.math.min
 class SimplePlayerView : FrameLayout {
 
     private val gestureDetectorHelper by lazy { GestureDetectorHelper(this, false) }
+
     /**
      * 手指离开屏幕处理操作
      */
@@ -64,23 +65,30 @@ class SimplePlayerView : FrameLayout {
         get() = adjustLightTv
 
     private var isShowFull = true
+
     //当前是否正在播放
     private var isPlaying = false
     private var scrollOrientation: Int? = null
+
     //横向拖动进度条监听
     private var onSeekListener: Function2<Boolean/*是否拖动完成*/,
             Float/*拖动的比例*/, Unit>? = null
+
     //本地拖动完成的长度
     private var seekLenght = 0f
+
     //视频总长度
     private var totalVideoDuration: Long = 0L
+
     //手指滑动的视频总长度,从左滑到有，最多可以滑动进度
     //横屏十分钟，竖屏五分钟
     private val maxDurationPoint = Point(150_000, 300_000)
     private val swipeMaxWidth: Int
         get() = (width.toFloat() * totalVideoDuration / getSwipeMaxDuration()).toInt()
+
     //当前长度
     private var currentVideoDuration: Long = 0L
+
     //有值得时候代表是在手动拖动进度条，不允许再对进度条复制
     private var oldTouchSeekBarProgress: Int? = null
     private val speedList = mutableListOf(
@@ -405,14 +413,14 @@ class SimplePlayerView : FrameLayout {
         allProgress: Long
     ) {
         val max = progressBar.max
-        if (currentProgress != null) {
+        if (currentProgress != null && allProgress != 0L) {
             currentVideoDuration = currentProgress
             currentProgressTv.text = getCountTimeByLong(currentProgress)
             if (oldTouchSeekBarProgress == null) {
                 progressBar.progress = (currentProgress * max / allProgress).toInt()
             }
         }
-        if (bufferProgress != null) {
+        if (bufferProgress != null && allProgress != 0L) {
             progressBar.secondaryProgress = (bufferProgress * max / allProgress).toInt()
         }
         totalVideoDuration = allProgress

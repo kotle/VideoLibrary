@@ -1,6 +1,7 @@
 package com.yizisu.playerlibrary
 
 import android.content.Context
+import androidx.annotation.IntDef
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -8,6 +9,11 @@ import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.impl.BaseYzsPlayer
 import com.yizisu.playerlibrary.impl.exoplayer.ExoPlayerImpl
 import java.lang.IllegalArgumentException
+
+@MustBeDocumented
+@kotlin.annotation.Retention(AnnotationRetention.SOURCE)
+@IntDef(PlayerFactory.PLAYER_IMPL_EXO)
+annotation class PlayerType
 
 /**
  * 一个简单的播放器
@@ -31,7 +37,10 @@ object PlayerFactory {
     /**
      * 创建一个播放器
      */
-    fun <Model : PlayerModel> createPlayer(context: Context, playerImpl: Int): IYzsPlayer<Model> {
+    fun <Model : PlayerModel> createPlayer(
+        context: Context,
+        @PlayerType playerImpl: Int
+    ): IYzsPlayer<Model> {
         return when (playerImpl) {
             PLAYER_IMPL_EXO -> {
                 ExoPlayerImpl(context)
