@@ -10,15 +10,13 @@ import com.yizisu.playerlibrary.impl.BaseYzsPlayer
 import com.yizisu.playerlibrary.impl.exoplayer.ExoPlayerImpl
 import java.lang.IllegalArgumentException
 
-@MustBeDocumented
-@kotlin.annotation.Retention(AnnotationRetention.SOURCE)
-@IntDef(PlayerFactory.PLAYER_IMPL_EXO)
-annotation class PlayerType
 
 /**
  * 一个简单的播放器
  */
 object PlayerFactory {
+
+
     //单个循环
     const val LOOP_MODO_SINGLE = 1
 
@@ -30,6 +28,11 @@ object PlayerFactory {
 
     //随机下一个
     const val LOOP_MODO_SHUFF = 4
+
+    @MustBeDocumented
+    @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
+    @IntDef(PlayerFactory.PLAYER_IMPL_EXO)
+    annotation class PlayerType
 
     //创建播放器实例
     const val PLAYER_IMPL_EXO = 1
