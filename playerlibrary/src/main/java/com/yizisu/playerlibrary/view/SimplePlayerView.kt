@@ -92,7 +92,7 @@ class SimplePlayerView : FrameLayout {
     //有值得时候代表是在手动拖动进度条，不允许再对进度条复制
     private var oldTouchSeekBarProgress: Int? = null
     private val speedList = mutableListOf(
-        0.5f, 0.75f, 1f, 1.25f, 1.5f, 2.0f
+        0.01f, 0.1f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2.0f
     )
     private var currentSpeedIndex = 2
     private var speedChangeListener: Function1<Float, Unit>? = null
