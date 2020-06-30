@@ -1,10 +1,12 @@
 package com.yizisu.playerlibrary
 
+import androidx.annotation.Keep
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 
+@Keep
 interface PlayerLifecycleObserver : LifecycleObserver {
     /**
      * 可以不需要参数
