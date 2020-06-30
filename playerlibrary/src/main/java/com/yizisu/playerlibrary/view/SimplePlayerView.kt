@@ -94,7 +94,7 @@ class SimplePlayerView : FrameLayout {
     private val speedList = mutableListOf(
         0.01f, 0.1f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2.0f
     )
-    private var currentSpeedIndex = 2
+    private var currentSpeedIndex = speedList.indexOf(1f)
     private var speedChangeListener: Function1<Float, Unit>? = null
     private val mAudioManager by lazy { context.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
 
