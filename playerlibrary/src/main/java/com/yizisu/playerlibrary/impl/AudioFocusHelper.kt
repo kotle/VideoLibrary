@@ -56,7 +56,7 @@ class AudioFocusHelper(
                 audioFocusListener,
                 audioAttributes.legacyStreamType,
                 //请求焦点类型
-                AudioManager.AUDIOFOCUS_GAIN
+                AudioManager.AUDIOFOCUS_GAIN_TRANSIENT
             )
         }
         if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
