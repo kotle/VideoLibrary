@@ -14,6 +14,9 @@ class AudioFocusHelper(
     context: Context,
     private val audioFocusListener: AudioManager.OnAudioFocusChangeListener
 ) {
+    //如果需要新版的api ，这里设置为false
+    //新版本的api ，自己断开焦点，别的app收不到回调
+    private val onlyUserOldFun = true
     private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private val audioAttributes = AudioAttributesCompat.Builder()
         .setContentType(AudioAttributesCompat.CONTENT_TYPE_MUSIC)
@@ -48,7 +51,7 @@ class AudioFocusHelper(
 
 
     fun requestAudioFocus() {
-        val result = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val result = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !onlyUserOldFun) {
             requestAudioFocusOreo()
         } else {
             @Suppress("deprecation")
@@ -67,7 +70,7 @@ class AudioFocusHelper(
     }
 
     fun abandonAudioFocus() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !onlyUserOldFun) {
             abandonAudioFocusOreo()
         } else {
             @Suppress("deprecation")
