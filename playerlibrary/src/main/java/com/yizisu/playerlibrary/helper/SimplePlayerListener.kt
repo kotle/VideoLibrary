@@ -2,7 +2,7 @@ package com.yizisu.playerlibrary.helper
 
 import android.media.AudioManager
 
-interface SimplePlayerListener<Model:PlayerModel> : AudioManager.OnAudioFocusChangeListener {
+interface SimplePlayerListener<Model : PlayerModel> : AudioManager.OnAudioFocusChangeListener {
     /**
      * 每秒钟回调一次
      */
@@ -66,6 +66,20 @@ interface SimplePlayerListener<Model:PlayerModel> : AudioManager.OnAudioFocusCha
      * 调用IYzsPlayer.setAudioForceEnable(true)
      */
     override fun onAudioFocusChange(focusChange: Int) {
+
+    }
+
+    /**
+     * 当监听器被添加的时候 回调
+     */
+    fun onListenerAdd(model: Model?) {
+
+    }
+
+    /**
+     * 当监听器移除的时候 回调
+     */
+    fun onListenerRemove(model: Model?) {
 
     }
 }

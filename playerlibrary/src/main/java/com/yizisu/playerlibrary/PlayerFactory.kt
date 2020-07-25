@@ -4,11 +4,9 @@ import android.content.Context
 import androidx.annotation.IntDef
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
+import com.google.android.exoplayer2.Player
 import com.yizisu.playerlibrary.helper.PlayerModel
-import com.yizisu.playerlibrary.impl.BaseYzsPlayer
 import com.yizisu.playerlibrary.impl.exoplayer.ExoPlayerImpl
-import java.lang.IllegalArgumentException
 
 
 /**
@@ -34,29 +32,44 @@ object PlayerFactory {
     @IntDef(PlayerFactory.PLAYER_IMPL_EXO)
     annotation class PlayerType
 
+    @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
+    @IntDef(REPEAT_MODE_OFF, REPEAT_MODE_ONE, REPEAT_MODE_ALL)
+    annotation class RepeatMode
+
+    /**
+     * Normal playback without repetition.
+     */
+    const val REPEAT_MODE_OFF = Player.REPEAT_MODE_OFF
+
+    /**
+     * "Repeat One" mode to repeat the currently playing window infinitely.
+     */
+    const val REPEAT_MODE_ONE = Player.REPEAT_MODE_ONE
+
+    /**
+     * "Repeat All" mode to repeat the entire timeline infinitely.
+     */
+    const val REPEAT_MODE_ALL = Player.REPEAT_MODE_ALL
+
+    //-----------------------------------------//
     //创建播放器实例
     const val PLAYER_IMPL_EXO = 1
 
     /**
      * 创建一个播放器
      */
+    @Deprecated("使用接口的伴生对象方法创建")
     fun <Model : PlayerModel> createPlayer(
         context: Context,
         @PlayerType playerImpl: Int
     ): IYzsPlayer<Model> {
-        return when (playerImpl) {
-            PLAYER_IMPL_EXO -> {
-                ExoPlayerImpl(context)
-            }
-            else -> {
-                throw IllegalArgumentException("无法创建播放器")
-            }
-        }
+        return IYzsPlayer.invoke(context)
     }
 
     /**
      * 创建带有生命周期的Player
      */
+    @Deprecated("使用接口的伴生对象方法创建")
     fun <Model : PlayerModel> createLifecyclePlayer(
         lifecycle: AppCompatActivity,
         playerImpl: Int
@@ -69,6 +82,7 @@ object PlayerFactory {
     /**
      * 创建带有生命周期的Player
      */
+    @Deprecated("使用接口的伴生对象方法创建")
     fun <Model : PlayerModel> createLifecyclePlayer(
         lifecycle: Fragment,
         playerImpl: Int

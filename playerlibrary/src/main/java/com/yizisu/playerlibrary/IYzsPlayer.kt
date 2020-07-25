@@ -1,17 +1,36 @@
 package com.yizisu.playerlibrary
 
 
+import android.content.Context
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.view.TextureView
 import androidx.annotation.IntDef
+import androidx.appcompat.app.AppCompatActivity
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
+import com.yizisu.playerlibrary.impl.exoplayer.ExoPlayerImpl
 
 /**
  * 播放器操作类
  */
 interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
+    enum class Impl {
+        EXO_PLAYER
+    }
+
+    companion object {
+        /**
+         * 创建播放器
+         */
+        operator fun <Model : PlayerModel> invoke(
+            context: Context,
+            impl: Impl = Impl.EXO_PLAYER
+        ): IYzsPlayer<Model> {
+            return ExoPlayerImpl(context)
+        }
+    }
+
     @MustBeDocumented
     @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
     @IntDef(
@@ -129,10 +148,15 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
     )
 
     /**
-     * 循环模式
+     * 设置列表循环模式
      *
      */
     fun setRepeatMode(@SimplePlayerRepeatMode mode: Int)
+
+    /**
+     * 设置单个model播放模式
+     */
+    fun setSingleModelRepeatModel(@PlayerFactory.RepeatMode repeatMode: Int)
 
     /**
      * 循环模式

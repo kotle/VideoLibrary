@@ -9,7 +9,10 @@ import com.yizisu.playerlibrary.impl.exoplayer.getCountTimeByLong
 abstract class PlayerModel {
     //文件类型,rtmp,http等，用于创建mediaSource是用
     var overrideExtension: String? = null
+
     //视频总时间
+    internal var _videoWidth: Int = 0
+    internal var _videoHeight: Int = 0
     internal var _totalDuration: Long = 0
     val totalDuration: Long
         get() = _totalDuration
@@ -29,6 +32,11 @@ abstract class PlayerModel {
         get() = _currentBufferDuration
     val currentBufferDurationText: String
         get() = getCountTimeByLong(_currentBufferDuration)
+
+    val videoWidth: Int
+        get() = _videoWidth
+    val videoHeight: Int
+        get() = _videoHeight
 
     /**
      * 回调播放链接地址

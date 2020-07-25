@@ -142,11 +142,15 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(private val context: 
     final override fun addPlayerListener(listener: SimplePlayerListener<Model>) {
         if (!playerListener.contains(listener)) {
             playerListener.add(listener)
+            listener.onListenerAdd(currentPlayModel)
         }
     }
 
     final override fun removePlayerListener(listener: SimplePlayerListener<Model>) {
-        playerListener.remove(listener)
+        if (playerListener.contains(listener)) {
+            playerListener.remove(listener)
+            listener.onListenerRemove(currentPlayModel)
+        }
     }
 
     final override fun getCurrentModel(): Model? = currentPlayModel
@@ -163,6 +167,11 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(private val context: 
 
     final override fun setRepeatMode(mode: Int) {
         currentLoopMode = mode
+        if (mode == PlayerFactory.LOOP_MODO_SINGLE) {
+            setSingleModelRepeatModel(PlayerFactory.REPEAT_MODE_ALL)
+        } else {
+            setSingleModelRepeatModel(PlayerFactory.REPEAT_MODE_OFF)
+        }
     }
 
     /**

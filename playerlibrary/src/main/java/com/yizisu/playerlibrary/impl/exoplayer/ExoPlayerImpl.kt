@@ -14,13 +14,15 @@ import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.google.android.exoplayer2.video.VideoListener
 import com.yizisu.playerlibrary.PlayerFactory
 import com.yizisu.playerlibrary.helper.PlayerModel
-import com.yizisu.playerlibrary.impl.BaseYzsPlayer
+import com.yizisu.playerlibrary.helper.SimplePlayerListener
 import com.yizisu.playerlibrary.helper.logI
+import com.yizisu.playerlibrary.impl.BaseYzsPlayer
 
 /**
  * ExoPlayer实现类，可以用于其他播放器替换
  */
-internal class ExoPlayerImpl<Model:PlayerModel>(private val context: Context) : BaseYzsPlayer<Model>(context), Player.EventListener,
+internal class ExoPlayerImpl<Model : PlayerModel>(private val context: Context) :
+    BaseYzsPlayer<Model>(context), Player.EventListener,
     VideoListener, AudioListener {
     //创建播放器
     private val player = createSimpleExoPlayer(context).apply {
@@ -37,7 +39,7 @@ internal class ExoPlayerImpl<Model:PlayerModel>(private val context: Context) : 
     override val currentBufferDuration: Long
         get() = player.bufferedPosition
 
-    override fun  prepareAndPlay(
+    override fun prepareAndPlay(
         models: MutableList<Model>,
         playIndex: Int,
         isStopLastMedia: Boolean,
@@ -47,7 +49,7 @@ internal class ExoPlayerImpl<Model:PlayerModel>(private val context: Context) : 
         prepare(models, playIndex, isStopLastMedia, listener)
     }
 
-    override fun  prepare(
+    override fun prepare(
         models: MutableList<Model>,
         playIndex: Int,
         isStopLastMedia: Boolean,
@@ -91,6 +93,7 @@ internal class ExoPlayerImpl<Model:PlayerModel>(private val context: Context) : 
             startPrepare(listener, true)
         }
     }
+    
 
     /**
      * 准备资源和播放
@@ -188,6 +191,10 @@ internal class ExoPlayerImpl<Model:PlayerModel>(private val context: Context) : 
         }
     }
 
+    override fun setSingleModelRepeatModel(@PlayerFactory.RepeatMode repeatMode: Int) {
+        player.repeatMode = repeatMode
+    }
+
     override fun setHandleWakeLock(handleWakeLock: Boolean) {
         player.setHandleWakeLock(true)
     }
@@ -273,6 +280,8 @@ internal class ExoPlayerImpl<Model:PlayerModel>(private val context: Context) : 
         unappliedRotationDegrees: Int,
         pixelWidthHeightRatio: Float
     ) {
+        currentPlayModel?._videoWidth = width
+        currentPlayModel?._videoHeight = height
         doPlayerListener {
             it.onVideoSizeChange(
                 width,
