@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
             simplePlayer.setAudioForceEnable(true)
             simplePlayer.prepareAndPlay(
                 mutableListOf(
-                    Mp4PlayerModel("http://html5videoformatconverter.com/data/images/happyfit2.mp4"),
+                    Mp4PlayerModel("http://168.168.168.168:8081/IXC543579cb3284e4d00fb01c1eda867faa/d8ed51430f814a384abb0fc56c876035/5f1d8006/video/tos/cn/tos-cn-ve-15/6c236887236d4b1c8d40eb84456818dd/?a=1128&br=3231&bt=1077&cr=0&cs=0&dr=0&ds=3&er=&l=20200726200641010011039233241BA0EC&lr=aweme_search_suffix&mime_type=video_mp4&qs=0&rc=M247djg0Nzo1djMzZWkzM0ApaTU7OzQ7aDw3Nzs5aDg0PGdfZHJlXi9qZGJfLS0xLS9zc19hYzVhYC9gMzAvNjVhLTU6Yw%3D%3D&vl=&vr="),
 //                    Mp4PlayerModel("rtmp://184.72.239.149/vod/BigBuckBunny_115k.mov"),
                     Mp4PlayerModel("http://ivi.bupt.edu.cn/hls/cctv3hd.m3u8"),
                     Mp4PlayerModel("http://ivi.bupt.edu.cn/hls/cctv8hd.m3u8"),
