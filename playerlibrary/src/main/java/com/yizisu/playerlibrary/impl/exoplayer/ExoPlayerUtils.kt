@@ -141,11 +141,14 @@ private fun PlayerModel.buildMediaSource(mediaUri: Uri, context: Context): Media
         }
         C.TYPE_OTHER -> {
             ProgressiveMediaSource.Factory(
-                getDefaultHttpDataSourceFactory(context)
-//                DefaultDataSourceFactory(
-//                    context,
-//                    Util.getUserAgent(context, context.packageName)
-//                )
+                if (mediaUri.scheme == "http" || mediaUri.scheme == "https") {
+                    getDefaultHttpDataSourceFactory(context)
+                } else {
+                    DefaultDataSourceFactory(
+                        context,
+                        Util.getUserAgent(context, context.packageName)
+                    )
+                }
             ).createMediaSource(mediaUri)
         }
         else -> {
