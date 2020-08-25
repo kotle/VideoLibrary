@@ -180,7 +180,7 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
     /**
      * 获取音量
      */
-    fun getVolume(volume: Float): Float
+    fun getVolume(): Float
 
     /**
      * 是否启用音频焦点管理

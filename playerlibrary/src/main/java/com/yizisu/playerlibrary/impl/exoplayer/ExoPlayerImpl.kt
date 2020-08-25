@@ -203,7 +203,7 @@ internal class ExoPlayerImpl<Model : PlayerModel>(private val context: Context) 
         player.volume = volume
     }
 
-    override fun getVolume(volume: Float): Float {
+    override fun getVolume(): Float {
         return player.volume
     }
 
