@@ -110,6 +110,7 @@ internal class ExoPlayerImpl<Model : PlayerModel>(private val context: Context) 
                 //错误监听
                 if (error != null) {
                     doPlayerListener {
+                        currentPlayModel?.onError(error)
                         it.onError(error, currentPlayModel)
                     }
                 } else {
@@ -164,6 +165,7 @@ internal class ExoPlayerImpl<Model : PlayerModel>(private val context: Context) 
     override fun onPlayerError(error: ExoPlaybackException) {
         logI(error.message)
         doPlayerListener {
+            currentPlayModel?.onError(error)
             it.onError(error, currentPlayModel)
         }
     }

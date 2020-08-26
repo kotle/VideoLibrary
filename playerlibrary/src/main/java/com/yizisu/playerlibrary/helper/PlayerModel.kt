@@ -51,4 +51,8 @@ abstract class PlayerModel {
             Boolean/*是否需要再回调一次PlayModelChange*/
         ) -> Unit
     )
+
+    open fun onError(error: Throwable) {
+
+    }
 }
