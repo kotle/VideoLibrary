@@ -44,6 +44,7 @@ abstract class PlayerModel {
      * 回调完毕才会播放
      *  如果有错误，请给Throwable赋值，并且Uri赋值为null
      *  Boolean是否需要再次调用onPlayChange
+     *  如果播放的model被换掉，会回调onPlayModelNotThis()
      */
     abstract fun callMediaUri(
         uriCall: (
@@ -52,7 +53,24 @@ abstract class PlayerModel {
         ) -> Unit
     )
 
+    /**
+     * 准备url的时候出现错误
+     */
     open fun onError(error: Throwable) {
+
+    }
+
+    /**
+     * 整个播放器被销毁的时候回调
+     */
+    open fun onDestroy() {
+
+    }
+
+    /**
+     * 播放资源被切换的时候调用
+     */
+    open fun onPlayModelNotThis() {
 
     }
 }

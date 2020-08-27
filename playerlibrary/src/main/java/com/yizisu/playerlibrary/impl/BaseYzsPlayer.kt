@@ -132,6 +132,9 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(private val context: 
 
     override fun onDestroy() {
         super.onDestroy()
+        playModelList.forEach {
+            it.onDestroy()
+        }
         playModelList.clear()
         playModelList.clear()
         timerTask.cancel()
