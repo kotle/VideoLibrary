@@ -130,6 +130,17 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
     fun getAllPlayModel(): MutableList<Model>
 
     /**
+     * 添加列表
+     */
+    fun addPlayModels(modes: MutableList<Model>)
+    fun addPlayModels(index: Int, modes: MutableList<Model>)
+
+    /**
+     * 添加列表
+     */
+    fun addPlayModel(mode: Model)
+
+    /**
      * 当前播放索引
      */
     fun getCurrentPlayIndex(): Int

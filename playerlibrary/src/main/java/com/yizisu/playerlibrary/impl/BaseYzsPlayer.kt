@@ -245,4 +245,25 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(private val context: 
     override fun stop(listener: ((Model?) -> Unit)?) {
         abandonAudioFocus()
     }
+
+    override fun addPlayModel(mode: Model) {
+        getAllPlayModel().add(mode)
+        doPlayerListener {
+            it.onPlayerListChange(getAllPlayModel())
+        }
+    }
+
+    override fun addPlayModels(modes: MutableList<Model>) {
+        getAllPlayModel().addAll(modes)
+        doPlayerListener {
+            it.onPlayerListChange(getAllPlayModel())
+        }
+    }
+
+    override fun addPlayModels(index: Int, modes: MutableList<Model>) {
+        getAllPlayModel().addAll(index, modes)
+        doPlayerListener {
+            it.onPlayerListChange(getAllPlayModel())
+        }
+    }
 }
