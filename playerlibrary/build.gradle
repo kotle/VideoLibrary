@@ -26,7 +26,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
-
+def exoplayer_version = "2.11.8"
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -36,9 +36,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     //完整依赖exoPlayer(https://exoplayer.dev/hello-world.html)
-    api 'com.google.android.exoplayer:exoplayer:2.11.7'
-    api 'com.google.android.exoplayer:extension-rtmp:2.11.7'
-    api 'com.google.android.exoplayer:extension-mediasession:2.11.7'
+    api "com.google.android.exoplayer:exoplayer:${exoplayer_version}"
+    api "com.google.android.exoplayer:extension-rtmp:${exoplayer_version}"
+    api "com.google.android.exoplayer:extension-mediasession:${exoplayer_version}"
     //部分依赖exoPlayer(https://exoplayer.dev/hello-world.html)
 //    implementation 'com.google.android.exoplayer:exoplayer-core:2.X.X'
 //    implementation 'com.google.android.exoplayer:exoplayer-dash:2.11.3'

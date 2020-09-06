@@ -40,7 +40,7 @@ public class VoisePlayingIconView extends View {
     public float pointerWidth = dp2px(5);
 
     //指针的颜色
-    public int pointerColor = Color.RED;
+    private int pointerColor = Color.RED;
 
     //控制开始/停止
     private boolean isPlaying = false;
@@ -87,6 +87,11 @@ public class VoisePlayingIconView extends View {
         paint.setAntiAlias(true);
         paint.setColor(pointerColor);
         pointers = new ArrayList<>();
+    }
+
+    public void setPointerColor(int pointerColor) {
+        this.pointerColor = pointerColor;
+        paint.setColor(pointerColor);
     }
 
 
