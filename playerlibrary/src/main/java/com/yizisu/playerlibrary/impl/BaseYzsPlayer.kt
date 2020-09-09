@@ -180,7 +180,9 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(private val context: 
     /**
      * 回调播放器
      */
-    inline fun doPlayerListener(model: Function1<SimplePlayerListener<Model>, Unit>) {
+    @Synchronized
+    fun doPlayerListener(model: Function1<SimplePlayerListener<Model>, Unit>) {
+        //用新的集合，防止循环的时候移除和添加监听导致异常
         mutableListOf<SimplePlayerListener<Model>>().apply { addAll(playerListener) }.forEach {
             model.invoke(it)
         }
