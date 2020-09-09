@@ -50,9 +50,13 @@ import com.yizisu.playerlibrary.helper.logI
 internal fun SimpleExoPlayer.createSingleSource(
     context: Context,
     model: PlayerModel,
+    exoPlayerImpl: ExoPlayerImpl<*>,
     errorListener: Function2<Throwable?, Boolean, Unit>
 ) {
     model.callMediaUri { mediaUri, error, isCallOnPlayChange ->
+        if (model != exoPlayerImpl.currentPlayModel) {
+            return@callMediaUri
+        }
         if (BuildConfig.DEBUG) {
             logI("ExoPlay播放准备资源：url:${mediaUri}\nerror:${error?.message}\nisCallOnPlayChange:${isCallOnPlayChange}")
         }

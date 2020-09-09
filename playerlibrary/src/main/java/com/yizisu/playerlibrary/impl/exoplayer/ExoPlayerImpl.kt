@@ -112,7 +112,11 @@ internal class ExoPlayerImpl<Model : PlayerModel>(private val context: Context) 
             player.stop(true)
         }
         val playModel = currentPlayModel?.apply {
-            player.createSingleSource(context, this) { error, isCallOnPlayChange ->
+            player.createSingleSource(
+                context,
+                this,
+                this@ExoPlayerImpl
+            ) { error, isCallOnPlayChange ->
                 //错误监听
                 if (error != null) {
                     doPlayerListener {
