@@ -90,7 +90,8 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
     /**
      * 设置一个界面
      */
-    fun attachView(view: TextureView)
+    fun attachView(view: TextureView?)
+    fun clearView(view: TextureView?)
 
     /**
      * 跳转

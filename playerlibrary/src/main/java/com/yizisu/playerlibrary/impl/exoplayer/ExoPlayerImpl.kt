@@ -147,8 +147,12 @@ internal class ExoPlayerImpl<Model : PlayerModel>(private val context: Context) 
         startPrepare(listener, true)
     }
 
-    override fun attachView(view: TextureView) {
+    override fun attachView(view: TextureView?) {
         player.setVideoTextureView(view)
+    }
+
+    override fun clearView(view: TextureView?) {
+        player.clearVideoTextureView(view)
     }
 
     override fun seekTo(positionMs: Long, index: Int?, listener: ((Model?) -> Unit)?) {
