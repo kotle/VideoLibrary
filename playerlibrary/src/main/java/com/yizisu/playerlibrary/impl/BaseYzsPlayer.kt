@@ -180,9 +180,8 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(private val context: 
     /**
      * 回调播放器
      */
-    fun doPlayerListener(model: Function1<SimplePlayerListener<Model>, Unit>) {
-        val listenerListener = playerListener.subList(0, playerListener.count())
-        listenerListener.forEach {
+    inline fun doPlayerListener(model: Function1<SimplePlayerListener<Model>, Unit>) {
+        mutableListOf<SimplePlayerListener<Model>>().apply { addAll(playerListener) }.forEach {
             model.invoke(it)
         }
     }

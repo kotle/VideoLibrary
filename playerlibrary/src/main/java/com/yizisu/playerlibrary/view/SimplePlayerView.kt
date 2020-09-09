@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AppComponentFactory
 import android.content.Context
+import android.content.DialogInterface
 import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.graphics.Point
@@ -12,10 +13,8 @@ import android.media.AudioManager
 import android.os.Vibrator
 import android.util.AttributeSet
 import android.view.*
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.SeekBar
-import android.widget.TextView
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.yizisu.playerlibrary.R
 import com.yizisu.playerlibrary.helper.*
@@ -144,7 +143,19 @@ class SimplePlayerView : FrameLayout {
         }
         setSpeed(currentSpeedIndex)
         speedTv.setOnClickListener {
-            setSpeed(++currentSpeedIndex)
+            AlertDialog.Builder(context)
+                .setTitle("选择倍速")
+                .setPositiveButton(android.R.string.cancel, null)
+                .setAdapter(
+                    ArrayAdapter<String>(
+                        context,
+                        android.R.layout.simple_list_item_1,
+                        speedList.map { it.toString() }
+                    )
+                ) { dialog, which ->
+                    setSpeed(which)
+                    currentSpeedIndex = which
+                }.show()
         }
         isShowFull = true
         postDelayed(getHideRunable(), 3000)
@@ -372,6 +383,7 @@ class SimplePlayerView : FrameLayout {
     /**
      * 拖动seekbar监听
      */
+    private var isTouchSeekBar = false
     private val onSeekChange = object : SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
             val oldProgress = oldTouchSeekBarProgress
@@ -388,11 +400,13 @@ class SimplePlayerView : FrameLayout {
         }
 
         override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            isTouchSeekBar = true
             removeCallbacks(hideUiRunnable)
             oldTouchSeekBarProgress = progressBar.progress
         }
 
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            isTouchSeekBar = false
             val oldProgress = oldTouchSeekBarProgress
             if (oldProgress != null) {
                 scrollOrientation = LinearLayout.HORIZONTAL
@@ -412,6 +426,9 @@ class SimplePlayerView : FrameLayout {
         bufferProgress: Long?,
         allProgress: Long
     ) {
+        if (isTouchSeekBar) {
+            return
+        }
         val max = progressBar.max
         if (currentProgress != null && allProgress != 0L) {
             currentVideoDuration = currentProgress
