@@ -175,8 +175,8 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
     override fun onStart() {
         super.onStart()
         if (textureView.visibility == View.VISIBLE) {
-            textureView.visibility == View.INVISIBLE
-            textureView.visibility == View.VISIBLE
+            textureView.visibility = View.INVISIBLE
+            textureView.visibility = View.VISIBLE
         }
     }
 

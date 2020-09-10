@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.util.AttributeSet
 import android.view.TextureView
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.yizisu.playerlibrary.PlayerLifecycleObserver
 
@@ -28,6 +29,14 @@ open class PlayerTextureView : TextureView, PlayerLifecycleObserver {
             if (c is AppCompatActivity) {
                 c.lifecycle.addObserver(this)
             }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (this.visibility == View.VISIBLE) {
+            this.visibility = View.INVISIBLE
+            this.visibility = View.VISIBLE
         }
     }
 
