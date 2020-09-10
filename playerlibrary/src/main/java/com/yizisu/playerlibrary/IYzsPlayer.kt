@@ -7,6 +7,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.view.TextureView
 import androidx.annotation.IntDef
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.exoplayer2.C
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
 import com.yizisu.playerlibrary.impl.exoplayer.ExoPlayerImpl
@@ -181,7 +182,13 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
     /**
      * 是否设置锁屏任然唤醒cup
      */
+    @Deprecated("setWakeMode")
     fun setHandleWakeLock(handleWakeLock: Boolean)
+
+    /**
+     * 设置锁屏模式
+     */
+    fun setWakeMode(@C.WakeMode wakeMode:Int)
 
     /**
      * 设置音量

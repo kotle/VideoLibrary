@@ -5,6 +5,7 @@ import android.media.AudioManager
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.view.TextureView
+import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.PlaybackParameters
 import com.google.android.exoplayer2.Player
@@ -212,7 +213,11 @@ internal class ExoPlayerImpl<Model : PlayerModel>(private val context: Context) 
     }
 
     override fun setHandleWakeLock(handleWakeLock: Boolean) {
-        player.setHandleWakeLock(true)
+        player.setHandleWakeLock(handleWakeLock)
+    }
+
+    override fun setWakeMode(@C.WakeMode wakeMode: Int) {
+        player.setWakeMode(wakeMode)
     }
 
     override fun setVolume(volume: Float) {

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AppComponentFactory
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.DialogInterface
 import android.content.pm.ActivityInfo
 import android.graphics.Color
@@ -16,6 +17,7 @@ import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.yizisu.playerlibrary.PlayerLifecycleObserver
 import com.yizisu.playerlibrary.R
 import com.yizisu.playerlibrary.helper.*
 import com.yizisu.playerlibrary.helper.GestureDetectorHelper
@@ -26,7 +28,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-class SimplePlayerView : FrameLayout {
+class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
 
     private val gestureDetectorHelper by lazy { GestureDetectorHelper(this, false) }
 
@@ -99,6 +101,15 @@ class SimplePlayerView : FrameLayout {
 
     init {
         View.inflate(context, R.layout.layout_simple_player_view, this)
+        val ctx = context
+        if (ctx is AppCompatActivity) {
+            ctx.lifecycle.addObserver(this)
+        } else if (ctx is ContextWrapper) {
+            val c = ctx.baseContext
+            if (c is AppCompatActivity) {
+                c.lifecycle.addObserver(this)
+            }
+        }
         gestureDetectorHelper.setOnScrollListener { e1, e2, x, y ->
             when (scrollOrientation) {
                 LinearLayout.VERTICAL -> {
@@ -159,6 +170,14 @@ class SimplePlayerView : FrameLayout {
         }
         isShowFull = true
         postDelayed(getHideRunable(), 3000)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (textureView.visibility == View.VISIBLE) {
+            textureView.visibility == View.INVISIBLE
+            textureView.visibility == View.VISIBLE
+        }
     }
 
     @SuppressLint("SetTextI18n")
