@@ -48,6 +48,13 @@ interface SimplePlayerListener<Model : PlayerModel> : AudioManager.OnAudioFocusC
     fun onPlayerListChange(playerModels: MutableList<Model>) {}
 
     /**
+     * 当渲染第一帧
+     */
+    fun onRenderedFirstFrame(playerModel: Model?) {
+
+    }
+
+    /**
      * 获取视频尺寸
      */
     fun onVideoSizeChange(

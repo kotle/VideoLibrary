@@ -338,4 +338,11 @@ internal class ExoPlayerImpl<Model : PlayerModel>(private val context: Context) 
                 }
             }
         }
+
+    override fun onRenderedFirstFrame() {
+        doPlayerListener {
+            val currentModel = getCurrentModel()
+            it.onRenderedFirstFrame(currentModel)
+        }
+    }
 }
