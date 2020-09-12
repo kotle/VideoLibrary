@@ -8,6 +8,7 @@ import android.view.TextureView
 import androidx.annotation.IntDef
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
 import com.yizisu.playerlibrary.impl.exoplayer.ExoPlayerImpl
@@ -170,6 +171,13 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
      * 获取当前播放状态
      */
     fun isPlaying(): Boolean
+
+    /**
+     * 当前是否正在缓冲
+     * ignoredPlayStatus:true 不管是否处于播放状态，只要缓冲就返回true
+     * false:只有播放状态并且缓冲才返回true
+     */
+    fun isBuffering(ignoredPlayStatus: Boolean): Boolean
 
     /**
      * 安卓媒体框架

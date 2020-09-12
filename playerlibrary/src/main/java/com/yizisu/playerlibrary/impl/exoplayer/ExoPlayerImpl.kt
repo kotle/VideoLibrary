@@ -193,6 +193,14 @@ internal class ExoPlayerImpl<Model : PlayerModel>(private val context: Context) 
         return player.playWhenReady
     }
 
+    override fun isBuffering(ignoredPlayStatus: Boolean): Boolean {
+        return if (ignoredPlayStatus) {
+            player.playbackState == Player.STATE_BUFFERING
+        } else {
+            isPlaying() && player.playbackState == Player.STATE_BUFFERING
+        }
+    }
+
     override fun setMediaSession(
         session: MediaSessionCompat,
         bundleCall: (Model?) -> MediaDescriptionCompat
