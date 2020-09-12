@@ -64,15 +64,13 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(private val context: 
     //定时任务
     private val timerTask = object : TimerTask() {
         override fun run() {
-            if (playModelList.isNotEmpty()) {
-                mainHandler.post {
-                    postTickEvent()
-                }
+            if (playModelList.isNotEmpty() && !mainHandler.hasCallbacks(tickRunnable)) {
+                mainHandler.post(tickRunnable)
             }
         }
     }
 
-    private fun postTickEvent() {
+    private val tickRunnable = Runnable {
         currentPlayModel?.let { model ->
             doPlayerListener {
                 model._totalDuration = totalDuration
@@ -268,7 +266,7 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(private val context: 
     }
 
     override fun removePlayModel(mode: Model) {
-        if (mode==currentPlayModel){
+        if (mode == currentPlayModel) {
             stop()
         }
         val list = getAllPlayModel()
