@@ -43,6 +43,11 @@ interface SimplePlayerListener<Model : PlayerModel> : AudioManager.OnAudioFocusC
     fun onPlayerModelChange(playerModel: Model) {}
 
     /**
+     * 当播放发生变化
+     */
+    fun onPlayerModelChange(lastModel: Model?, playerModel: Model) {}
+
+    /**
      * 当播放列表发生变化
      */
     fun onPlayerListChange(playerModels: MutableList<Model>) {}

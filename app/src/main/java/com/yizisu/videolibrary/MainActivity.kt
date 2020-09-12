@@ -111,6 +111,7 @@ class MainActivity : AppCompatActivity() {
         override fun callMediaUri(uriCall: (Uri?, Throwable?, Boolean) -> Unit) {
             uriCall.invoke(Uri.parse(url), null, false)
         }
+
 //            return "http://vjs.zencdn.net/v/oceans.mp4"
 //            return Uri.parse("http://html5videoformatconverter.com/data/images/happyfit2.mp4")
 //            return "https://media.w3.org/2010/05/sintel/trailer.mp4"

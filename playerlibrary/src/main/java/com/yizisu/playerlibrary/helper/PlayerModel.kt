@@ -73,4 +73,13 @@ abstract class PlayerModel {
     open fun onPlayModelNotThis() {
 
     }
+
+    /**
+     * 播放资源被切换的时候调用
+     * 自身就是之前的
+     * newModel为新的资源
+     */
+    open fun onPlayModelNotThis(newModel: PlayerModel?) {
+
+    }
 }

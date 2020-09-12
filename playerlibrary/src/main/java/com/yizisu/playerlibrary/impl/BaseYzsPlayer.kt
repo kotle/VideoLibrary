@@ -254,6 +254,30 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(private val context: 
         }
     }
 
+    override fun addPlayModel(index: Int, mode: Model) {
+        getAllPlayModel().add(index, mode)
+        doPlayerListener {
+            it.onPlayerListChange(getAllPlayModel())
+        }
+    }
+
+    override fun removePlayModel(index: Int) {
+        val list = getAllPlayModel()
+        val model = list[index]
+        removePlayModel(model)
+    }
+
+    override fun removePlayModel(mode: Model) {
+        if (mode==currentPlayModel){
+            stop()
+        }
+        val list = getAllPlayModel()
+        list.remove(mode)
+        doPlayerListener {
+            it.onPlayerListChange(list)
+        }
+    }
+
     override fun addPlayModels(modes: MutableList<Model>) {
         getAllPlayModel().addAll(modes)
         doPlayerListener {

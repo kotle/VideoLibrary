@@ -99,14 +99,16 @@ internal class ExoPlayerImpl<Model : PlayerModel>(private val context: Context) 
     /**
      * 准备资源和播放
      */
-    private var lastPlayModel: PlayerModel? = null
+    private var lastPlayModel: Model? = null
     private fun startPrepare(
         listener: ((Model?) -> Unit)?,
         isStopLastMedia: Boolean
     ) {
         //切换资源的时候，回调上一次资源的销毁方法，做好资源回收
-        if (lastPlayModel != currentPlayModel) {
-            lastPlayModel?.onPlayModelNotThis()
+        val last: Model? = lastPlayModel
+        if (last != currentPlayModel) {
+            last?.onPlayModelNotThis()
+            last?.onPlayModelNotThis(currentPlayModel)
             lastPlayModel = currentPlayModel
         }
         if (isStopLastMedia) {
@@ -131,6 +133,7 @@ internal class ExoPlayerImpl<Model : PlayerModel>(private val context: Context) 
                         currentPlayModel?.let { model ->
                             doPlayerListener {
                                 it.onPlayerModelChange(model)
+                                it.onPlayerModelChange(last, model)
                             }
                         }
                     }
@@ -138,6 +141,7 @@ internal class ExoPlayerImpl<Model : PlayerModel>(private val context: Context) 
             }
             doPlayerListener {
                 it.onPlayerModelChange(this)
+                it.onPlayerModelChange(last, this)
             }
         }
         listener?.invoke(playModel)

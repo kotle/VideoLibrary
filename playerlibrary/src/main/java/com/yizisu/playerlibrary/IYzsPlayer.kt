@@ -135,12 +135,31 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
      * 添加列表
      */
     fun addPlayModels(modes: MutableList<Model>)
+
+    /**
+     * 添加列表
+     */
     fun addPlayModels(index: Int, modes: MutableList<Model>)
 
     /**
      * 添加列表
      */
     fun addPlayModel(mode: Model)
+
+    /**
+     * 移除
+     */
+    fun removePlayModel(mode: Model)
+
+    /**
+     * remove
+     */
+    fun removePlayModel(index: Int)
+
+    /**
+     * 添加列表
+     */
+    fun addPlayModel(index: Int, mode: Model)
 
     /**
      * 当前播放索引
@@ -188,7 +207,7 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
     /**
      * 设置锁屏模式
      */
-    fun setWakeMode(@C.WakeMode wakeMode:Int)
+    fun setWakeMode(@C.WakeMode wakeMode: Int)
 
     /**
      * 设置音量
