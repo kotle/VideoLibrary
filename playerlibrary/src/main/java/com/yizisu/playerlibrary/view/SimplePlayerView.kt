@@ -2,14 +2,10 @@ package com.yizisu.playerlibrary.view
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AppComponentFactory
 import android.content.Context
 import android.content.ContextWrapper
-import android.content.DialogInterface
 import android.content.pm.ActivityInfo
-import android.graphics.Color
 import android.graphics.Point
-import android.graphics.drawable.GradientDrawable
 import android.media.AudioManager
 import android.os.Vibrator
 import android.util.AttributeSet
@@ -101,6 +97,10 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
 
     init {
         View.inflate(context, R.layout.layout_simple_player_view, this)
+        textureView.post {
+            textureView.pivotX = textureView.width / 2f
+            textureView.pivotY = textureView.height / 2f
+        }
         val ctx = context
         if (ctx is AppCompatActivity) {
             ctx.lifecycle.addObserver(this)
@@ -149,7 +149,7 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
         }
         playerBack.setOnClickListener {
             if (context is Activity) {
-                (context as Activity).finish()
+                (context as Activity).onBackPressed()
             }
         }
         setSpeed(currentSpeedIndex)
@@ -378,6 +378,8 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
             )
         }
         lp.gravity = Gravity.CENTER
+        textureView.pivotX = viewWidth / 2f
+        textureView.pivotY = videoWidth / 2f
         return lp
     }
 
@@ -474,16 +476,25 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
      * 设置视频尺寸
      */
     fun setVideoSize(videoWidth: Int, videoHeight: Int, portraitScreen: Boolean) {
+        setVideoSize(videoWidth, videoHeight, width, height, portraitScreen)
+    }
+
+    fun setVideoSize(
+        videoWidth: Int, videoHeight: Int,
+        textureWidth: Int,
+        textureHeight: Int,
+        portraitScreen: Boolean
+    ) {
         textureView.layoutParams = if (portraitScreen) {
             changePlayerSize(
-                min(width, height),
-                max(width, height),
+                min(textureWidth, textureHeight),
+                max(textureWidth, textureHeight),
                 videoWidth, videoHeight
             )
         } else {
             changePlayerSize(
-                max(width, height),
-                min(width, height),
+                max(textureWidth, textureHeight),
+                min(textureWidth, textureHeight),
                 videoWidth, videoHeight
             )
         }
