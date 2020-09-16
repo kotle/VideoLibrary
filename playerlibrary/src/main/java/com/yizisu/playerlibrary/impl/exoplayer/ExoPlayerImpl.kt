@@ -245,9 +245,9 @@ internal class ExoPlayerImpl<Model : PlayerModel>(private val context: Context) 
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         player.stop(true)
         player.release()
+        super.onDestroy()
     }
 
     override fun getAudioForceListener(): AudioManager.OnAudioFocusChangeListener {

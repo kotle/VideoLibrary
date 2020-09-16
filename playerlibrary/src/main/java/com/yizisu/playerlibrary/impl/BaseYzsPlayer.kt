@@ -133,8 +133,13 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(private val context: 
         playModelList.forEach {
             it.onDestroy()
         }
+        val model = currentPlayModel
+        doPlayerListener {
+            it.onPause(false, model)
+            it.onStop(false, model)
+        }
         playModelList.clear()
-        playModelList.clear()
+        playerListener.clear()
         timerTask.cancel()
         timer.cancel()
         abandonAudioFocus()
