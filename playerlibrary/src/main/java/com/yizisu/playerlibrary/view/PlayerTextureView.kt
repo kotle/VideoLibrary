@@ -12,15 +12,16 @@ import com.yizisu.playerlibrary.PlayerLifecycleObserver
  * 处理锁屏之后，导致黑屏
  */
 open class PlayerTextureView : TextureView, PlayerLifecycleObserver {
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
     )
 
-    init {
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
         val ctx = context
         if (ctx is AppCompatActivity) {
             ctx.lifecycle.addObserver(this)
@@ -32,16 +33,8 @@ open class PlayerTextureView : TextureView, PlayerLifecycleObserver {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (this.visibility == View.VISIBLE) {
-            this.visibility = View.INVISIBLE
-            this.visibility = View.VISIBLE
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
         val ctx = context
         if (ctx is AppCompatActivity) {
             ctx.lifecycle.removeObserver(this)
@@ -50,6 +43,13 @@ open class PlayerTextureView : TextureView, PlayerLifecycleObserver {
             if (c is AppCompatActivity) {
                 c.lifecycle.removeObserver(this)
             }
+        }
+    }
+    override fun onStart() {
+        super.onStart()
+        if (this.visibility == View.VISIBLE) {
+            this.visibility = View.INVISIBLE
+            this.visibility = View.VISIBLE
         }
     }
 }

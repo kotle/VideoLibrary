@@ -18,15 +18,16 @@ import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
 import com.yizisu.playerlibrary.helper.logI
 import com.yizisu.playerlibrary.impl.BaseYzsPlayer
+import java.lang.ref.WeakReference
 
 /**
  * ExoPlayer实现类，可以用于其他播放器替换
  */
-internal class ExoPlayerImpl<Model : PlayerModel>(private val context: Context) :
-    BaseYzsPlayer<Model>(context), Player.EventListener,
+internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
+    BaseYzsPlayer<Model>(WeakReference(contextWrf)), Player.EventListener,
     VideoListener, AudioListener {
     //创建播放器
-    private val player = createSimpleExoPlayer(context).apply {
+    private val player = createSimpleExoPlayer(context!!).apply {
         addListener(this@ExoPlayerImpl)
         addVideoListener(this@ExoPlayerImpl)
     }
@@ -104,6 +105,7 @@ internal class ExoPlayerImpl<Model : PlayerModel>(private val context: Context) 
         listener: ((Model?) -> Unit)?,
         isStopLastMedia: Boolean
     ) {
+        val ctx = context ?: return
         //切换资源的时候，回调上一次资源的销毁方法，做好资源回收
         val last: Model? = lastPlayModel
         if (last != currentPlayModel) {
@@ -116,7 +118,7 @@ internal class ExoPlayerImpl<Model : PlayerModel>(private val context: Context) 
         }
         val playModel = currentPlayModel?.apply {
             player.createSingleSource(
-                context,
+                ctx,
                 this,
                 this@ExoPlayerImpl
             ) { error, isCallOnPlayChange ->
@@ -134,6 +136,7 @@ internal class ExoPlayerImpl<Model : PlayerModel>(private val context: Context) 
                             doPlayerListener {
                                 it.onPlayerModelChange(model)
                                 it.onPlayerModelChange(last, model)
+                                it.onTick(model)
                             }
                         }
                     }
@@ -142,6 +145,7 @@ internal class ExoPlayerImpl<Model : PlayerModel>(private val context: Context) 
             doPlayerListener {
                 it.onPlayerModelChange(this)
                 it.onPlayerModelChange(last, this)
+                it.onTick(this)
             }
         }
         listener?.invoke(playModel)

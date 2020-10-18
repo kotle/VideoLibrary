@@ -154,7 +154,7 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
         }
         setSpeed(currentSpeedIndex)
         speedTv.setOnClickListener {
-            AlertDialog.Builder(context)
+            AlertDialog.Builder(context, R.style.Theme_AppCompat_Dialog)
                 .setTitle("选择倍速")
                 .setPositiveButton(android.R.string.cancel, null)
                 .setAdapter(

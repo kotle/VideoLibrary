@@ -7,10 +7,14 @@ import com.yizisu.playerlibrary.PlayerFactory
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
 import com.yizisu.playerlibrary.impl.exoplayer.mainHandler
+import java.lang.ref.WeakReference
 import java.util.*
 
-internal abstract class BaseYzsPlayer<Model : PlayerModel>(private val context: Context) :
+internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextWrf: WeakReference<Context?>?) :
     IYzsPlayer<Model> {
+    internal val context: Context?
+        get() = contextWrf?.get()
+
     //当前播放模式，支持四种
     private var currentLoopMode = PlayerFactory.LOOP_MODO_NONE
 
@@ -64,7 +68,7 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(private val context: 
     //定时任务
     private val timerTask = object : TimerTask() {
         override fun run() {
-            if (playModelList.isNotEmpty() && !mainHandler.hasCallbacks(tickRunnable)) {
+            if (playModelList.isNotEmpty() && context != null) {
                 mainHandler.post(tickRunnable)
             }
         }
@@ -130,14 +134,15 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(private val context: 
 
     override fun onDestroy() {
         super.onDestroy()
+        timerTask.cancel()
+        timer.cancel()
         playModelList.forEach {
             it.onDestroy()
         }
         playModelList.clear()
         playModelList.clear()
-        timerTask.cancel()
-        timer.cancel()
         abandonAudioFocus()
+        contextWrf?.clear()
     }
 
     final override fun addPlayerListener(listener: SimplePlayerListener<Model>) {
@@ -189,7 +194,9 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(private val context: 
     final override fun setAudioForceEnable(enable: Boolean) {
         if (enable) {
             if (audioFocusHelper == null) {
-                audioFocusHelper = AudioFocusHelper(context, getAudioForceListener())
+                context?.let {
+                    audioFocusHelper = AudioFocusHelper(it, getAudioForceListener())
+                }
             }
         } else {
             audioFocusHelper = null
