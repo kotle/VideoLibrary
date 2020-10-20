@@ -93,6 +93,9 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
         } else {
             currentIndex++
             startPrepare(listener, true)
+            if (!isPlaying()) {
+                play()
+            }
         }
     }
 
@@ -156,6 +159,9 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
     override fun previous(listener: ((Model?) -> Unit)?) {
         currentIndex--
         startPrepare(listener, true)
+        if (!isPlaying()) {
+            play()
+        }
     }
 
     override fun attachView(view: TextureView?) {
@@ -177,6 +183,9 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
             //注意这里，这里赋值，不受播放模式判断影响，所以直接赋值
             _currentIndex = index
             startPrepare(listener, true)
+        }
+        if (isPlaying()) {
+            play()
         }
     }
 
