@@ -99,6 +99,7 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
 
     /**
      * 准备资源和播放
+     * listener:当资源开始准备后才会回调，null，资源准备错误，否则正常
      */
     private var lastPlayModel: Model? = null
     private fun startPrepare(
@@ -116,7 +117,7 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
         if (isStopLastMedia) {
             player.stop(true)
         }
-        val playModel = currentPlayModel?.apply {
+        currentPlayModel?.apply {
             player.createSingleSource(
                 ctx,
                 this,
@@ -124,11 +125,13 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
             ) { error, isCallOnPlayChange ->
                 //错误监听
                 if (error != null) {
+                    listener?.invoke(null)
                     doPlayerListener {
                         currentPlayModel?.onError(error)
                         it.onError(error, currentPlayModel)
                     }
                 } else {
+                    listener?.invoke(this)
                     //因为获取url是异步的，而且还有可能从网络获取其他信息
                     //所以获取url后再通知一次
                     if (isCallOnPlayChange) {
@@ -148,7 +151,6 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
                 it.onTick(this)
             }
         }
-        listener?.invoke(playModel)
     }
 
     override fun previous(listener: ((Model?) -> Unit)?) {
