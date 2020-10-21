@@ -119,38 +119,36 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
             player.stop(true)
         }
         currentPlayModel?.apply {
-            player.createSingleSource(
-                ctx,
-                this,
-                this@ExoPlayerImpl
-            ) { error, isCallOnPlayChange ->
-                //错误监听
-                if (error != null) {
-                    listener?.invoke(null)
-                    doPlayerListener {
-                        currentPlayModel?.onError(error)
-                        it.onError(error, currentPlayModel)
-                    }
-                } else {
-                    listener?.invoke(this)
-                    //因为获取url是异步的，而且还有可能从网络获取其他信息
-                    //所以获取url后再通知一次
-                    if (isCallOnPlayChange) {
-                        currentPlayModel?.let { model ->
-                            doPlayerListener {
-                                it.onPlayerModelChange(model)
-                                it.onPlayerModelChange(last, model)
-                                it.onTick(model)
-                            }
-                        }
-                    }
-                }
-            }
             doPlayerListener {
                 it.onPlayerModelChange(this)
                 it.onPlayerModelChange(last, this)
                 it.onTick(this)
             }
+            player.createSingleSource(ctx, this, this@ExoPlayerImpl) { error, isCallOnPlayChange ->
+                if (currentPlayModel == this) {//因为这里可能异步，需要判断
+                    if (error != null) {//错误监听
+                        listener?.invoke(null)
+                        doPlayerListener {
+                            currentPlayModel?.onError(error)
+                            it.onError(error, this)
+                        }
+                    } else {
+                        if (currentPlayModel == this) {//因为这里可能异步，需要判断
+                            listener?.invoke(this)
+                            //因为获取url是异步的，而且还有可能从网络获取其他信息
+                            //所以获取url后再通知一次
+                            if (isCallOnPlayChange) {
+                                doPlayerListener {
+                                    it.onPlayerModelChange(this)
+                                    it.onPlayerModelChange(last, this)
+                                    it.onTick(this)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
         }
     }
 
