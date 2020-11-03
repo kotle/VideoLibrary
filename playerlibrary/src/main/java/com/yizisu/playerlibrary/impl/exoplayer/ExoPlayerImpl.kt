@@ -128,8 +128,8 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
                 if (currentPlayModel == this) {//因为这里可能异步，需要判断
                     if (error != null) {//错误监听
                         listener?.invoke(null)
+                        currentPlayModel?.onError(error)
                         doPlayerListener {
-                            currentPlayModel?.onError(error)
                             it.onError(error, this)
                         }
                     } else {
@@ -196,8 +196,8 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
      */
     override fun onPlayerError(error: ExoPlaybackException) {
         logI(error.message)
+        currentPlayModel?.onError(error)
         doPlayerListener {
-            currentPlayModel?.onError(error)
             it.onError(error, currentPlayModel)
         }
     }
