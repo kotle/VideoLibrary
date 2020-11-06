@@ -163,6 +163,11 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
     fun addPlayModel(index: Int, mode: Model)
 
     /**
+     * 替换列表，会改变原有的对象引用
+     */
+    fun replacePlayModels(newList:MutableList<Model>)
+
+    /**
      * 当前播放索引
      */
     fun getCurrentPlayIndex(): Int

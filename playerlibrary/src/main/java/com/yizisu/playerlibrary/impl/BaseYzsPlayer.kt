@@ -96,7 +96,7 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
     private var audioFocusHelper: AudioFocusHelper? = null
 
     //当前播放列表集合
-    protected val playModelList = mutableListOf<Model>()
+    protected var playModelList = mutableListOf<Model>()
 
     //当前播放的model
     val currentPlayModel: Model?
@@ -261,6 +261,13 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
 
     override fun addPlayModel(index: Int, mode: Model) {
         getAllPlayModel().add(index, mode)
+        doPlayerListener {
+            it.onPlayerListChange(getAllPlayModel())
+        }
+    }
+
+    override fun replacePlayModels(newList: MutableList<Model>) {
+        playModelList = newList
         doPlayerListener {
             it.onPlayerListChange(getAllPlayModel())
         }
