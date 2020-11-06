@@ -175,7 +175,7 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
                 return
             }
             //注意这里，这里赋值，不受播放模式判断影响，所以直接赋值
-            _currentIndex = index
+            info.currentIndex = index
             startPrepare(listener, true)
             startPlayIfNotPlay()
         }

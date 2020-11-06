@@ -32,6 +32,7 @@ interface SimplePlayerListener<Model : PlayerModel> : AudioManager.OnAudioFocusC
      */
     fun onStop(playStatus: Boolean, playerModel: Model?) {}
 
+
     /**
      * 当缓存状态发生变化
      */

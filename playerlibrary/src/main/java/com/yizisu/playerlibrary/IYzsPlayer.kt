@@ -33,6 +33,14 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
         }
     }
 
+    /**
+     * 保存播放的状态信息
+     */
+    data class Info<T : PlayerModel>(
+        var playModes: MutableList<T>,
+        var currentIndex: Int
+    )
+
     @MustBeDocumented
     @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
     @IntDef(
@@ -165,7 +173,7 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
     /**
      * 替换列表，会改变原有的对象引用
      */
-    fun replacePlayModels(newList:MutableList<Model>)
+    fun setPlayerInfo(newInfo:Info<Model>)
 
     /**
      * 当前播放索引

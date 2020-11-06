@@ -18,20 +18,20 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
     //当前播放模式，支持四种
     private var currentLoopMode = PlayerFactory.LOOP_MODO_NONE
 
-    //这个索引，不经过各种判断直接赋值
-    protected var _currentIndex = 0
+//    //这个索引，不经过各种判断直接赋值
+//    protected var _currentIndex = 0
 
     //设置当前索引
     var currentIndex
-        get() = _currentIndex
+        get() = info.currentIndex
         set(value) {
             val count = playModelList.count()
-            _currentIndex = if (count == 0) {
+            info.currentIndex = if (count == 0) {
                 0
             } else {
                 when (currentLoopMode) {
                     PlayerFactory.LOOP_MODO_SINGLE -> {
-                        _currentIndex
+                        info.currentIndex
                     }
                     PlayerFactory.LOOP_MODO_LIST -> {
                         if (value < 0) {
@@ -91,12 +91,15 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
         timer.schedule(timerTask, 0, 1000)
     }
 
+    protected var info = IYzsPlayer.Info<Model>(mutableListOf(), 0)
+
     //是否支持处理音频焦点
     //若处理，则有焦点才播放，失去焦点停止播放
     private var audioFocusHelper: AudioFocusHelper? = null
 
     //当前播放列表集合
-    protected var playModelList = mutableListOf<Model>()
+    protected val playModelList: MutableList<Model>
+        get() = info.playModes
 
     //当前播放的model
     val currentPlayModel: Model?
@@ -125,7 +128,7 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
     ) {
         playModelList.clear()
         playModelList.addAll(models)
-        _currentIndex = playIndex
+        info.currentIndex = playIndex
         doPlayerListener {
             it.onPlayerListChange(playModelList)
         }
@@ -136,11 +139,14 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
         super.onDestroy()
         timerTask.cancel()
         timer.cancel()
+        doPlayerListener {
+            it.onListenerRemove(currentPlayModel)
+        }
         playModelList.forEach {
             it.onDestroy()
         }
         playModelList.clear()
-        playModelList.clear()
+        playerListener.clear()
         abandonAudioFocus()
         contextWrf?.clear()
     }
@@ -266,8 +272,8 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
         }
     }
 
-    override fun replacePlayModels(newList: MutableList<Model>) {
-        playModelList = newList
+    override fun setPlayerInfo(newInfo: IYzsPlayer.Info<Model>) {
+        info=newInfo
         doPlayerListener {
             it.onPlayerListChange(getAllPlayModel())
         }
