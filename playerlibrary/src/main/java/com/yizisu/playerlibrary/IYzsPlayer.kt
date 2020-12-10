@@ -90,7 +90,16 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
     /**
      * 下一个
      */
-    fun next(listener: Function1<Model?, Unit>? = null)
+    fun next(listener: Function1<Model?, Unit>? = null) 
+    /**
+     * 是否可以播发上一个
+     */
+    fun canPlayNext():Boolean
+
+    /**
+     * 是否可以播放上一个
+     */
+    fun canPlayPrevious():Boolean
 
     /**
      * 上一个
@@ -109,6 +118,7 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
     fun seekTo(
         positionMs: Long,
         index: Int? = null,
+        reset: Boolean=false,
         listener: Function1<Model?, Unit>? = null
     )
 

@@ -86,15 +86,24 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
     }
 
     override fun next(listener: ((Model?) -> Unit)?) {
-        val index = getCurrentPlayIndex()
         //如果播放的是最后一个，播放完之后就停止播放
-        if (getRepeatMode() == PlayerFactory.LOOP_MODO_NONE && (index + 1) >= playModelList.count()) {
+        if (!canPlayNext()) {
             stop()
         } else {
             currentIndex++
             startPrepare(listener, true)
             startPlayIfNotPlay()
         }
+    }
+
+    override fun canPlayNext(): Boolean {
+        val index = getCurrentPlayIndex()
+        return !(getRepeatMode() == PlayerFactory.LOOP_MODO_NONE && (index + 1) >= playModelList.count())
+    }
+
+    override fun canPlayPrevious(): Boolean {
+        val index = getCurrentPlayIndex()
+        return !(getRepeatMode() == PlayerFactory.LOOP_MODO_NONE && index <= 0)
     }
 
 
@@ -166,11 +175,16 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
         player.clearVideoTextureView(view)
     }
 
-    override fun seekTo(positionMs: Long, index: Int?, listener: ((Model?) -> Unit)?) {
+    override fun seekTo(
+        positionMs: Long,
+        index: Int?,
+        reset: Boolean,
+        listener: ((Model?) -> Unit)?
+    ) {
         if (index == null) {
             player.seekTo(positionMs)
         } else {
-            if (currentIndex == index) {
+            if (currentIndex == index && !reset) {
                 listener?.invoke(currentPlayModel)
                 return
             }
@@ -188,7 +202,7 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
     }
 
     override fun seekRatioTo(ratio: Float, listener: ((Model?) -> Unit)?) {
-        seekTo((totalDuration * ratio).toLong(), null, listener)
+        seekTo((totalDuration * ratio).toLong(), null,false, listener)
     }
 
     /**

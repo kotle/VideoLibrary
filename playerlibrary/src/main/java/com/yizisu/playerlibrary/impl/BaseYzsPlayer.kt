@@ -259,13 +259,13 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
     }
 
     override fun addPlayModel(mode: Model) {
-        getAllPlayModel().add(mode)
-        doPlayerListener {
-            it.onPlayerListChange(getAllPlayModel())
-        }
+        addPlayModel(0,mode)
     }
 
     override fun addPlayModel(index: Int, mode: Model) {
+        if (index<=getCurrentPlayIndex()){
+            currentIndex++
+        }
         getAllPlayModel().add(index, mode)
         doPlayerListener {
             it.onPlayerListChange(getAllPlayModel())
@@ -273,7 +273,7 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
     }
 
     override fun setPlayerInfo(newInfo: IYzsPlayer.Info<Model>) {
-        info=newInfo
+        info = newInfo
         doPlayerListener {
             it.onPlayerListChange(getAllPlayModel())
         }
@@ -281,29 +281,42 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
 
     override fun removePlayModel(index: Int) {
         val list = getAllPlayModel()
-        val model = list[index]
-        removePlayModel(model)
+        if (index >= 0 && index < list.count()) {
+            val model = list[index]
+            removePlayModel(model)
+        }
     }
 
     override fun removePlayModel(mode: Model) {
-        if (mode == currentPlayModel) {
-            stop()
-        }
+        val current=currentPlayModel
+        val isPlaying = isPlaying()
         val list = getAllPlayModel()
+        val index = list.indexOf(mode)
+        if (index < getCurrentPlayIndex() && index >= 0) {
+            currentIndex--
+        }
         list.remove(mode)
         doPlayerListener {
             it.onPlayerListChange(list)
         }
-    }
-
-    override fun addPlayModels(modes: MutableList<Model>) {
-        getAllPlayModel().addAll(modes)
-        doPlayerListener {
-            it.onPlayerListChange(getAllPlayModel())
+        if (mode == current) {
+            seekTo(0, index,true)
+            if (isPlaying) {
+                play()
+            } else {
+                pause()
+            }
         }
     }
 
+    override fun addPlayModels(modes: MutableList<Model>) {
+        addPlayModels(0,modes)
+    }
+
     override fun addPlayModels(index: Int, modes: MutableList<Model>) {
+        if (index<=getCurrentPlayIndex()){
+            currentIndex+=modes.count()
+        }
         getAllPlayModel().addAll(index, modes)
         doPlayerListener {
             it.onPlayerListChange(getAllPlayModel())
