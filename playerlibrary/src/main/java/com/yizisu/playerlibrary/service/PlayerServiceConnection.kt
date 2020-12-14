@@ -20,7 +20,7 @@ internal class PlayerServiceConnection : ServiceConnection {
         val service = (binder as? PlayerServiceBinder)?.service
         this.service = service
         bindListener?.invoke(true)
-        service?.lifeListener = {
+        service?.onCreateListener = {
             this.service = null
             bindListener?.invoke(it != null)
         }

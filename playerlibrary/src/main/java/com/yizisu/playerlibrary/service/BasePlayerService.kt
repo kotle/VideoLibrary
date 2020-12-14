@@ -3,9 +3,7 @@ package com.yizisu.playerlibrary.service
 import android.app.Service
 import android.content.*
 import android.media.AudioManager
-import android.os.Binder
 import android.os.IBinder
-import androidx.annotation.Keep
 import com.google.android.exoplayer2.C
 import com.yizisu.playerlibrary.IYzsPlayer
 import com.yizisu.playerlibrary.helper.PlayerModel
@@ -15,7 +13,7 @@ import com.yizisu.playerlibrary.helper.SimplePlayerListener
  * 请使用[PlayerServiceHelper]来创建对象
  */
 open class BasePlayerService<Model : PlayerModel> : Service(), SimplePlayerListener<Model> {
-    var lifeListener: Function1<BasePlayerService<*>?, Unit>? = null
+    internal var onCreateListener: Function1<BasePlayerService<*>?, Unit>? = null
 
     //播放器对象
     val player by lazy {
@@ -67,15 +65,15 @@ open class BasePlayerService<Model : PlayerModel> : Service(), SimplePlayerListe
 
     override fun onCreate() {
         super.onCreate()
-        lifeListener?.invoke(this)
+        onCreateListener?.invoke(this)
         create()
     }
 
 
     override fun onDestroy() {
         destroy()
-        lifeListener?.invoke(null)
-        lifeListener = null
+        onCreateListener?.invoke(null)
+        onCreateListener = null
         super.onDestroy()
     }
 
