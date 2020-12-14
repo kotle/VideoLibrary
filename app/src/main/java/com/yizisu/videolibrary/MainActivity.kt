@@ -13,14 +13,23 @@ import com.yizisu.playerlibrary.IYzsPlayer
 import com.yizisu.playerlibrary.PlayerFactory
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
+import com.yizisu.playerlibrary.service.PlayerServiceHelper
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
-
+    companion object{
+        val ssss=PlayerServiceHelper(LlPlayerService::class.java)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+//        ssss.getService(applicationContext){
+//            println("333333333333")
+//        }
+        PlayerServiceHelper(LlPlayerService::class.java).getPlayer(this) {
+            println("666666666666666666666")
+        }
         onClick()
     }
 
@@ -30,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     private var videoWidth = 0
     private val point = Point()
     private fun onClick() {
-        simplePlayer = PlayerFactory.createPlayer(this,PlayerFactory.PLAYER_IMPL_EXO)
+        simplePlayer = PlayerFactory.createPlayer(this, PlayerFactory.PLAYER_IMPL_EXO)
         window.windowManager.defaultDisplay.getRealSize(point)
         simplePlayer.attachView(playerView)
         simplePlayer.addPlayerListener(object : SimplePlayerListener<Mp4PlayerModel> {
@@ -55,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
         play.setOnClickListener {
-            simplePlayer = PlayerFactory.createPlayer(this,PlayerFactory.PLAYER_IMPL_EXO)
+            simplePlayer = PlayerFactory.createPlayer(this, PlayerFactory.PLAYER_IMPL_EXO)
             simplePlayer.setAudioForceEnable(true)
             simplePlayer.prepareAndPlay(
                 mutableListOf(

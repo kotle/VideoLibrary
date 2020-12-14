@@ -87,10 +87,6 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
 
     private val timer = Timer()
 
-    init {
-        timer.schedule(timerTask, 0, 1000)
-    }
-
     protected var info = IYzsPlayer.Info<Model>(mutableListOf(), 0)
 
     //是否支持处理音频焦点
@@ -119,6 +115,10 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
 
     //当前已经缓存的时间
     open val currentBufferDuration: Long = 0
+
+    init {
+        timer.schedule(timerTask, 0, 1000)
+    }
 
     override fun prepare(
         models: MutableList<Model>,
@@ -259,11 +259,11 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
     }
 
     override fun addPlayModel(mode: Model) {
-        addPlayModel(0,mode)
+        addPlayModel(0, mode)
     }
 
     override fun addPlayModel(index: Int, mode: Model) {
-        if (index<=getCurrentPlayIndex()){
+        if (index <= getCurrentPlayIndex()) {
             currentIndex++
         }
         getAllPlayModel().add(index, mode)
@@ -288,7 +288,7 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
     }
 
     override fun removePlayModel(mode: Model) {
-        val current=currentPlayModel
+        val current = currentPlayModel
         val isPlaying = isPlaying()
         val list = getAllPlayModel()
         val index = list.indexOf(mode)
@@ -300,7 +300,7 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
             it.onPlayerListChange(list)
         }
         if (mode == current) {
-            seekTo(0, index,true)
+            seekTo(0, index, true)
             if (isPlaying) {
                 play()
             } else {
@@ -310,12 +310,12 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
     }
 
     override fun addPlayModels(modes: MutableList<Model>) {
-        addPlayModels(0,modes)
+        addPlayModels(0, modes)
     }
 
     override fun addPlayModels(index: Int, modes: MutableList<Model>) {
-        if (index<=getCurrentPlayIndex()){
-            currentIndex+=modes.count()
+        if (index <= getCurrentPlayIndex()) {
+            currentIndex += modes.count()
         }
         getAllPlayModel().addAll(index, modes)
         doPlayerListener {
