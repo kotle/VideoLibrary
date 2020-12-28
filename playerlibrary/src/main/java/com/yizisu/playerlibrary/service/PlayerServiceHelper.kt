@@ -20,7 +20,7 @@ class PlayerServiceHelper<MODEL : PlayerModel, SERVICE : BasePlayerService<MODEL
     /**
      * 绑定服务
      */
-    fun bind(context: Context, bindListener: Function1<Boolean, Unit>? = null) {
+    fun bind(context: Context, bindListener: Function1<Boolean/*由于服务启动需要时间，true，服务已经可以使用*/, Unit>? = null) {
         if (serviceConnection != null) {
             serviceConnection?.bindListener = {
                 bindListener?.invoke(it)

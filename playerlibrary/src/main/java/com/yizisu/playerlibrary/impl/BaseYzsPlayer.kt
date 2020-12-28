@@ -85,7 +85,11 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
         }
     }
 
-    private val timer = Timer()
+    /**
+     * 设置为守护线程
+     * 其他线程销毁的时候，自动结束此线程
+     */
+    private val timer = Timer(true)
 
     protected var info = IYzsPlayer.Info<Model>(mutableListOf(), 0)
 
