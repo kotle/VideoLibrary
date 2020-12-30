@@ -82,4 +82,11 @@ abstract class PlayerModel {
     open fun onPlayModelNotThis(newModel: PlayerModel?) {
 
     }
+
+    /**
+     * 获取标题
+     */
+    open fun getTitle(): CharSequence? {
+        return null
+    }
 }

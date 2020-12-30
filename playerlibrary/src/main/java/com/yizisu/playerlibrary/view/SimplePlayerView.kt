@@ -1,30 +1,37 @@
 package com.yizisu.playerlibrary.view
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.pm.ActivityInfo
+import android.graphics.Color
 import android.graphics.Point
 import android.media.AudioManager
+import android.os.VibrationEffect
+import android.os.VibrationEffect.DEFAULT_AMPLITUDE
 import android.os.Vibrator
 import android.util.AttributeSet
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.yizisu.playerlibrary.IYzsPlayer
 import com.yizisu.playerlibrary.PlayerLifecycleObserver
 import com.yizisu.playerlibrary.R
+import com.yizisu.playerlibrary.databinding.LayoutSimplePlayerViewBinding
 import com.yizisu.playerlibrary.helper.*
 import com.yizisu.playerlibrary.helper.GestureDetectorHelper
 import com.yizisu.playerlibrary.helper.adjustVolume
 import com.yizisu.playerlibrary.helper.logI
-import kotlinx.android.synthetic.main.layout_simple_player_view.view.*
 import kotlin.math.abs
-import kotlin.math.max
 import kotlin.math.min
 
 class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
+    private val binding by lazy {
+        LayoutSimplePlayerViewBinding.bind(
+            LayoutInflater.from(context).inflate(R.layout.layout_simple_player_view, this, true)
+        )
+    }
 
     private val gestureDetectorHelper by lazy { GestureDetectorHelper(this, false) }
 
@@ -56,10 +63,10 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
     )
 
     val textureView: TextureView
-        get() = simplePlayerTexture
+        get() = binding.simplePlayerTexture
 
     private val lightView: TextView
-        get() = adjustLightTv
+        get() = binding.adjustLightTv
 
     private var isShowFull = true
 
@@ -96,20 +103,8 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
     private val mAudioManager by lazy { context.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
 
     init {
-        View.inflate(context, R.layout.layout_simple_player_view, this)
-        textureView.post {
-            textureView.pivotX = textureView.width / 2f
-            textureView.pivotY = textureView.height / 2f
-        }
-        val ctx = context
-        if (ctx is AppCompatActivity) {
-            ctx.lifecycle.addObserver(this)
-        } else if (ctx is ContextWrapper) {
-            val c = ctx.baseContext
-            if (c is AppCompatActivity) {
-                c.lifecycle.addObserver(this)
-            }
-        }
+        setBackgroundColor(Color.BLACK)
+        getActivity()?.lifecycle?.addObserver(this)
         gestureDetectorHelper.setOnScrollListener { e1, e2, x, y ->
             when (scrollOrientation) {
                 LinearLayout.VERTICAL -> {
@@ -143,17 +138,26 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
             }
         }
         gestureDetectorHelper.setOnLongClickListener {
-            vibrator?.vibrate(100)
-            speedHintTv.visibility = View.VISIBLE
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                VibrationEffect.createOneShot(100, DEFAULT_AMPLITUDE)
+            } else {
+                vibrator?.vibrate(100)
+            }
+            binding.speedHintTv.visibility = View.VISIBLE
             speedChangeListener?.invoke(2f)
         }
-        playerBack.setOnClickListener {
-            if (context is Activity) {
-                (context as Activity).onBackPressed()
+        binding.playerBack.setOnClickListener {
+            val activity = getActivity()
+            if (activity != null) {
+                if (isScreenPortrait()) {
+                    activity.onBackPressed()
+                } else {
+                    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+                }
             }
         }
         setSpeed(currentSpeedIndex)
-        speedTv.setOnClickListener {
+        binding.speedTv.setOnClickListener {
             AlertDialog.Builder(context, R.style.Theme_AppCompat_Dialog)
                 .setTitle("选择倍速")
                 .setPositiveButton(android.R.string.cancel, null)
@@ -170,6 +174,54 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
         }
         isShowFull = true
         postDelayed(getHideRunable(), 3000)
+        /**
+         * 设置全屏点击
+         */
+        binding.ivFull.setOnClickListener {
+            val activity = getActivity()
+            if (activity != null) {
+                if (isScreenPortrait()) {
+                    activity.requestedOrientation =
+                        ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                } else {
+                    activity.requestedOrientation =
+                        ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+                }
+            }
+        }
+    }
+
+    override fun setLayoutParams(params: ViewGroup.LayoutParams?) {
+        super.setLayoutParams(params)
+        if (isScreenPortrait()) {
+            binding.ivFull.setImageResource(R.drawable.exo_ic_fullscreen_enter)
+        } else {
+            binding.ivFull.setImageResource(R.drawable.exo_ic_fullscreen_exit)
+        }
+    }
+
+    private fun getActivity(): AppCompatActivity? {
+        val ctx = context
+        if (ctx is AppCompatActivity) {
+            return ctx
+        }
+        if (ctx is ContextWrapper && ctx.baseContext is AppCompatActivity) {
+            return ctx.baseContext as AppCompatActivity
+        }
+        return null
+    }
+
+    /**
+     * 是否是竖屏
+     */
+    private fun isScreenPortrait(): Boolean {
+        val ctx = getActivity()
+        return if (ctx != null) {
+            ctx.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT ||
+                    ctx.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+        } else {
+            false
+        }
     }
 
     override fun onStart() {
@@ -184,7 +236,7 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
     private fun setSpeed(index: Int) {
         val i = index % speedList.count()
         val speed = speedList[i]
-        speedTv.text = "倍速 $speed"
+        binding.speedTv.text = "倍速 $speed"
         speedChangeListener?.invoke(speed)
         cancelHideRunnable()
     }
@@ -267,28 +319,26 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
     /**
      * 显示界面操作
      */
-    private fun showUiView() {
+    fun showUiView() {
         if (!isShowFull) {
-            setDisplayInNotch()
             isShowFull = true
-            startViewAnim(progressLl, 0f)
-            startViewAnim(topLl, 0f)
+            startViewAnim(binding.progressLl, 0f)
+            startViewAnim(binding.topLl, 0f)
         }
     }
 
     /**
      * 隐藏界面操作
      */
-    private fun hideUiView() {
+    fun hideUiView() {
         if (height == 0) {
             return
         }
-        setDisplayInNotch()
         if (isPlaying && isShowFull) {
             isShowFull = false
             removeCallbacks(hideUiRunnable)
-            startViewAnim(progressLl, progressLl.height.toFloat())
-            startViewAnim(topLl, -topLl.height.toFloat())
+            startViewAnim(binding.progressLl, binding.progressLl.height.toFloat())
+            startViewAnim(binding.topLl, -binding.topLl.height.toFloat())
         }
     }
 
@@ -341,7 +391,7 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
         oldTouchSeekBarProgress = null
         clearAdjustVolume()
         lightView.visibility = View.GONE
-        speedHintTv.visibility = View.GONE
+        binding.speedHintTv.visibility = View.GONE
         if (isPlaying) {
             postDelayed(getHideRunable(), 5000)
         }
@@ -357,31 +407,6 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
         }
     }
 
-    /**
-     * 设置视频尺寸
-     */
-    private fun changePlayerSize(
-        viewWidth: Int, viewHeight: Int,
-        videoWidth: Int, videoHeight: Int
-    ): LayoutParams {
-        val viewR = viewWidth.toFloat() / viewHeight
-        val videoR = videoWidth.toFloat() / videoHeight
-        val lp = if (viewR <= videoR) {
-            //view的宽度不变设置高度
-            LayoutParams(
-                viewWidth, viewWidth * videoHeight / videoWidth
-            )
-        } else {
-            //view高度不变,动态设置宽度
-            LayoutParams(
-                viewHeight * videoWidth / videoHeight, viewHeight
-            )
-        }
-        lp.gravity = Gravity.CENTER
-        textureView.pivotX = viewWidth / 2f
-        textureView.pivotY = videoWidth / 2f
-        return lp
-    }
 
     /**
      * 调节亮度
@@ -412,18 +437,20 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
                 lightView.visibility = View.VISIBLE
                 val seekLenght = (oldProgress - progress).toFloat()
                 if (seekLenght > 0) {
-                    lightView.text = "快退\n-${getMsByVideoDuration(seekLenght, progressBar.max)}"
+                    lightView.text =
+                        "快退\n-${getMsByVideoDuration(seekLenght, binding.progressBar.max)}"
                 } else {
-                    lightView.text = "快进\n+${getMsByVideoDuration(seekLenght, progressBar.max)}"
+                    lightView.text =
+                        "快进\n+${getMsByVideoDuration(seekLenght, binding.progressBar.max)}"
                 }
-                onSeekListener?.invoke(false, seekLenght / progressBar.max)
+                onSeekListener?.invoke(false, seekLenght / binding.progressBar.max)
             }
         }
 
         override fun onStartTrackingTouch(seekBar: SeekBar?) {
             isTouchSeekBar = true
             removeCallbacks(hideUiRunnable)
-            oldTouchSeekBarProgress = progressBar.progress
+            oldTouchSeekBarProgress = binding.progressBar.progress
         }
 
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
@@ -431,10 +458,11 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
             val oldProgress = oldTouchSeekBarProgress
             if (oldProgress != null) {
                 scrollOrientation = LinearLayout.HORIZONTAL
-                seekComplete((oldProgress - progressBar.progress).toFloat() / progressBar.max)
+                seekComplete((oldProgress - binding.progressBar.progress).toFloat() / binding.progressBar.max)
             }
         }
     }
+
 
     /***************************************************************************************/
 
@@ -450,54 +478,33 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
         if (isTouchSeekBar) {
             return
         }
-        val max = progressBar.max
+        val max = binding.progressBar.max
         if (currentProgress != null && allProgress != 0L) {
             currentVideoDuration = currentProgress
-            currentProgressTv.text = getCountTimeByLong(currentProgress)
+            binding.currentProgressTv.text = getCountTimeByLong(currentProgress)
             if (oldTouchSeekBarProgress == null) {
-                progressBar.progress = (currentProgress * max / allProgress).toInt()
+                binding.progressBar.progress = (currentProgress * max / allProgress).toInt()
             }
         }
         if (bufferProgress != null && allProgress != 0L) {
-            progressBar.secondaryProgress = (bufferProgress * max / allProgress).toInt()
+            binding.progressBar.secondaryProgress = (bufferProgress * max / allProgress).toInt()
         }
         totalVideoDuration = allProgress
-        totalProgressTv.text = getCountTimeByLong(allProgress)
+        binding.totalProgressTv.text = getCountTimeByLong(allProgress)
     }
 
     /**
      * 设置视频信息
      */
     fun setVideoInfo(title: String?) {
-        playerTitleTv?.text = title
+        binding.playerTitleTv.text = title
     }
 
     /**
      * 设置视频尺寸
      */
-    fun setVideoSize(videoWidth: Int, videoHeight: Int, portraitScreen: Boolean) {
-        setVideoSize(videoWidth, videoHeight, width, height, portraitScreen)
-    }
-
-    fun setVideoSize(
-        videoWidth: Int, videoHeight: Int,
-        textureWidth: Int,
-        textureHeight: Int,
-        portraitScreen: Boolean
-    ) {
-        textureView.layoutParams = if (portraitScreen) {
-            changePlayerSize(
-                min(textureWidth, textureHeight),
-                max(textureWidth, textureHeight),
-                videoWidth, videoHeight
-            )
-        } else {
-            changePlayerSize(
-                max(textureWidth, textureHeight),
-                min(textureWidth, textureHeight),
-                videoWidth, videoHeight
-            )
-        }
+    fun setVideoSize(videoWidth: Int, videoHeight: Int) {
+        binding.ratioLayout.setChildRatio(videoWidth.toFloat() / videoHeight)
     }
 
 
@@ -516,7 +523,7 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
      */
     fun setOnDoubleClickListener(l: Function1<MotionEvent?, Unit>?) {
         gestureDetectorHelper.setOnDoubleClickListener(l)
-        eNPlayClickView.setOnClickListener {
+        binding.eNPlayClickView.setOnClickListener {
             l?.invoke(null)
         }
     }
@@ -529,14 +536,14 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
         if (isPlaying == isPlay) {
             return
         }
-        eNPlayView.setDuration(500)
+        binding.eNPlayView.setDuration(500)
         if (isPlay) {
             isPlaying = true
-            eNPlayView.play()
+            binding.eNPlayView.play()
             hideUiView()
         } else {
             isPlaying = false
-            eNPlayView.pause()
+            binding.eNPlayView.pause()
             showUiView()
         }
     }
@@ -546,7 +553,7 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
      */
     fun setOnSeekBarListener(l: Function2<Boolean, Float, Unit>) {
         onSeekListener = l
-        progressBar.setOnSeekBarChangeListener(onSeekChange)
+        binding.progressBar.setOnSeekBarChangeListener(onSeekChange)
     }
 
     /**
@@ -554,5 +561,93 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
      */
     fun setOnSpeedChangeListener(l: Function1<Float, Unit>) {
         speedChangeListener = l
+    }
+
+
+    fun <Model : PlayerModel> attachPlayer(player: IYzsPlayer<Model>): SimplePlayerListener<Model> {
+        binding.retryTv.setOnClickListener {
+            player.retry()
+            binding.retryTv.visibility = View.GONE
+        }
+        setOnDoubleClickListener {
+            if (player.isPlaying()) {
+                player.pause()
+            } else {
+                player.play()
+            }
+            setPlay(player.isPlaying())
+        }
+        setOnSpeedChangeListener {
+            player.setVideoSpeed(it)
+        }
+        setOnSeekBarListener { b, fl ->
+            if (b) {//拖动完成
+                player.getCurrentModel()?.let {
+                    val total = it.totalDuration
+                    val current = it.currentDuration - total * fl
+                    player.seekTo(current.toLong())
+                }
+            }
+        }
+        player.attachView(textureView)
+        val listener = object : SimplePlayerListener<Model> {
+            override fun onTick(playerModel: Model) {
+                setProgress(
+                    playerModel.currentDuration,
+                    playerModel.currentBufferDuration,
+                    playerModel.totalDuration,
+                )
+            }
+
+            override fun onVideoSizeChange(
+                width: Int,
+                height: Int,
+                unappliedRotationDegrees: Int,
+                pixelWidthHeightRatio: Float,
+                playerModel: Model?
+            ) {
+                setVideoSize(width, height)
+            }
+
+            override fun onPlay(playStatus: Boolean, playerModel: Model?) {
+                super.onPlay(playStatus, playerModel)
+                setPlay(playStatus)
+            }
+
+            override fun onPause(playStatus: Boolean, playerModel: Model?) {
+                super.onPause(playStatus, playerModel)
+                setPlay(playStatus)
+                binding.loadingPb.visibility = View.GONE
+            }
+
+            override fun onBufferStateChange(
+                isBuffering: Boolean,
+                playStatus: Boolean,
+                playerModel: Model?
+            ) {
+                super.onBufferStateChange(isBuffering, playStatus, playerModel)
+                if (playStatus) {
+                    if (isBuffering) {
+                        binding.loadingPb.visibility = View.VISIBLE
+                    } else {
+                        binding.loadingPb.visibility = View.GONE
+                    }
+                } else {
+                    setPlay(false)
+                }
+            }
+
+            override fun onError(throwable: Throwable, playerModel: Model?) {
+                super.onError(throwable, playerModel)
+                binding.retryTv.visibility = View.VISIBLE
+            }
+
+            override fun onPlayerModelChange(playerModel: Model) {
+                super.onPlayerModelChange(playerModel)
+                binding.playerTitleTv.text = playerModel.getTitle()
+            }
+        }
+        player.addPlayerListener(listener)
+        return listener
     }
 }

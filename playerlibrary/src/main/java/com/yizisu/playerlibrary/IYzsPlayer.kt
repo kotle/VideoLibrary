@@ -62,7 +62,7 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
      */
     fun prepare(
         models: MutableList<Model>,
-        playIndex: Int = 0,
+        playIndex: Int = -1,
         isStopLastMedia: Boolean = true,
         listener: Function1<Model?, Unit>? = null
     )
@@ -90,16 +90,17 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
     /**
      * 下一个
      */
-    fun next(listener: Function1<Model?, Unit>? = null) 
+    fun next(listener: Function1<Model?, Unit>? = null)
+
     /**
      * 是否可以播发上一个
      */
-    fun canPlayNext():Boolean
+    fun canPlayNext(): Boolean
 
     /**
      * 是否可以播放上一个
      */
-    fun canPlayPrevious():Boolean
+    fun canPlayPrevious(): Boolean
 
     /**
      * 上一个
@@ -118,7 +119,7 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
     fun seekTo(
         positionMs: Long,
         index: Int? = null,
-        reset: Boolean=false,
+        reset: Boolean = false,
         listener: Function1<Model?, Unit>? = null
     )
 
@@ -183,7 +184,7 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
     /**
      * 替换列表，会改变原有的对象引用
      */
-    fun setPlayerInfo(newInfo:Info<Model>)
+    fun setPlayerInfo(newInfo: Info<Model>)
 
     /**
      * 当前播放索引
@@ -260,4 +261,10 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
      * 设置播放速度
      */
     fun setVideoSpeed(speed: Float)
+
+    /**
+     * 重试
+     * isKeepProgress 是否保持当前进度
+     */
+    fun retry(isKeepProgress: Boolean = true, listener: ((Model?) -> Unit)? = null)
 }

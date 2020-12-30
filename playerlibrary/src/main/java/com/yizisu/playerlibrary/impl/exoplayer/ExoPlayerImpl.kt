@@ -106,6 +106,12 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
         return !(getRepeatMode() == PlayerFactory.LOOP_MODO_NONE && index <= 0)
     }
 
+    override fun retry(isKeepProgress: Boolean, listener: ((Model?) -> Unit)?) {
+        val model = currentPlayModel ?: return
+        //获取当前播放进度
+        val progress = model.currentDuration
+        startPrepare(listener, true, if (isKeepProgress) progress else 0)
+    }
 
     /**
      * 准备资源和播放
@@ -114,7 +120,8 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
     private var lastPlayModel: Model? = null
     private fun startPrepare(
         listener: ((Model?) -> Unit)?,
-        isStopLastMedia: Boolean
+        isStopLastMedia: Boolean,
+        progress: Long = 0
     ) {
         val ctx = context ?: return
         //切换资源的时候，回调上一次资源的销毁方法，做好资源回收
@@ -144,6 +151,9 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
                     } else {
                         if (currentPlayModel == this) {//因为这里可能异步，需要判断
                             listener?.invoke(this)
+                            if (progress > 0) {
+                                seekTo(progress)
+                            }
                             //因为获取url是异步的，而且还有可能从网络获取其他信息
                             //所以获取url后再通知一次
                             if (isCallOnPlayChange) {
@@ -202,7 +212,7 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
     }
 
     override fun seekRatioTo(ratio: Float, listener: ((Model?) -> Unit)?) {
-        seekTo((totalDuration * ratio).toLong(), null,false, listener)
+        seekTo((totalDuration * ratio).toLong(), null, false, listener)
     }
 
     /**

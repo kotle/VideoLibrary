@@ -77,14 +77,14 @@ internal fun View.adjustVolume(audioManager: AudioManager, offY: Float): Int {
     return volume
 }
 
-fun View.setDisplayInNotch() {
-    setDisplayInNotch(context as Activity)
-}
+//fun View.setDisplayInNotch() {
+//    setDisplayInNotch(context as Activity)
+//}
 
 /**
  * 设置全屏
  */
-fun setDisplayInNotch(activity: Activity) {
+/*fun setDisplayInNotch(activity: Activity) {
     val window = activity.window
     // 延伸显示区域到耳朵区
     val lp = window.attributes
@@ -99,7 +99,7 @@ fun setDisplayInNotch(activity: Activity) {
             or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
             or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
-}
+}*/
 
 /**
  * 毫秒换成00:00:00
