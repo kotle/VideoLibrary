@@ -595,7 +595,7 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
                 setProgress(
                     playerModel.currentDuration,
                     playerModel.currentBufferDuration,
-                    playerModel.totalDuration,
+                    playerModel.totalDuration
                 )
             }
 

@@ -5,13 +5,11 @@ import android.content.Context
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.view.TextureView
-import androidx.annotation.IntDef
-import androidx.appcompat.app.AppCompatActivity
 import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
 import com.yizisu.playerlibrary.impl.exoplayer.ExoPlayerImpl
+import com.yizisu.playerlibrary.view.SimplePlayerRepeatMode
 
 /**
  * 播放器操作类
@@ -41,15 +39,15 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
         var currentIndex: Int
     )
 
-    @MustBeDocumented
-    @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
-    @IntDef(
-        PlayerFactory.LOOP_MODO_LIST,
-        PlayerFactory.LOOP_MODO_NONE,
-        PlayerFactory.LOOP_MODO_SHUFF,
-        PlayerFactory.LOOP_MODO_SINGLE
-    )
-    annotation class SimplePlayerRepeatMode
+
+    //视频总时间
+    val totalDuration: Long
+
+    //当前播放时间
+    val currentDuration: Long
+
+    //当前已经缓存的时间
+    val currentBufferDuration: Long
 
     /**
      * 开始播放

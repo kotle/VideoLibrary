@@ -111,14 +111,6 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
             }
         }
 
-    //视频总时间
-    open val totalDuration: Long = 0
-
-    //当前播放时间
-    open val currentDuration: Long = 0
-
-    //当前已经缓存的时间
-    open val currentBufferDuration: Long = 0
 
     init {
         timer.schedule(timerTask, 0, 1000)
