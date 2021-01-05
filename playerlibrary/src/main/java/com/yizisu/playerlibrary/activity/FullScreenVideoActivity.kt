@@ -76,14 +76,14 @@ class FullScreenVideoActivity : AppCompatActivity(), SimplePlayerListener<Player
         setOrientation(videoData)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_full_screen_video)
+        player.addPlayerListener(this)
+        val playerView = findViewById<SimplePlayerView>(R.id.playerView)
+        playerView.attachPlayer(player)
         player.prepareAndPlay(mutableListOf(object : PlayerModel() {
             override fun callMediaUri(uriCall: (Uri?, Throwable?, Boolean) -> Unit) {
                 uriCall.invoke(Uri.parse(videoData.url), null, false)
             }
         }))
-        player.addPlayerListener(this)
-        val playerView = findViewById<SimplePlayerView>(R.id.playerView)
-        playerView.attachPlayer(player)
     }
 
     /**

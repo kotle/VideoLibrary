@@ -140,6 +140,12 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
                 it.onPlayerModelChange(last, this)
                 it.onTick(this)
             }
+            //回调准备资源监听
+            currentPlayModel?.let { model ->
+                doPlayerListener {
+                    it.onPrepare(model)
+                }
+            }
             player.createSingleSource(ctx, this, this@ExoPlayerImpl) { error, isCallOnPlayChange ->
                 if (currentPlayModel == this) {//因为这里可能异步，需要判断
                     if (error != null) {//错误监听

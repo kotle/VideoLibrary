@@ -14,6 +14,11 @@ interface SimplePlayerListener<Model : PlayerModel> : AudioManager.OnAudioFocusC
     fun onError(throwable: Throwable, playerModel: Model?) {}
 
     /**
+     * 开始准备资源
+     */
+    fun onPrepare(playerModel: Model?) {}
+
+    /**
      * 当视频播放
      */
     fun onPlay(playStatus: Boolean, playerModel: Model?) {}
