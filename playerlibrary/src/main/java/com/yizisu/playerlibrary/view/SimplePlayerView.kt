@@ -189,10 +189,20 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
                 }
             }
         }
+        checkIcon()
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        checkIcon()
     }
 
     override fun setLayoutParams(params: ViewGroup.LayoutParams?) {
         super.setLayoutParams(params)
+        checkIcon()
+    }
+
+    private fun checkIcon() {
         if (isScreenPortrait()) {
             binding.ivFull.setImageResource(R.drawable.exo_ic_fullscreen_enter)
         } else {
@@ -217,8 +227,8 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
     private fun isScreenPortrait(): Boolean {
         val ctx = getActivity()
         return if (ctx != null) {
-            ctx.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT ||
-                    ctx.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+            ctx.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                    || ctx.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
         } else {
             false
         }

@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">PlayerLibrary</string>
+
+    <style name="FullScreen" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+    </style>
 </resources>
