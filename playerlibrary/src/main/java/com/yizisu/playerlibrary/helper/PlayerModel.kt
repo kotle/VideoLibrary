@@ -10,9 +10,11 @@ abstract class PlayerModel {
     //文件类型,rtmp,http等，用于创建mediaSource是用
     var overrideExtension: String? = null
 
-    //视频总时间
+    //视频宽高
     internal var _videoWidth: Int = 0
     internal var _videoHeight: Int = 0
+
+    //视频总时间
     internal var _totalDuration: Long = 0
     val totalDuration: Long
         get() = _totalDuration
