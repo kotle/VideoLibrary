@@ -26,7 +26,7 @@ import com.yizisu.playerlibrary.helper.logI
 import kotlin.math.abs
 import kotlin.math.min
 
-class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
+open class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
     private val binding by lazy {
         LayoutSimplePlayerViewBinding.bind(
             LayoutInflater.from(context).inflate(R.layout.layout_simple_player_view, this, true)
@@ -329,7 +329,7 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
     /**
      * 显示界面操作
      */
-    fun showUiView() {
+    open fun showUiView() {
         if (!isShowFull) {
             isShowFull = true
             startViewAnim(binding.progressLl, 0f)
@@ -340,7 +340,7 @@ class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
     /**
      * 隐藏界面操作
      */
-    fun hideUiView() {
+    open fun hideUiView() {
         if (height == 0) {
             return
         }

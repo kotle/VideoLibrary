@@ -1,0 +1,1445 @@
+[
+  {
+    "name": "CCTV-1高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv1hd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv1hd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-2高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv2hd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv2hd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-3高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv3hd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv3hd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-4高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv4hd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv4hd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-5+高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv5phd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv5phd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-6高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv6hd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv6hd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-7高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv7hd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv7hd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-8高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv8hd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv8hd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-9高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv9hd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv9hd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-10高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv10hd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv10hd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-12高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv12hd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv12hd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-13高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv13hd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv13hd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-14高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv14hd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv14hd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-17高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv17hd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv17hd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CGTN高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcgtnhd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cgtnhd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CGTNDOC高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcgtndochd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cgtndochd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CHC高清电影",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dchchd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/chchd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "北京卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dbtv1hd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/btv1hd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "北京文艺高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dbtv2hd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/btv2hd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "北京影视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dbtv4hd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/btv4hd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "北京新闻高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dbtv9hd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/btv9hd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "北京卡酷少儿高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dbtv9hd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/btv9hd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "北京冬奥纪实高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dbtv11hd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/btv11hd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "湖南卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dhunanhd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/hunanhd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "江苏卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003djshd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/jshd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "东方卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003ddfhd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/dfhd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "安徽卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dahhd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/ahhd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "黑龙江卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dhljhd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/hljhd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "辽宁卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dlnhd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/lnhd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "深圳卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dszhd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/szhd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "广东卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dgdhd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/gdhd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "天津卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dtjhd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/tjhd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "湖北卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dhbhd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/hbhd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "山东卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dsdhd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/sdhd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "重庆卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcqhd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cqhd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "上海纪实高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003ddocuchina"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/docuchina.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "金鹰纪实高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dgedocu"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/gedocu.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "福建东南卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003ddnhd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/dnhd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "四川卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dschd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/schd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "河北卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dhebhd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/hebhd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "江西卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003djxhd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/jxhd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "河南卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dhnhd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/hnhd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "广西卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dgxhd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/gxhd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "吉林卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003djlhd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/jlhd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CETV-1高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcetv1hd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cetv1hd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "海南卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dlyhd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/lyhd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "贵州卫视高清",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dgzhd"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/gzhd.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-1综合",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv1"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv1.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-2财经",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv2"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv2.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-3综艺",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv3"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv3.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-4中文国际",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv4"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv4.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-6电影",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv6"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv6.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-7国防军事",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv7"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv7.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-8电视剧",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv8"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv8.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-9纪录",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv9"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv9.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-10科教",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv10"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv10.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-11戏曲",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv11"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv11.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-12社会与法",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv12"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv12.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-13新闻",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv13"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv13.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-14少儿",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv14"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv14.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-15音乐",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv15"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv15.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CGTN",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv16"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv16.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CCTV-17农业农村",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcctv17"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cctv17.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "北京卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dbtv1"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/btv1.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "北京文艺",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dbtv2"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/btv2.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "北京科教",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dbtv3"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/btv3.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "北京影视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dbtv4"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/btv4.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "北京财经",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dbtv5"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/btv5.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "北京生活",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dbtv7"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/btv7.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "北京青年",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dbtv8"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/btv8.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "北京新闻",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dbtv9"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/btv9.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "北京卡酷少儿",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dbtv10"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/btv10.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "北京冬奥纪实",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dbtv11"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/btv11.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "湖南卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dhunantv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/hunantv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "江苏卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003djstv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/jstv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "东方卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003ddftv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/dftv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "深圳卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dsztv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/sztv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "安徽卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dahtv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/ahtv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "河南卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dhntv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/hntv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "陕西卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dsxtv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/sxtv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "吉林卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003djltv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/jltv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "广东卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dgdtv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/gdtv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "山东卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dsdtv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/sdtv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "湖北卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dhbtv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/hbtv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "广西卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dgxtv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/gxtv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "河北卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dhebtv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/hebtv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "西藏卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dxztv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/xztv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "内蒙古卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dnmtv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/nmtv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "青海卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dqhtv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/qhtv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "四川卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dsctv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/sctv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "天津卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dtjtv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/tjtv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "山西卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dsxrtv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/sxrtv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "辽宁卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dlntv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/lntv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "厦门卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dxmtv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/xmtv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "新疆卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dxjtv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/xjtv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "黑龙江卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dhljtv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/hljtv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "云南卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dyntv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/yntv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "江西卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003djxtv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/jxtv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "福建东南卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003ddntv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/dntv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "贵州卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dgztv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/gztv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "宁夏卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dnxtv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/nxtv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "甘肃卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dgstv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/gstv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "重庆卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcqtv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cqtv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "兵团卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dbttv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/bttv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "延边卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dybtv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/ybtv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "三沙卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dsstv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/sstv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "海南卫视",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dlytv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/lytv.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CETV-1",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcetv1"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cetv1.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CETV-3",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcetv3"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cetv3.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "CETV-4",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dcetv4"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/cetv4.m3u8"
+      }
+    ]
+  },
+  {
+    "name": "山东教育",
+    "urlBean": [
+      {
+        "name": "PC端",
+        "url": "/player.html?channel\u003dsdetv"
+      },
+      {
+        "name": "移动端",
+        "url": "/hls/sdetv.m3u8"
+      }
+    ]
+  }
+]

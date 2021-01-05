@@ -28,6 +28,10 @@ class FullScreenVideoActivity : AppCompatActivity(), SimplePlayerListener<Player
         fun start(appCompatActivity: AppCompatActivity?, url: String) {
             start(appCompatActivity, VideoInfo(0, 0, null, url))
         }
+
+        fun start(appCompatActivity: AppCompatActivity?, url: String, title: String?) {
+            start(appCompatActivity, VideoInfo(0, 0, title, url))
+        }
     }
 
     data class VideoInfo(
@@ -133,7 +137,7 @@ class FullScreenVideoActivity : AppCompatActivity(), SimplePlayerListener<Player
             playerModel
         )
         requestedOrientation =
-            if (width >= height && requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE) {
+            if (width >= height) {
                 ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
             } else {
                 ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
