@@ -29,7 +29,7 @@ import kotlin.math.min
 open class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
     private val binding by lazy {
         LayoutSimplePlayerViewBinding.bind(
-            LayoutInflater.from(context).inflate(R.layout.layout_simple_player_view, this, true)
+                LayoutInflater.from(context).inflate(R.layout.layout_simple_player_view, this, true)
         )
     }
 
@@ -57,9 +57,9 @@ open class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
+            context,
+            attrs,
+            defStyleAttr
     )
 
     val textureView: TextureView
@@ -96,7 +96,7 @@ open class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
     //有值得时候代表是在手动拖动进度条，不允许再对进度条复制
     private var oldTouchSeekBarProgress: Int? = null
     private val speedList = mutableListOf(
-        0.01f, 0.1f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2.0f
+            0.01f, 0.1f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2.0f
     )
     private var currentSpeedIndex = speedList.indexOf(1f)
     private var speedChangeListener: Function1<Float, Unit>? = null
@@ -159,18 +159,18 @@ open class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
         setSpeed(currentSpeedIndex)
         binding.speedTv.setOnClickListener {
             AlertDialog.Builder(context, R.style.Theme_AppCompat_Dialog)
-                .setTitle("选择倍速")
-                .setPositiveButton(android.R.string.cancel, null)
-                .setAdapter(
-                    ArrayAdapter<String>(
-                        context,
-                        android.R.layout.simple_list_item_1,
-                        speedList.map { it.toString() }
-                    )
-                ) { dialog, which ->
-                    setSpeed(which)
-                    currentSpeedIndex = which
-                }.show()
+                    .setTitle("选择倍速")
+                    .setPositiveButton(android.R.string.cancel, null)
+                    .setAdapter(
+                            ArrayAdapter<String>(
+                                    context,
+                                    android.R.layout.simple_list_item_1,
+                                    speedList.map { it.toString() }
+                            )
+                    ) { dialog, which ->
+                        setSpeed(which)
+                        currentSpeedIndex = which
+                    }.show()
         }
         isShowFull = true
         postDelayed(getHideRunable(), 3000)
@@ -182,10 +182,10 @@ open class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
             if (activity != null) {
                 if (isScreenPortrait()) {
                     activity.requestedOrientation =
-                        ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
                 } else {
                     activity.requestedOrientation =
-                        ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+                            ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
                 }
             }
         }
@@ -313,7 +313,7 @@ open class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
         }
         return if (ctx is AppCompatActivity) {
             if (ctx.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT ||
-                ctx.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+                    ctx.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
             ) {
                 //竖屏
                 min(totalVideoDuration, maxDurationPoint.x.toLong())
@@ -355,8 +355,8 @@ open class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
     private fun startViewAnim(view: View, y: Float) {
         view.animate().cancel()
         view.animate().setDuration(360)
-            .translationY(y)
-            .start()
+                .translationY(y)
+                .start()
     }
 
 
@@ -391,8 +391,8 @@ open class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
             }
             if (totalVideoDuration > 0) {
                 setProgress(
-                    (-totalVideoDuration * ratio).toLong() + currentVideoDuration,
-                    null, totalVideoDuration
+                        (-totalVideoDuration * ratio).toLong() + currentVideoDuration,
+                        null, totalVideoDuration
                 )
             }
         }
@@ -448,10 +448,10 @@ open class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
                 val seekLenght = (oldProgress - progress).toFloat()
                 if (seekLenght > 0) {
                     lightView.text =
-                        "快退\n-${getMsByVideoDuration(seekLenght, binding.progressBar.max)}"
+                            "快退\n-${getMsByVideoDuration(seekLenght, binding.progressBar.max)}"
                 } else {
                     lightView.text =
-                        "快进\n+${getMsByVideoDuration(seekLenght, binding.progressBar.max)}"
+                            "快进\n+${getMsByVideoDuration(seekLenght, binding.progressBar.max)}"
                 }
                 onSeekListener?.invoke(false, seekLenght / binding.progressBar.max)
             }
@@ -481,9 +481,9 @@ open class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
      */
 
     fun setProgress(
-        currentProgress: Long?,
-        bufferProgress: Long?,
-        allProgress: Long
+            currentProgress: Long?,
+            bufferProgress: Long?,
+            allProgress: Long
     ) {
         if (isTouchSeekBar) {
             return
@@ -603,18 +603,18 @@ open class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
         val listener = object : SimplePlayerListener<Model> {
             override fun onTick(playerModel: Model) {
                 setProgress(
-                    playerModel.currentDuration,
-                    playerModel.currentBufferDuration,
-                    playerModel.totalDuration
+                        playerModel.currentDuration,
+                        playerModel.currentBufferDuration,
+                        playerModel.totalDuration
                 )
             }
 
             override fun onVideoSizeChange(
-                width: Int,
-                height: Int,
-                unappliedRotationDegrees: Int,
-                pixelWidthHeightRatio: Float,
-                playerModel: Model?
+                    width: Int,
+                    height: Int,
+                    unappliedRotationDegrees: Int,
+                    pixelWidthHeightRatio: Float,
+                    playerModel: Model?
             ) {
                 setVideoSize(width, height)
             }
@@ -622,18 +622,25 @@ open class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
             override fun onPlay(playStatus: Boolean, playerModel: Model?) {
                 super.onPlay(playStatus, playerModel)
                 setPlay(playStatus)
+                keepScreenOn = playStatus
             }
 
             override fun onPause(playStatus: Boolean, playerModel: Model?) {
                 super.onPause(playStatus, playerModel)
                 setPlay(playStatus)
                 binding.loadingPb.visibility = View.GONE
+                keepScreenOn = playStatus
+            }
+
+            override fun onStop(playStatus: Boolean, playerModel: Model?) {
+                super.onStop(playStatus, playerModel)
+                keepScreenOn = playStatus
             }
 
             override fun onBufferStateChange(
-                isBuffering: Boolean,
-                playStatus: Boolean,
-                playerModel: Model?
+                    isBuffering: Boolean,
+                    playStatus: Boolean,
+                    playerModel: Model?
             ) {
                 super.onBufferStateChange(isBuffering, playStatus, playerModel)
                 if (playStatus) {
@@ -659,5 +666,10 @@ open class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
         }
         player.addPlayerListener(listener)
         return listener
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        keepScreenOn = false
     }
 }
