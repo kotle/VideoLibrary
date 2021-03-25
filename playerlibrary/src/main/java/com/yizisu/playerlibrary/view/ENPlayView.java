@@ -17,6 +17,9 @@ import android.view.animation.AnticipateInterpolator;
 
 import com.yizisu.playerlibrary.R;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
+
 public class ENPlayView extends View {
 
     public static int STATE_PLAY = 0;
@@ -56,7 +59,7 @@ public class ENPlayView extends View {
     private int mDuration;
 
     public ENPlayView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public ENPlayView(Context context, AttributeSet attrs) {
@@ -89,6 +92,22 @@ public class ENPlayView extends View {
         mPathMeasure = new PathMeasure();
 
         mDuration = DEFAULT_DURATION;
+    }
+
+    public void setLineColor(int color) {
+        mPaint.setColor(color);
+    }
+
+    public void setLineWidth(float width) {
+        mPaint.setStrokeWidth(width);
+    }
+
+    public void setBgLineColor(int color) {
+        mBgPaint.setColor(color);
+    }
+
+    public void setBgLineWidth(float width) {
+        mBgPaint.setStrokeWidth(width);
     }
 
     @Override
@@ -163,43 +182,55 @@ public class ENPlayView extends View {
     }
 
     public void play() {
+        play(null);
+    }
+
+    private final ValueAnimator valueAnimator = ValueAnimator.ofFloat(1.f, 100.f);
+
+    public void play(final Function0<Unit> endListener) {
         if (mCurrentState == STATE_PLAY) {
             return;
         }
         mCurrentState = STATE_PLAY;
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(1.f, 100.f);
+        valueAnimator.cancel();
+        valueAnimator.removeAllUpdateListeners();
         valueAnimator.setDuration(mDuration);
-        valueAnimator.setInterpolator(new AnticipateInterpolator());
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 mFraction = 1 - valueAnimator.getAnimatedFraction();
+                if (endListener != null && mFraction == 0f) {
+                    endListener.invoke();
+                }
                 invalidate();
             }
         });
-        if (!valueAnimator.isRunning()) {
-            valueAnimator.start();
-        }
+        valueAnimator.start();
     }
 
     public void pause() {
+        pause(null);
+    }
+
+    public void pause(final Function0<Unit> endListener) {
         if (mCurrentState == STATE_PAUSE) {
             return;
         }
         mCurrentState = STATE_PAUSE;
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(1.f, 100.f);
+        valueAnimator.cancel();
+        valueAnimator.removeAllUpdateListeners();
         valueAnimator.setDuration(mDuration);
-        valueAnimator.setInterpolator(new AnticipateInterpolator());
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 mFraction = valueAnimator.getAnimatedFraction();
+                if (endListener != null && mFraction == 1f) {
+                    endListener.invoke();
+                }
                 invalidate();
             }
         });
-        if (!valueAnimator.isRunning()) {
-            valueAnimator.start();
-        }
+        valueAnimator.start();
     }
 
     public int getCurrentState() {

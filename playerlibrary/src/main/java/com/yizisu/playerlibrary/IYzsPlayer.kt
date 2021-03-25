@@ -24,8 +24,8 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
          * 创建播放器
          */
         operator fun <Model : PlayerModel> invoke(
-            context: Context,
-            impl: Impl = Impl.EXO_PLAYER
+                context: Context,
+                impl: Impl = Impl.EXO_PLAYER
         ): IYzsPlayer<Model> {
             return ExoPlayerImpl(context)
         }
@@ -35,8 +35,8 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
      * 保存播放的状态信息
      */
     data class Info<T : PlayerModel>(
-        var playModes: MutableList<T>,
-        var currentIndex: Int
+            var playModes: MutableList<T>,
+            var currentIndex: Int
     )
 
 
@@ -59,20 +59,20 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
      * 需要手动再调用播放
      */
     fun prepare(
-        models: MutableList<Model>,
-        playIndex: Int = -1,
-        isStopLastMedia: Boolean = true,
-        listener: Function1<Model?, Unit>? = null
+            models: MutableList<Model>,
+            playIndex: Int = -1,
+            isStopLastMedia: Boolean = true,
+            listener: Function1<Model?, Unit>? = null
     )
 
     /**
      * 准备完毕就播放
      */
     fun prepareAndPlay(
-        models: MutableList<Model>,
-        playIndex: Int = 0,
-        isStopLastMedia: Boolean = true,
-        listener: Function1<Model?, Unit>? = null
+            models: MutableList<Model>,
+            playIndex: Int = 0,
+            isStopLastMedia: Boolean = true,
+            listener: Function1<Model?, Unit>? = null
     )
 
     /**
@@ -115,18 +115,18 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
      * 跳转
      */
     fun seekTo(
-        positionMs: Long,
-        index: Int? = null,
-        reset: Boolean = false,
-        listener: Function1<Model?, Unit>? = null
+            positionMs: Long,
+            index: Int? = null,
+            reset: Boolean = false,
+            listener: Function1<Model?, Unit>? = null
     )
 
     /**
      * 跳转
      */
     fun seekRatioTo(
-        ratio: Float,
-        listener: Function1<Model?, Unit>? = null
+            ratio: Float,
+            listener: Function1<Model?, Unit>? = null
     )
 
     /**
@@ -205,8 +205,8 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
      * 安卓媒体框架
      */
     fun setMediaSession(
-        session: MediaSessionCompat,
-        bundleCall: (Model?) -> MediaDescriptionCompat
+            session: MediaSessionCompat,
+            bundleCall: (Model?) -> MediaDescriptionCompat
     )
 
     /**
@@ -259,6 +259,11 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
      * 设置播放速度
      */
     fun setVideoSpeed(speed: Float)
+
+    /**
+     * 获取播放速度
+     */
+    fun getVideoSpeed(): Float
 
     /**
      * 重试

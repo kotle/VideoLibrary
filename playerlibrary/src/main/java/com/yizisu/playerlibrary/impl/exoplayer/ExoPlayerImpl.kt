@@ -15,7 +15,6 @@ import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.google.android.exoplayer2.video.VideoListener
 import com.yizisu.playerlibrary.PlayerFactory
 import com.yizisu.playerlibrary.helper.PlayerModel
-import com.yizisu.playerlibrary.helper.SimplePlayerListener
 import com.yizisu.playerlibrary.helper.logI
 import com.yizisu.playerlibrary.impl.BaseYzsPlayer
 import java.lang.ref.WeakReference
@@ -284,6 +283,7 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
     }
 
     override fun setVideoSpeed(speed: Float) {
+        super.setVideoSpeed(speed)
         player.setPlaybackParameters(PlaybackParameters(speed))
     }
 

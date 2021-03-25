@@ -14,7 +14,8 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
     IYzsPlayer<Model> {
     internal val context: Context?
         get() = contextWrf?.get()
-
+    //播放倍速
+    private var _speed=1f
     //当前播放模式，支持四种
     private var currentLoopMode = PlayerFactory.LOOP_MODO_NONE
 
@@ -130,6 +131,13 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
         }
     }
 
+    override fun setVideoSpeed(speed: Float) {
+        _speed=speed
+    }
+
+    override fun getVideoSpeed(): Float {
+        return _speed
+    }
 
     override fun onDestroy() {
         super.onDestroy()

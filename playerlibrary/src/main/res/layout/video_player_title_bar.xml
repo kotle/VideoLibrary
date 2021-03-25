@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:background="#88000000"
+    tools:gravity="center"
+    tools:orientation="horizontal"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/playerBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?selectableItemBackground"
+        android:padding="16dp"
+        android:src="@drawable/player_view_back" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/playerTitleTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="#fff"
+        android:textSize="14sp"
+        app:autoSizeMaxTextSize="14sp"
+        app:autoSizeTextType="uniform"
+        tools:text="这里是标题" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/speedTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:padding="8dp"
+        android:textColor="#fff"
+        android:textSize="12sp"
+        tools:text="倍速 X1" />
+
+    <TextClock
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:textColor="#fff"
+        android:textSize="12sp" />
+</merge>
