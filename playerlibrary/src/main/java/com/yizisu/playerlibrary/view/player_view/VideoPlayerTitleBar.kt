@@ -2,14 +2,17 @@ package com.yizisu.playerlibrary.view.player_view
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.yizisu.playerlibrary.IYzsPlayer
 import com.yizisu.playerlibrary.R
+import com.yizisu.playerlibrary.helper.PlayerModel
 
-class VideoPlayerTitleBar : LinearLayout {
+internal class VideoPlayerTitleBar : LinearLayout {
+    var player:IYzsPlayer<PlayerModel>?=null
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -20,6 +23,7 @@ class VideoPlayerTitleBar : LinearLayout {
 
     init {
         orientation = HORIZONTAL
+        gravity=Gravity.CENTER_VERTICAL
     }
 
     private val backIv: View
@@ -31,15 +35,15 @@ class VideoPlayerTitleBar : LinearLayout {
         backIv = root.findViewById(R.id.playerBack)
         titleTv = root.findViewById(R.id.playerTitleTv)
         speedTv = root.findViewById(R.id.speedTv)
-    }
-
-    fun setTitle(title: String) {
-        titleTv.text = title
-    }
-
-    fun attachPlayer(player: IYzsPlayer<*>) {
         speedTv.setOnClickListener {
 
         }
+    }
+
+    /**
+     * 设置标题
+     */
+    fun setTitle(title: String?) {
+        titleTv.text = title
     }
 }

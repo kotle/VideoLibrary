@@ -5,6 +5,8 @@ import android.media.AudioManager
 import android.os.Build
 import android.view.View
 import android.view.WindowManager
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * 调节屏幕亮度（0-1.0）
@@ -104,7 +106,8 @@ internal fun View.adjustVolume(audioManager: AudioManager, offY: Float): Int {
 /**
  * 毫秒换成00:00:00
  */
-internal fun getCountTimeByLong(finishTime: Long): String {
+internal fun getCountTimeByLong(time: Long): String {
+    val finishTime = max(time, 0L)
     var totalTime = (finishTime / 1000).toInt()//秒
     var hour = 0
     var minute = 0

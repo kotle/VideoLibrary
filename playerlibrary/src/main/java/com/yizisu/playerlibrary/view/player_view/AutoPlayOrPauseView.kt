@@ -9,30 +9,39 @@ import com.yizisu.playerlibrary.IYzsPlayer
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
 import com.yizisu.playerlibrary.view.ENPlayView
+import com.yizisu.playerlibrary.view.autoBindListener
 import com.yizisu.playerlibrary.view.dip
 
 /**
  * 暂停的时候显示在界面上的view
  */
-class AutoPlayOrPauseView : FrameLayout, SimplePlayerListener<PlayerModel> {
+internal class AutoPlayOrPauseView : FrameLayout, SimplePlayerListener<PlayerModel> {
     //是否在播放的时候隐藏按钮
     var enableGoneWhenPlaying = true
+
     //播放器
     var player: IYzsPlayer<PlayerModel>? = null
         set(value) {
+            autoBindListener(value, field, this)
             field = value
-            value?.addPlayerListener(this)
         }
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
-    private val eNPlayView by lazy {
+    val eNPlayView by lazy {
         ENPlayView(context).apply {
             setLineWidth(dip(1.6f))
             setBgLineWidth(dip(1.6f))
-            addView(this, LayoutParams(LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+            addView(
+                this,
+                LayoutParams(LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            )
         }
     }
 

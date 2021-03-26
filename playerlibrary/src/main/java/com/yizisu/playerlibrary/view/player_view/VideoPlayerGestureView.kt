@@ -15,7 +15,7 @@ import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
 import com.yizisu.playerlibrary.view.dip
 
-class VideoPlayerGestureView : FrameLayout{
+internal class VideoPlayerGestureView : FrameLayout {
     /**
      * 手势监听器对象
      */
@@ -58,9 +58,24 @@ class VideoPlayerGestureView : FrameLayout{
      */
     private val longPressSpeed = 2f
 
+    /**
+     * 三秒后自动隐藏操作栏
+     */
+    private val autoHideUiDuration = 3000L
+
+    private val hideUiRunnable = Runnable {
+        if (_isShow) {
+            switchShow()
+        }
+    }
+
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     /**
      * 显示倍速播放的view
@@ -69,8 +84,10 @@ class VideoPlayerGestureView : FrameLayout{
         AppCompatTextView(context).apply {
             visibility = View.GONE
             //添加speedView
-            addView(this, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
-                    FrameLayout.LayoutParams.WRAP_CONTENT).apply {
+            addView(this, FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
                 gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
                 setMargins(0, dip(48), 0, 0)
             })
@@ -96,7 +113,8 @@ class VideoPlayerGestureView : FrameLayout{
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (event?.action == MotionEvent.ACTION_UP
-                || event?.action == MotionEvent.ACTION_CANCEL) {
+            || event?.action == MotionEvent.ACTION_CANCEL
+        ) {
             actionUp()
         }
         return gestureDetectorHelper.onTouchEvent(event)
@@ -165,16 +183,35 @@ class VideoPlayerGestureView : FrameLayout{
         }
         _isShow = !_isShow
         animShow.start()
+        postHideUi()
     }
 
     /**
      * 设置展示或者隐藏操作栏监听
      */
-    fun setShowOrHideBarListener(show: Boolean, listener: (show: Boolean, animPercentage: Float/*进度0-1f*/) -> Unit) {
+    fun setShowOrHideBarListener(
+        show: Boolean,
+        listener: (show: Boolean, animPercentage: Float/*进度0-1f*/) -> Unit
+    ) {
         _isShow = show
         _showListener = listener
+        postHideUi()
     }
 
+    /**
+     * 延时隐藏操作栏
+     */
+    fun postHideUi() {
+        removeHideUiRunnable()
+        if (_isShow) {
+            postDelayed(hideUiRunnable, autoHideUiDuration)
+        }
+    }
 
-
+    /**
+     * 移除延时隐藏操作栏
+     */
+    fun removeHideUiRunnable() {
+        removeCallbacks(hideUiRunnable)
+    }
 }

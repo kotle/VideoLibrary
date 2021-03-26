@@ -2,6 +2,7 @@ package com.yizisu.playerlibrary.helper
 
 import android.net.Uri
 import com.yizisu.playerlibrary.impl.exoplayer.getCountTimeByLong
+import kotlin.math.min
 
 /**
  * 一个播放对象，所以播放资源通过这个对象传递
@@ -24,14 +25,14 @@ abstract class PlayerModel {
     //当前播放时间
     internal var _currentDuration: Long = 0
     val currentDuration: Long
-        get() = _currentDuration
+        get() = min(_currentDuration, totalDuration)
     val currentDurationText: String
         get() = getCountTimeByLong(_currentDuration)
 
     //当前已经缓存的时间
     internal var _currentBufferDuration: Long = 0
     val currentBufferDuration: Long
-        get() = _currentBufferDuration
+        get() = min(_currentBufferDuration, totalDuration)
     val currentBufferDurationText: String
         get() = getCountTimeByLong(_currentBufferDuration)
 

@@ -12,7 +12,7 @@ import android.view.animation.LinearInterpolator
  * 此布局必须有固定的宽高
  * 根据比例布局子view
  */
-internal class RatioLayout : ViewGroup {
+internal open class RatioLayout : ViewGroup {
 
     private var lastChildRatio = 1f
 

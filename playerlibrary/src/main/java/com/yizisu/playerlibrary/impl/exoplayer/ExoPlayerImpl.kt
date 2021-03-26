@@ -208,6 +208,7 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
             startPrepare(listener, true)
             startPlayIfNotPlay()
         }
+        timerTask.run()
     }
 
     private fun startPlayIfNotPlay() {
