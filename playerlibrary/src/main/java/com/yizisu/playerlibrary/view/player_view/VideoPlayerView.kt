@@ -70,22 +70,40 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
 
     init {
         setBackgroundColor(Color.BLACK)
+        //必须添加
         addView(textureView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
-        addView(gestureView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
-        addView(loadingView, LayoutParams(dip(32), dip(32)).apply {
-            gravity = Gravity.CENTER
-        })
-        addView(autoPlayView, LayoutParams(dip(80), dip(80)).apply {
-            gravity = Gravity.CENTER
-        })
-        addView(titleBar, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
-            gravity = Gravity.TOP
-        })
-        addView(
-            bottomBar,
-            LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
-                gravity = Gravity.BOTTOM
+        //选填
+        addPlayerView()
+    }
+
+    private fun addPlayerView() {
+        if (gestureView.parent == null) {
+            addView(gestureView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
+        }
+        if (loadingView.parent == null) {
+            addView(loadingView, LayoutParams(dip(32), dip(32)).apply {
+                gravity = Gravity.CENTER
             })
+        }
+        if (autoPlayView.parent == null) {
+            addView(autoPlayView, LayoutParams(dip(80), dip(80)).apply {
+                gravity = Gravity.CENTER
+            })
+        }
+        if (titleBar.parent == null) {
+            addView(
+                titleBar,
+                LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
+                    gravity = Gravity.TOP
+                })
+        }
+        if (bottomBar.parent == null) {
+            addView(
+                bottomBar,
+                LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
+                    gravity = Gravity.BOTTOM
+                })
+        }
     }
 
     /**
