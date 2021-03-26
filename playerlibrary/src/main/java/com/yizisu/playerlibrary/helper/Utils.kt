@@ -78,6 +78,30 @@ internal fun View.adjustVolume(audioManager: AudioManager, offY: Float): Int {
     audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0)
     return volume
 }
+internal fun View.setVolume(audioManager: AudioManager, offY: Float): Float {
+    val max = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+    val currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+    offVolume += offY * max / height
+    if (offVolume < 1 && offVolume > -1) {
+        return currentVolume.toFloat()/max
+    }
+    val offVolumeInt = offVolume.toInt()
+    offVolume -= offVolumeInt
+    val setVolume = currentVolume + offVolumeInt
+    val volume = when {
+        setVolume >= max -> {
+            max
+        }
+        setVolume <= 0f -> {
+            0
+        }
+        else -> {
+            setVolume
+        }
+    }
+    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0)
+    return volume.toFloat()/max
+}
 
 //fun View.setDisplayInNotch() {
 //    setDisplayInNotch(context as Activity)

@@ -2,6 +2,7 @@ package com.yizisu.playerlibrary.helper
 
 import android.net.Uri
 import com.yizisu.playerlibrary.impl.exoplayer.getCountTimeByLong
+import kotlin.math.max
 import kotlin.math.min
 
 /**
@@ -18,7 +19,7 @@ abstract class PlayerModel {
     //视频总时间
     internal var _totalDuration: Long = 0
     val totalDuration: Long
-        get() = _totalDuration
+        get() = max(_totalDuration, 0L)
     val totalDurationText: String
         get() = getCountTimeByLong(_totalDuration)
 

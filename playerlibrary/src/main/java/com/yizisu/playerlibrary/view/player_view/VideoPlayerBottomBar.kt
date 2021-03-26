@@ -94,7 +94,12 @@ internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerM
         val max = progressBar.max
         if (currentProgress != null && allProgress != 0L) {
             currentProgressTv.text = getCountTimeByLong(currentProgress)
-            progressBar.progress = (currentProgress * max / allProgress).toInt()
+            val progress = (currentProgress * max / allProgress).toInt()
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                progressBar.setProgress(progress, true)
+            } else {
+                progressBar.progress = progress
+            }
         }
         if (bufferProgress != null && allProgress != 0L) {
             progressBar.secondaryProgress = (bufferProgress * max / allProgress).toInt()

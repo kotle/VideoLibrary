@@ -19,7 +19,7 @@ class TestVideoActivity : AppCompatActivity() {
         player.prepareAndPlay(mutableListOf(object : PlayerModel() {
             override fun callMediaUri(uriCall: (Uri?, Throwable?, Boolean) -> Unit) {
                 uriCall.invoke(
-                    Uri.parse("https://media.w3.org/2010/05/sintel/trailer.mp4"),
+                    Uri.parse("https://v-cdn.zjol.com.cn/276984.mp4"),
                     null,
                     false
                 )

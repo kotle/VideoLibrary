@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatTextView
 import com.yizisu.playerlibrary.IYzsPlayer
+import com.yizisu.playerlibrary.R
 import com.yizisu.playerlibrary.helper.GestureDetectorHelper
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
@@ -19,7 +20,7 @@ internal class VideoPlayerGestureView : FrameLayout {
     /**
      * 手势监听器对象
      */
-    private val gestureDetectorHelper by lazy { GestureDetectorHelper(this, false) }
+    internal val gestureDetectorHelper by lazy { GestureDetectorHelper(this, false) }
 
     /**
      * 播放器对象
@@ -77,6 +78,8 @@ internal class VideoPlayerGestureView : FrameLayout {
         defStyleAttr
     )
 
+    private val swipeViewHelper: SwipeViewHelper
+
     /**
      * 显示倍速播放的view
      */
@@ -84,12 +87,25 @@ internal class VideoPlayerGestureView : FrameLayout {
         AppCompatTextView(context).apply {
             visibility = View.GONE
             //添加speedView
-            addView(this, FrameLayout.LayoutParams(
+            this@VideoPlayerGestureView.addView(this, FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT
             ).apply {
                 gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
                 setMargins(0, dip(48), 0, 0)
+            })
+        }
+    }
+    private val midProgressHintView by lazy {
+        MidProgressHintView(context).apply {
+            visibility = View.GONE
+            setBackgroundResource(R.drawable.bg_dialog_adjust)
+            //添加speedView
+            this@VideoPlayerGestureView.addView(this, FrameLayout.LayoutParams(
+                dip(120),
+                dip(120)
+            ).apply {
+                gravity = Gravity.CENTER
             })
         }
     }
@@ -105,9 +121,7 @@ internal class VideoPlayerGestureView : FrameLayout {
         gestureDetectorHelper.setOnLongClickListener {
             setSpeed()
         }
-        gestureDetectorHelper.setOnScrollListener { motionEvent, motionEvent2, fl, fl2 ->
-
-        }
+        swipeViewHelper = SwipeViewHelper(this, midProgressHintView)
     }
 
 
@@ -125,6 +139,7 @@ internal class VideoPlayerGestureView : FrameLayout {
      */
     private fun actionUp() {
         val player = this.player
+        midProgressHintView.visibility = View.GONE
         if (player != null) {
             if (player.getVideoSpeed() == longPressSpeed) {
                 //当前是长按倍速播放
@@ -132,7 +147,8 @@ internal class VideoPlayerGestureView : FrameLayout {
                 player.setVideoSpeed(_currentSpeed)
             }
         }
-
+        //更新进度，里面自行判断是否需要更新
+        swipeViewHelper.updateProgress()
     }
 
     /**

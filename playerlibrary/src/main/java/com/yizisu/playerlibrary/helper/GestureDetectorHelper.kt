@@ -30,6 +30,8 @@ internal class GestureDetectorHelper(private val view: View, isSetOnTouchListene
     private var onLongClickListener: Function1<MotionEvent?,Unit>? = null
     //双击
     private var onDoubleClickListener: Function1<MotionEvent?,Unit>? = null
+    //down
+    var onActionDownListener: Function1<MotionEvent?,Unit>? = null
     //滑动
     private var onScrollListener: Function4<MotionEvent?, MotionEvent?, Float, Float, Unit>? = null
 
@@ -101,6 +103,7 @@ internal class GestureDetectorHelper(private val view: View, isSetOnTouchListene
 
     override fun onDown(e: MotionEvent?): Boolean {
 //        logI("onDown")
+        onActionDownListener?.invoke(e)
         return true
     }
 
