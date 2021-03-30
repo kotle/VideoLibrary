@@ -20,9 +20,9 @@ internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerM
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
+            context,
+            attrs,
+            defStyleAttr
     )
 
     private val seekBarHelper: SeekBarHelper
@@ -56,9 +56,9 @@ internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerM
 
     override fun onTick(playerModel: PlayerModel) {
         setProgress(
-            playerModel.currentDuration,
-            playerModel.currentBufferDuration,
-            playerModel.totalDuration
+                playerModel.currentDuration,
+                playerModel.currentBufferDuration,
+                playerModel.totalDuration
         )
     }
 
@@ -78,14 +78,17 @@ internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerM
         player?.seekRatioTo(fl)
     }
 
+    private fun needHour(allProgress: Long): Boolean {
+        return allProgress > 1 * 60 * 60 * 1000
+    }
+
     /**
      * 设置进度
      */
-
     fun setProgress(
-        currentProgress: Long?,
-        bufferProgress: Long?,
-        allProgress: Long
+            currentProgress: Long?,
+            bufferProgress: Long?,
+            allProgress: Long
     ) {
         if (seekBarHelper.isTouchSeekBar) {
             //滑动进度条，不允许更改进度
@@ -93,7 +96,7 @@ internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerM
         }
         val max = progressBar.max
         if (currentProgress != null && allProgress != 0L) {
-            currentProgressTv.text = getCountTimeByLong(currentProgress)
+            currentProgressTv.text = getCountTimeByLong(currentProgress, needHour(allProgress))
             val progress = (currentProgress * max / allProgress).toInt()
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                 progressBar.setProgress(progress, true)
@@ -107,26 +110,36 @@ internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerM
         totalProgressTv.text = getCountTimeByLong(allProgress)
     }
 
-    private class SeekBarHelper(bar: SeekBar, onSeekCompleteListener: Function1<Float, Unit>) {
+    private inner class SeekBarHelper(bar: SeekBar, onSeekCompleteListener: Function1<Float, Unit>) {
         var isTouchSeekBar = false
+        private var currentProgressRatio: Float? = null
 
         init {
             bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(
-                    seekBar: SeekBar?,
-                    progress: Int,
-                    fromUser: Boolean
+                        seekBar: SeekBar?,
+                        progress: Int,
+                        fromUser: Boolean
                 ) {
-
+                    if (fromUser) {
+                        player?.getCurrentModel()?.apply {
+                            val f = progress.toFloat() / bar.max
+                            currentProgressRatio = f
+                            currentProgressTv.text = getCountTimeByLong((f * totalDuration).toLong(), needHour(totalDuration))
+                        }
+                    }
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {
                     isTouchSeekBar = true
+                    currentProgressRatio = null
                 }
 
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
                     isTouchSeekBar = false
-                    onSeekCompleteListener.invoke(bar.progress.toFloat() / bar.max)
+                    currentProgressRatio?.let {
+                        onSeekCompleteListener.invoke(it)
+                    }
                 }
             })
         }

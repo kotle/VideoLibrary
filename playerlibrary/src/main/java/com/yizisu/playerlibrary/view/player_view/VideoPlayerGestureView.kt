@@ -3,6 +3,7 @@ package com.yizisu.playerlibrary.view.player_view
 
 import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.MotionEvent
@@ -86,13 +87,17 @@ internal class VideoPlayerGestureView : FrameLayout {
     private val speedView by lazy {
         AppCompatTextView(context).apply {
             visibility = View.GONE
+            setTextColor(Color.WHITE)
+            setBackgroundResource(R.drawable.bg_dialog_adjust)
+            val padding = dip(8)
+            setPadding(padding, padding, padding, padding)
             //添加speedView
             this@VideoPlayerGestureView.addView(this, FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT
             ).apply {
                 gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
-                setMargins(0, dip(48), 0, 0)
+                setMargins(0, dip(32), 0, 0)
             })
         }
     }

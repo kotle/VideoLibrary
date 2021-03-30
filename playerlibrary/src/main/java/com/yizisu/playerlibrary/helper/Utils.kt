@@ -78,12 +78,13 @@ internal fun View.adjustVolume(audioManager: AudioManager, offY: Float): Int {
     audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0)
     return volume
 }
+
 internal fun View.setVolume(audioManager: AudioManager, offY: Float): Float {
     val max = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
     val currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
     offVolume += offY * max / height
     if (offVolume < 1 && offVolume > -1) {
-        return currentVolume.toFloat()/max
+        return currentVolume.toFloat() / max
     }
     val offVolumeInt = offVolume.toInt()
     offVolume -= offVolumeInt
@@ -100,7 +101,7 @@ internal fun View.setVolume(audioManager: AudioManager, offY: Float): Float {
         }
     }
     audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0)
-    return volume.toFloat()/max
+    return volume.toFloat() / max
 }
 
 //fun View.setDisplayInNotch() {
@@ -149,7 +150,11 @@ internal fun getCountTimeByLong(time: Long): String {
  */
 internal fun getCountTimeByLong(finishTime: Long, isNeedHour: Boolean): String {
     if (finishTime <= 0) {
-        return "00:00"
+        return if (isNeedHour) {
+            "00:00:00"
+        } else {
+            "00:00"
+        }
     }
     var totalTime = (finishTime / 1000).toInt()//秒
     var hour = 0
