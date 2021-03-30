@@ -1,6 +1,8 @@
 package com.yizisu.playerlibrary.view.player_view
 
+import android.app.Activity
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Color
 import android.util.AttributeSet
 import android.view.Gravity
@@ -9,12 +11,15 @@ import android.view.TextureView
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ProgressBar
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.yizisu.playerlibrary.IYzsPlayer
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
+import com.yizisu.playerlibrary.helper.fullScreen
 import com.yizisu.playerlibrary.view.RatioLayout
 import com.yizisu.playerlibrary.view.autoBindListener
 import com.yizisu.playerlibrary.view.dip
+import com.yizisu.playerlibrary.view.isScreenPortrait
 
 /**
  * 上方的标题栏
@@ -23,9 +28,9 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
+            context,
+            attrs,
+            defStyleAttr
     )
 
     //手势控制view
@@ -92,17 +97,17 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
         }
         if (titleBar.parent == null) {
             addView(
-                titleBar,
-                LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
-                    gravity = Gravity.TOP
-                })
+                    titleBar,
+                    LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
+                        gravity = Gravity.TOP
+                    })
         }
         if (bottomBar.parent == null) {
             addView(
-                bottomBar,
-                LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
-                    gravity = Gravity.BOTTOM
-                })
+                    bottomBar,
+                    LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
+                        gravity = Gravity.BOTTOM
+                    })
         }
     }
 
@@ -139,9 +144,9 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
     }
 
     override fun onBufferStateChange(
-        isBuffering: Boolean,
-        playStatus: Boolean,
-        playerModel: PlayerModel?
+            isBuffering: Boolean,
+            playStatus: Boolean,
+            playerModel: PlayerModel?
     ) {
         super.onBufferStateChange(isBuffering, playStatus, playerModel)
         if (playStatus) {
@@ -170,5 +175,23 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
             }
         }
         return super.dispatchTouchEvent(ev)
+    }
+
+    override fun onPlay(playStatus: Boolean, playerModel: PlayerModel?) {
+        super.onPlay(playStatus, playerModel)
+        keepScreenOn = playStatus
+    }
+
+    override fun onPause(playStatus: Boolean, playerModel: PlayerModel?) {
+        super.onPause(playStatus, playerModel)
+        keepScreenOn = false
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig != null) {
+            val activity = context as Activity
+            activity.window.fullScreen(!isScreenPortrait())
+        }
     }
 }

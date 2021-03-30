@@ -14,8 +14,8 @@ import kotlin.math.abs
  * 滑动屏幕，显示中间提示框
  */
 internal class SwipeViewHelper(
-    private val gestureView: VideoPlayerGestureView,
-    private val hint: MidProgressHintView
+        private val gestureView: VideoPlayerGestureView,
+        private val hint: MidProgressHintView
 ) {
     //记录此次滑动屏幕的方向
     private var scrollOrientation: Int? = null
@@ -66,7 +66,7 @@ internal class SwipeViewHelper(
                 LinearLayout.HORIZONTAL -> {
                     currentModel?.let {
                         if (it == gestureView.player?.getCurrentModel()) {
-                            progress = hint.setSeekProgress(-swipeX / width, it,lastModelProgress)
+                            progress = hint.setSeekProgress(-swipeX / width, it, lastModelProgress)
                         } else {
                             hint.visibility = View.GONE
                         }
@@ -116,12 +116,12 @@ internal class SwipeViewHelper(
 
     private fun setScreenLight(offY: Float) {
         val currentLight = gestureView.setScreenBrightnessSlide(offY / height)
-        hint.setProgress("亮度", null, currentLight)
+        hint.setProgress("亮度", "${(currentLight * 100).toInt()}%", currentLight)
     }
 
     private fun setVolume(offY: Float) {
         val currentLight = gestureView.setVolume(mAudioManager, offY)
-        hint.setProgress("音量", null, currentLight)
+        hint.setProgress("音量", "${(currentLight * 100).toInt()}%", currentLight)
     }
 
     /**

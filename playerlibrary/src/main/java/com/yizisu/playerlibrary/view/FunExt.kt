@@ -33,7 +33,11 @@ internal fun autoBindListener(
  * 是否是竖屏
  */
 fun View.isScreenPortrait(): Boolean {
-    return (context as? Activity)?.let {
+    return (context as? Activity).isScreenPortrait()
+}
+
+fun Activity?.isScreenPortrait(): Boolean {
+    return this?.let {
         (it.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
                 || it.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                 || it.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT

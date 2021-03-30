@@ -3,8 +3,8 @@ package com.yizisu.playerlibrary.helper
 import android.app.Activity
 import android.media.AudioManager
 import android.os.Build
-import android.view.View
-import android.view.WindowManager
+import android.view.*
+import com.yizisu.playerlibrary.view.isScreenPortrait
 import kotlin.math.max
 import kotlin.math.min
 
@@ -46,7 +46,59 @@ fun Activity.setScreenBrightnessSlide(percent: Float): Float {
         lpa.screenBrightness = 0.01f
     }
     window.attributes = lpa
+    if (!isScreenPortrait()) {
+        window.fullScreen(true)
+    }
     return lpa.screenBrightness
+}
+
+fun Window?.fullScreen(isFullScreen: Boolean) {
+    val window = this ?: return
+    val lp = window.attributes
+    if (isFullScreen) {
+        // 延伸显示区域到耳朵区
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            window.attributes = lp
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            decorView.windowInsetsController?.apply {
+                systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                hide(WindowInsets.Type.statusBars())
+                hide(WindowInsets.Type.navigationBars())
+                setDecorFitsSystemWindows(false)
+            }
+        } else {
+            // 允许内容绘制到耳朵区
+            val decorView = window.decorView
+            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            if (decorView.tag == null) {
+                decorView.tag = decorView.systemUiVisibility
+            }
+            decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
+        }
+    } else {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT
+            window.attributes = lp
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            decorView.windowInsetsController?.apply {
+                show(WindowInsets.Type.statusBars())
+                show(WindowInsets.Type.navigationBars())
+                setDecorFitsSystemWindows(true)
+            }
+        } else {
+            clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            val tag = decorView.tag
+            if (tag is Int) {
+                decorView.systemUiVisibility = tag
+            }
+        }
+    }
 }
 
 private var offVolume = 0f
