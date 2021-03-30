@@ -12,6 +12,7 @@ import com.yizisu.playerlibrary.R
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
 import com.yizisu.playerlibrary.view.SimplePlayerView
+import com.yizisu.playerlibrary.view.player_view.VideoPlayerView
 import java.io.Serializable
 
 class FullScreenVideoActivity : AppCompatActivity(), SimplePlayerListener<PlayerModel> {
@@ -81,11 +82,15 @@ class FullScreenVideoActivity : AppCompatActivity(), SimplePlayerListener<Player
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_full_screen_video)
         player.addPlayerListener(this)
-        val playerView = findViewById<SimplePlayerView>(R.id.playerView)
+        val playerView = findViewById<VideoPlayerView>(R.id.playerView)
         playerView.attachPlayer(player)
         player.prepareAndPlay(mutableListOf(object : PlayerModel() {
             override fun callMediaUri(uriCall: (Uri?, Throwable?, Boolean) -> Unit) {
                 uriCall.invoke(Uri.parse(videoData.url), null, false)
+            }
+
+            override fun getTitle(): CharSequence? {
+                return videoData.title
             }
         }))
     }
