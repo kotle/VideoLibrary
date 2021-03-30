@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo
 import android.graphics.Point
 import android.util.AttributeSet
 import android.view.ContextThemeWrapper
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.ProgressBar
@@ -28,9 +29,9 @@ class MidProgressHintView : LinearLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
+            context,
+            attrs,
+            defStyleAttr
     )
 
     private val progressBar: ProgressBar
@@ -39,6 +40,7 @@ class MidProgressHintView : LinearLayout {
 
     init {
         orientation = VERTICAL
+        gravity = Gravity.CENTER
         LayoutInflater.from(context).inflate(R.layout.video_player_mid_hint_progress, this, true)
         progressBar = findViewById(R.id.progress)
         titleTv = findViewById(R.id.titleTv)
@@ -66,10 +68,10 @@ class MidProgressHintView : LinearLayout {
         val swipeDuration = getSwipeMaxDuration(model.totalDuration) * swipe
         val progress = (lastProgress + swipeDuration).toLong()
         setProgress(
-            "进度",
-            "${getCountTimeByLong(progress)}/${getCountTimeByLong(model.totalDuration)}",
-            progress.toInt(),
-            model.totalDuration.toInt()
+                "进度",
+                "${getCountTimeByLong(progress)}/${getCountTimeByLong(model.totalDuration)}",
+                progress.toInt(),
+                model.totalDuration.toInt()
         )
         return progress
     }
@@ -87,7 +89,7 @@ class MidProgressHintView : LinearLayout {
         }
         return if (ctx is AppCompatActivity) {
             if (ctx.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT ||
-                ctx.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+                    ctx.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
             ) {
                 //竖屏
                 min(totalVideoDuration, maxDurationPoint.x.toLong())

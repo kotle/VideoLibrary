@@ -1,6 +1,8 @@
 package com.yizisu.playerlibrary.view.player_view
 
+import android.app.Activity
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -10,20 +12,22 @@ import android.widget.TextView
 import com.yizisu.playerlibrary.IYzsPlayer
 import com.yizisu.playerlibrary.R
 import com.yizisu.playerlibrary.helper.PlayerModel
+import com.yizisu.playerlibrary.view.isScreenPortrait
 
 internal class VideoPlayerTitleBar : LinearLayout {
-    var player:IYzsPlayer<PlayerModel>?=null
+    var player: IYzsPlayer<PlayerModel>? = null
+
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
+            context,
+            attrs,
+            defStyleAttr
     )
 
     init {
         orientation = HORIZONTAL
-        gravity=Gravity.CENTER_VERTICAL
+        gravity = Gravity.CENTER_VERTICAL
     }
 
     private val backIv: View
@@ -37,6 +41,13 @@ internal class VideoPlayerTitleBar : LinearLayout {
         speedTv = root.findViewById(R.id.speedTv)
         speedTv.setOnClickListener {
 
+        }
+        backIv.setOnClickListener {
+            if (isScreenPortrait()) {
+                (context as? Activity)?.onBackPressed()
+            } else {
+                (context as? Activity)?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            }
         }
     }
 

@@ -1,10 +1,14 @@
 package com.yizisu.playerlibrary.view.player_view
 
+import android.app.Activity
 import android.content.Context
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
@@ -15,6 +19,7 @@ import com.yizisu.playerlibrary.helper.SimplePlayerListener
 import com.yizisu.playerlibrary.helper.getCountTimeByLong
 import com.yizisu.playerlibrary.view.autoBindListener
 import com.yizisu.playerlibrary.view.dip
+import com.yizisu.playerlibrary.view.isScreenPortrait
 
 internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerModel> {
     constructor(context: Context?) : super(context)
@@ -30,6 +35,7 @@ internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerM
     private val progressBar: SeekBar
     private val currentProgressTv: TextView
     private val totalProgressTv: TextView
+    private val ivFull: ImageView
 
     init {
         orientation = HORIZONTAL
@@ -39,11 +45,26 @@ internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerM
         progressBar = findViewById(R.id.progressBar)
         currentProgressTv = findViewById(R.id.currentProgressTv)
         totalProgressTv = findViewById(R.id.totalProgressTv)
+        ivFull = findViewById(R.id.ivFull)
         seekBarHelper = SeekBarHelper(progressBar, ::onSeekCompelete)
         playOrPauseView.enableGoneWhenPlaying = false
         playOrPauseView.visibility = View.VISIBLE
         playOrPauseView.eNPlayView.setLineWidth(dip(1f))
         playOrPauseView.eNPlayView.setBgLineWidth(dip(1f))
+        //横竖屏按钮
+        setFullScreenIcon()
+        ivFull.setOnClickListener {
+            if (isScreenPortrait()) {
+                (context as? Activity)?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            } else {
+                (context as? Activity)?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            }
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        setFullScreenIcon()
     }
 
 
@@ -76,6 +97,14 @@ internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerM
      */
     private fun onSeekCompelete(fl: Float) {
         player?.seekRatioTo(fl)
+    }
+
+    private fun setFullScreenIcon() {
+        if (isScreenPortrait()) {
+            ivFull.setImageResource(R.drawable.exo_ic_fullscreen_enter)
+        } else {
+            ivFull.setImageResource(R.drawable.exo_ic_fullscreen_exit)
+        }
     }
 
     private fun needHour(allProgress: Long): Boolean {

@@ -74,9 +74,9 @@ internal class VideoPlayerGestureView : FrameLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
+            context,
+            attrs,
+            defStyleAttr
     )
 
     private val swipeViewHelper: SwipeViewHelper
@@ -93,8 +93,8 @@ internal class VideoPlayerGestureView : FrameLayout {
             setPadding(padding, padding, padding, padding)
             //添加speedView
             this@VideoPlayerGestureView.addView(this, FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT
             ).apply {
                 gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
                 setMargins(0, dip(32), 0, 0)
@@ -103,12 +103,12 @@ internal class VideoPlayerGestureView : FrameLayout {
     }
     private val midProgressHintView by lazy {
         MidProgressHintView(context).apply {
-            visibility = View.GONE
+            visibility = View.INVISIBLE
             setBackgroundResource(R.drawable.bg_dialog_adjust)
             //添加speedView
-            this@VideoPlayerGestureView.addView(this, FrameLayout.LayoutParams(
-                dip(120),
-                dip(120)
+            this@VideoPlayerGestureView.addView(this, LayoutParams(
+                    dip(88),
+                    dip(72)
             ).apply {
                 gravity = Gravity.CENTER
             })
@@ -132,7 +132,7 @@ internal class VideoPlayerGestureView : FrameLayout {
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (event?.action == MotionEvent.ACTION_UP
-            || event?.action == MotionEvent.ACTION_CANCEL
+                || event?.action == MotionEvent.ACTION_CANCEL
         ) {
             actionUp()
         }
@@ -211,8 +211,8 @@ internal class VideoPlayerGestureView : FrameLayout {
      * 设置展示或者隐藏操作栏监听
      */
     fun setShowOrHideBarListener(
-        show: Boolean,
-        listener: (show: Boolean, animPercentage: Float/*进度0-1f*/) -> Unit
+            show: Boolean,
+            listener: (show: Boolean, animPercentage: Float/*进度0-1f*/) -> Unit
     ) {
         _isShow = show
         _showListener = listener

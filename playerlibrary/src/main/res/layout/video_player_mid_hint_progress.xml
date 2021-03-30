@@ -9,17 +9,12 @@
     tools:gravity="center"
     tools:parentTag="android.widget.LinearLayout">
 
-    <Space
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-    </Space>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/titleTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:ellipsize="end"
         android:gravity="center"
         android:textColor="#fff"
@@ -39,17 +34,11 @@
         android:textSize="10sp"
         tools:text="这里是标题" />
 
-    <Space
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-    </Space>
-
     <ProgressBar
         android:id="@+id/progress"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:padding="16dp" />
 </merge>
