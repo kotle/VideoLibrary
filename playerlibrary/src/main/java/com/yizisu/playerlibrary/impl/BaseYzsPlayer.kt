@@ -147,6 +147,8 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
         timer.cancel()
         doPlayerListener {
             it.onListenerRemove(currentPlayModel)
+            //回调播放器销魂
+            it.onPlayerDestroy(this, currentPlayModel)
         }
         playModelList.forEach {
             it.onDestroy()
@@ -155,6 +157,7 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
         playerListener.clear()
         abandonAudioFocus()
         contextWrf?.clear()
+
     }
 
     final override fun addPlayerListener(listener: SimplePlayerListener<Model>) {

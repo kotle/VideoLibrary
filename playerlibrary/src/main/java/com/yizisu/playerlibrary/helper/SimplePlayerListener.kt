@@ -1,6 +1,7 @@
 package com.yizisu.playerlibrary.helper
 
 import android.media.AudioManager
+import com.yizisu.playerlibrary.IYzsPlayer
 
 interface SimplePlayerListener<Model : PlayerModel> : AudioManager.OnAudioFocusChangeListener {
     /**
@@ -98,6 +99,13 @@ interface SimplePlayerListener<Model : PlayerModel> : AudioManager.OnAudioFocusC
      * 当监听器移除的时候 回调
      */
     fun onListenerRemove(model: Model?) {
+
+    }
+
+    /**
+     * 当播放器销毁监听
+     */
+    fun onPlayerDestroy(player: IYzsPlayer<Model>, model: Model?) {
 
     }
 }
