@@ -122,6 +122,7 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
         autoPlayView.player = player
         textureView.player = player
         bottomBar.player = player
+        titleBar.player = player
     }
 
     /**
