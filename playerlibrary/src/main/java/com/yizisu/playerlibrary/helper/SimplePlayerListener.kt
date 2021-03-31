@@ -70,11 +70,11 @@ interface SimplePlayerListener<Model : PlayerModel> : AudioManager.OnAudioFocusC
      * 获取视频尺寸
      */
     fun onVideoSizeChange(
-        width: Int,
-        height: Int,
-        unappliedRotationDegrees: Int,
-        pixelWidthHeightRatio: Float,
-        playerModel: Model?
+            width: Int,
+            height: Int,
+            unappliedRotationDegrees: Int,
+            pixelWidthHeightRatio: Float,
+            playerModel: Model?
     ) {
 
     }
@@ -91,21 +91,21 @@ interface SimplePlayerListener<Model : PlayerModel> : AudioManager.OnAudioFocusC
     /**
      * 当监听器被添加的时候 回调
      */
-    fun onListenerAdd(model: Model?) {
+    fun onListenerAdd(playerModel: Model?) {
 
     }
 
     /**
      * 当监听器移除的时候 回调
      */
-    fun onListenerRemove(model: Model?) {
+    fun onListenerRemove(playerModel: Model?) {
 
     }
 
     /**
      * 当播放器销毁监听
      */
-    fun onPlayerDestroy(player: IYzsPlayer<Model>, model: Model?) {
+    fun onPlayerDestroy(player: IYzsPlayer<Model>, playerModel: Model?) {
 
     }
 }
