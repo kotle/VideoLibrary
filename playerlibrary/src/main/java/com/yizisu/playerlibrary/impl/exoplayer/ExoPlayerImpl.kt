@@ -289,7 +289,8 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
     }
 
     override fun onDestroy() {
-        player.stop(true)
+        player.stop()
+        player.clearMediaItems()
         player.release()
         super.onDestroy()
     }
