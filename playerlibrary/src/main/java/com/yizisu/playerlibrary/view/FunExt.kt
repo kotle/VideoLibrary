@@ -1,7 +1,6 @@
 package com.yizisu.playerlibrary.view
 
 import android.app.Activity
-import android.content.pm.ActivityInfo
 import android.util.TypedValue
 import android.view.View
 import com.yizisu.playerlibrary.IYzsPlayer
@@ -27,21 +26,4 @@ internal fun autoBindListener(
     } else {
         value.addPlayerListener(l)
     }
-}
-
-/**
- * 是否是竖屏
- */
-fun View.isScreenPortrait(): Boolean {
-    return (context as? Activity).isScreenPortrait()
-}
-
-fun Activity?.isScreenPortrait(): Boolean {
-    return this?.let {
-        (it.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-                || it.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                || it.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
-                || it.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT
-                || it.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT)
-    } ?: true
 }

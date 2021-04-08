@@ -7,30 +7,30 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.MotionEvent
-import android.view.TextureView
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ProgressBar
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.yizisu.playerlibrary.IYzsPlayer
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
 import com.yizisu.playerlibrary.helper.fullScreen
-import com.yizisu.playerlibrary.view.RatioLayout
 import com.yizisu.playerlibrary.view.autoBindListener
 import com.yizisu.playerlibrary.view.dip
-import com.yizisu.playerlibrary.view.isScreenPortrait
 
 /**
  * 上方的标题栏
  */
 class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
+
+
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-            context,
-            attrs,
-            defStyleAttr
+        context,
+        attrs,
+        defStyleAttr
     )
 
     //手势控制view
@@ -73,6 +73,18 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
         visibility = View.GONE
     }
 
+    /**
+     * 是否全屏
+     */
+    val isFullScreenData: MutableLiveData<Boolean>
+        get() = bottomBar.isFullScreenData
+
+    /**
+     * 触摸事件监听
+     */
+    val touchEventData: MutableLiveData<MotionEvent?>
+        get() = gestureView.touchEventData
+
     init {
         setBackgroundColor(Color.BLACK)
         //必须添加
@@ -97,17 +109,17 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
         }
         if (titleBar.parent == null) {
             addView(
-                    titleBar,
-                    LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
-                        gravity = Gravity.TOP
-                    })
+                titleBar,
+                LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
+                    gravity = Gravity.TOP
+                })
         }
         if (bottomBar.parent == null) {
             addView(
-                    bottomBar,
-                    LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
-                        gravity = Gravity.BOTTOM
-                    })
+                bottomBar,
+                LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
+                    gravity = Gravity.BOTTOM
+                })
         }
     }
 
@@ -145,9 +157,9 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
     }
 
     override fun onBufferStateChange(
-            isBuffering: Boolean,
-            playStatus: Boolean,
-            playerModel: PlayerModel?
+        isBuffering: Boolean,
+        playStatus: Boolean,
+        playerModel: PlayerModel?
     ) {
         super.onBufferStateChange(isBuffering, playStatus, playerModel)
         if (playStatus) {
@@ -190,9 +202,10 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
-        if (newConfig != null) {
-            val activity = context as Activity
-            activity.window.fullScreen(!isScreenPortrait())
+        if (resources.displayMetrics.widthPixels > resources.displayMetrics.heightPixels) {
+            setPadding(dip(32), 0, dip(40), 0)
+        } else {
+            setPadding(0, 0, 0, 0)
         }
     }
 }

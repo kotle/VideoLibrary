@@ -4,16 +4,14 @@ import android.app.Activity
 import android.media.AudioManager
 import android.os.Build
 import android.view.*
-import com.yizisu.playerlibrary.view.isScreenPortrait
 import kotlin.math.max
-import kotlin.math.min
 
 /**
  * 调节屏幕亮度（0-1.0）
  * percent：亮度新增比例
  * return 当前亮度
  */
-fun View.setScreenBrightnessSlide(percent: Float): Float {
+internal fun View.setScreenBrightnessSlide(percent: Float): Float {
     (context as? Activity)?.apply {
         return this.setScreenBrightnessSlide(percent)
     }
@@ -46,9 +44,6 @@ fun Activity.setScreenBrightnessSlide(percent: Float): Float {
         lpa.screenBrightness = 0.01f
     }
     window.attributes = lpa
-    if (!isScreenPortrait()) {
-        window.fullScreen(true)
-    }
     return lpa.screenBrightness
 }
 
@@ -58,7 +53,8 @@ fun Window?.fullScreen(isFullScreen: Boolean) {
     if (isFullScreen) {
         // 延伸显示区域到耳朵区
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            lp.layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
             window.attributes = lp
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -82,7 +78,8 @@ fun Window?.fullScreen(isFullScreen: Boolean) {
         }
     } else {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT
+            lp.layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT
             window.attributes = lp
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

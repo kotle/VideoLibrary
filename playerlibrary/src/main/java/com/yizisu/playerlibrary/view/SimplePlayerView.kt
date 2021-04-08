@@ -438,9 +438,9 @@ open class SimplePlayerView : FrameLayout, PlayerLifecycleObserver {
 
     @SuppressLint("SetTextI18n")
     private fun setScreenLight(offY: Float) {
-        lightView.visibility = View.VISIBLE
-        val currentLight = setScreenBrightnessSlide(offY / height)
-        lightView.text = "亮度\n${(currentLight * 100).toInt()}"
+//        lightView.visibility = View.VISIBLE
+//        val currentLight = setScreenBrightnessSlide(offY / height)
+//        lightView.text = "亮度\n${(currentLight * 100).toInt()}"
     }
 
     @SuppressLint("SetTextI18n")

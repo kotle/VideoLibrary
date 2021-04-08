@@ -12,6 +12,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.yizisu.playerlibrary.IYzsPlayer
 import com.yizisu.playerlibrary.R
 import com.yizisu.playerlibrary.helper.PlayerModel
@@ -19,7 +21,6 @@ import com.yizisu.playerlibrary.helper.SimplePlayerListener
 import com.yizisu.playerlibrary.helper.getCountTimeByLong
 import com.yizisu.playerlibrary.view.autoBindListener
 import com.yizisu.playerlibrary.view.dip
-import com.yizisu.playerlibrary.view.isScreenPortrait
 
 internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerModel> {
     constructor(context: Context?) : super(context)
@@ -51,22 +52,34 @@ internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerM
         playOrPauseView.visibility = View.VISIBLE
         playOrPauseView.eNPlayView.setLineWidth(dip(1f))
         playOrPauseView.eNPlayView.setBgLineWidth(dip(1f))
-        //横竖屏按钮
-        setFullScreenIcon()
         ivFull.setOnClickListener {
-            if (isScreenPortrait()) {
-                (context as? Activity)?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-            } else {
-                (context as? Activity)?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            }
+            val old = isFullScreenData.value ?: false
+            isFullScreenData.value = !old
         }
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
-        super.onConfigurationChanged(newConfig)
-        setFullScreenIcon()
+    /**
+     * 当前状态是否全屏
+     */
+    val isFullScreenData = MutableLiveData(false)
+
+    private val observeFullScreen = Observer<Boolean> {
+        if (!it) {
+            ivFull.setImageResource(R.drawable.exo_ic_fullscreen_enter)
+        } else {
+            ivFull.setImageResource(R.drawable.exo_ic_fullscreen_exit)
+        }
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        isFullScreenData.observeForever(observeFullScreen)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        isFullScreenData.removeObserver(observeFullScreen)
+    }
 
     var player: IYzsPlayer<PlayerModel>? = null
         set(value) {
@@ -97,14 +110,6 @@ internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerM
      */
     private fun onSeekCompelete(fl: Float) {
         player?.seekRatioTo(fl)
-    }
-
-    private fun setFullScreenIcon() {
-        if (isScreenPortrait()) {
-            ivFull.setImageResource(R.drawable.exo_ic_fullscreen_enter)
-        } else {
-            ivFull.setImageResource(R.drawable.exo_ic_fullscreen_exit)
-        }
     }
 
     private fun needHour(allProgress: Long): Boolean {
