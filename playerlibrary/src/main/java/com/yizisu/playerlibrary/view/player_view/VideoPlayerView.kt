@@ -203,7 +203,7 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
         if (resources.displayMetrics.widthPixels > resources.displayMetrics.heightPixels) {
-            setPadding(dip(32), 0, dip(40), 0)
+            setPadding(dip(32), dip(24), dip(40), dip(24))
         } else {
             setPadding(0, 0, 0, 0)
         }
