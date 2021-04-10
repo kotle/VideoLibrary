@@ -53,8 +53,7 @@ fun Window?.fullScreen(isFullScreen: Boolean) {
     if (isFullScreen) {
         // 延伸显示区域到耳朵区
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            lp.layoutInDisplayCutoutMode =
-                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
             window.attributes = lp
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -78,8 +77,7 @@ fun Window?.fullScreen(isFullScreen: Boolean) {
         }
     } else {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            lp.layoutInDisplayCutoutMode =
-                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT
+            lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT
             window.attributes = lp
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -90,12 +88,15 @@ fun Window?.fullScreen(isFullScreen: Boolean) {
             }
         } else {
             clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-            val tag = decorView.tag
-            if (tag is Int) {
-                decorView.systemUiVisibility = tag
+            if (decorView.tag is Int){
+                decorView.systemUiVisibility = decorView.tag as Int
             }
         }
     }
+}
+
+fun Activity?.fullScreen(isFullScreen: Boolean) {
+    this?.window?.fullScreen(isFullScreen)
 }
 
 private var offVolume = 0f

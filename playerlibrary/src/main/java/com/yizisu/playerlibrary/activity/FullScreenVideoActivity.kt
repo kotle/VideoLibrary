@@ -5,12 +5,14 @@ import android.content.pm.ActivityInfo
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.yizisu.playerlibrary.IYzsPlayer
 import com.yizisu.playerlibrary.R
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
+import com.yizisu.playerlibrary.helper.fullScreen
 import com.yizisu.playerlibrary.view.SimplePlayerView
 import com.yizisu.playerlibrary.view.player_view.VideoPlayerView
 import java.io.Serializable
@@ -36,36 +38,37 @@ class FullScreenVideoActivity : AppCompatActivity(), SimplePlayerListener<Player
     }
 
     data class VideoInfo(
-        val width: Int,
-        val height: Int,
-        val title: String?,
-        val url: String?
+            val width: Int,
+            val height: Int,
+            val title: String?,
+            val url: String?
     ) : Serializable
 
     private val orientation by lazy {
         intent.getIntExtra(
-            "orientation",
-            ActivityInfo.SCREEN_ORIENTATION_SENSOR
+                "orientation",
+                ActivityInfo.SCREEN_ORIENTATION_SENSOR
         )
     }
     private val info by lazy { intent.getSerializableExtra("info") as? VideoInfo }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        fullScreen(true)
         var videoData: VideoInfo? = null
         when (intent?.action) {
             Intent.ACTION_VIEW -> {
                 val data = intent?.dataString
                 if (data.isNullOrBlank()) {
-                    onBackPressed()
+                    finishAfterTransition()
                     Toast.makeText(this, "没有可播放视频", Toast.LENGTH_LONG).show()
                     return
                 } else {
                     videoData = VideoInfo(
-                        0,
-                        0,
-                        intent.getStringExtra(Intent.EXTRA_TITLE)
-                            ?: intent.extras?.getString(Intent.EXTRA_TITLE),
-                        data
+                            0,
+                            0,
+                            intent.getStringExtra(Intent.EXTRA_TITLE)
+                                    ?: intent.extras?.getString(Intent.EXTRA_TITLE),
+                            data
                     )
                 }
             }
@@ -74,8 +77,8 @@ class FullScreenVideoActivity : AppCompatActivity(), SimplePlayerListener<Player
             }
         }
         if (videoData?.url == null) {
-            onBackPressed()
-            Toast.makeText(this, "没有可播放视频", Toast.LENGTH_LONG).show()
+            finishAfterTransition()
+            Toast.makeText(this, "播放地址未null", Toast.LENGTH_LONG).show()
             return
         }
         setOrientation(videoData)
@@ -93,6 +96,12 @@ class FullScreenVideoActivity : AppCompatActivity(), SimplePlayerListener<Player
                 return videoData.title
             }
         }))
+        playerView.isFullScreenData.value = true
+        //隐藏全屏按钮
+        findViewById<View>(R.id.ivFull).visibility = View.GONE
+        findViewById<View>(R.id.playerBack).setOnClickListener {
+            finishAfterTransition()
+        }
     }
 
     /**
@@ -128,24 +137,32 @@ class FullScreenVideoActivity : AppCompatActivity(), SimplePlayerListener<Player
     }
 
     override fun onVideoSizeChange(
-        width: Int,
-        height: Int,
-        unappliedRotationDegrees: Int,
-        pixelWidthHeightRatio: Float,
-        playerModel: PlayerModel?
+            width: Int,
+            height: Int,
+            unappliedRotationDegrees: Int,
+            pixelWidthHeightRatio: Float,
+            playerModel: PlayerModel?
     ) {
         super.onVideoSizeChange(
-            width,
-            height,
-            unappliedRotationDegrees,
-            pixelWidthHeightRatio,
-            playerModel
+                width,
+                height,
+                unappliedRotationDegrees,
+                pixelWidthHeightRatio,
+                playerModel
         )
         requestedOrientation =
-            if (width >= height) {
-                ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-            } else {
-                ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
-            }
+                if (width >= height) {
+                    ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                } else {
+                    ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+                }
+    }
+
+    override fun setRequestedOrientation(requestedOrientation: Int) {
+        try {
+            super.setRequestedOrientation(requestedOrientation)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
     }
 }

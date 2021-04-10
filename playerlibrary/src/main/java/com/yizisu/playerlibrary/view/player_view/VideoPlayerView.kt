@@ -28,9 +28,9 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
+            context,
+            attrs,
+            defStyleAttr
     )
 
     //手势控制view
@@ -109,17 +109,17 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
         }
         if (titleBar.parent == null) {
             addView(
-                titleBar,
-                LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
-                    gravity = Gravity.TOP
-                })
+                    titleBar,
+                    LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
+                        gravity = Gravity.TOP
+                    })
         }
         if (bottomBar.parent == null) {
             addView(
-                bottomBar,
-                LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
-                    gravity = Gravity.BOTTOM
-                })
+                    bottomBar,
+                    LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
+                        gravity = Gravity.BOTTOM
+                    })
         }
     }
 
@@ -157,9 +157,9 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
     }
 
     override fun onBufferStateChange(
-        isBuffering: Boolean,
-        playStatus: Boolean,
-        playerModel: PlayerModel?
+            isBuffering: Boolean,
+            playStatus: Boolean,
+            playerModel: PlayerModel?
     ) {
         super.onBufferStateChange(isBuffering, playStatus, playerModel)
         if (playStatus) {
@@ -200,12 +200,30 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
         keepScreenOn = false
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
-        super.onConfigurationChanged(newConfig)
-        if (resources.displayMetrics.widthPixels > resources.displayMetrics.heightPixels) {
-            setPadding(dip(32), dip(24), dip(40), dip(24))
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        isFullScreenData.observeForever(::onFullScreenChange)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        isFullScreenData.removeObserver(::onFullScreenChange)
+    }
+
+    private fun onFullScreenChange(b: Boolean?) {
+        if (b == true) {
+            if (resources.displayMetrics.widthPixels > resources.displayMetrics.heightPixels) {
+                setPadding(dip(32), 0, dip(40), 0)
+            } else {
+                setPadding(0, dip(24), 0, dip(24))
+            }
         } else {
             setPadding(0, 0, 0, 0)
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        onFullScreenChange(isFullScreenData.value)
     }
 }
