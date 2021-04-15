@@ -17,7 +17,7 @@ import com.yizisu.playerlibrary.R
 import com.yizisu.playerlibrary.helper.PlayerModel
 
 internal class VideoPlayerTitleBar : LinearLayout {
-    private val speedList = listOf(1f, 1.5f, 2f, 3f)
+    private val speedList = listOf(1f, 1.5f, 2f, 3f,4f)
     var player: IYzsPlayer<PlayerModel>? = null
         set(value) {
             field = value
