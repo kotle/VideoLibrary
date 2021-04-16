@@ -26,9 +26,9 @@ internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerM
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
-            context,
-            attrs,
-            defStyleAttr
+        context,
+        attrs,
+        defStyleAttr
     )
 
     private val seekBarHelper: SeekBarHelper
@@ -37,6 +37,7 @@ internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerM
     private val currentProgressTv: TextView
     private val totalProgressTv: TextView
     private val ivFull: ImageView
+    private val ivNext: ImageView
 
     init {
         orientation = HORIZONTAL
@@ -46,6 +47,7 @@ internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerM
         progressBar = findViewById(R.id.progressBar)
         currentProgressTv = findViewById(R.id.currentProgressTv)
         totalProgressTv = findViewById(R.id.totalProgressTv)
+        ivNext = findViewById(R.id.ivNext)
         ivFull = findViewById(R.id.ivFull)
         seekBarHelper = SeekBarHelper(progressBar, ::onSeekCompelete)
         playOrPauseView.enableGoneWhenPlaying = false
@@ -55,6 +57,9 @@ internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerM
         ivFull.setOnClickListener {
             val old = isFullScreenData.value ?: false
             isFullScreenData.value = !old
+        }
+        ivNext.setOnClickListener {
+            player?.next()
         }
     }
 
@@ -90,9 +95,9 @@ internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerM
 
     override fun onTick(playerModel: PlayerModel) {
         setProgress(
-                playerModel.currentDuration,
-                playerModel.currentBufferDuration,
-                playerModel.totalDuration
+            playerModel.currentDuration,
+            playerModel.currentBufferDuration,
+            playerModel.totalDuration
         )
     }
 
@@ -120,9 +125,9 @@ internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerM
      * 设置进度
      */
     fun setProgress(
-            currentProgress: Long?,
-            bufferProgress: Long?,
-            allProgress: Long
+        currentProgress: Long?,
+        bufferProgress: Long?,
+        allProgress: Long
     ) {
         if (seekBarHelper.isTouchSeekBar) {
             //滑动进度条，不允许更改进度
@@ -144,22 +149,28 @@ internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerM
         totalProgressTv.text = getCountTimeByLong(allProgress)
     }
 
-    private inner class SeekBarHelper(bar: SeekBar, onSeekCompleteListener: Function1<Float, Unit>) {
+    private inner class SeekBarHelper(
+        bar: SeekBar,
+        onSeekCompleteListener: Function1<Float, Unit>
+    ) {
         var isTouchSeekBar = false
         private var currentProgressRatio: Float? = null
 
         init {
             bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(
-                        seekBar: SeekBar?,
-                        progress: Int,
-                        fromUser: Boolean
+                    seekBar: SeekBar?,
+                    progress: Int,
+                    fromUser: Boolean
                 ) {
                     if (fromUser) {
                         player?.getCurrentModel()?.apply {
                             val f = progress.toFloat() / bar.max
                             currentProgressRatio = f
-                            currentProgressTv.text = getCountTimeByLong((f * totalDuration).toLong(), needHour(totalDuration))
+                            currentProgressTv.text = getCountTimeByLong(
+                                (f * totalDuration).toLong(),
+                                needHour(totalDuration)
+                            )
                         }
                     }
                 }
@@ -176,6 +187,15 @@ internal class VideoPlayerBottomBar : LinearLayout, SimplePlayerListener<PlayerM
                     }
                 }
             })
+        }
+    }
+
+    override fun onPlayerListChange(playerModels: MutableList<PlayerModel>) {
+        super.onPlayerListChange(playerModels)
+        if (playerModels.isEmpty() || playerModels.count() == 1) {
+            ivNext.visibility = View.GONE
+        } else {
+            ivNext.visibility = View.VISIBLE
         }
     }
 }
