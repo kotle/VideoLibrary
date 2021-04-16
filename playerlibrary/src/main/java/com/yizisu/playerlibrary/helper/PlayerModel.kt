@@ -1,6 +1,7 @@
 package com.yizisu.playerlibrary.helper
 
 import android.net.Uri
+import com.google.android.exoplayer2.MediaItem
 import com.yizisu.playerlibrary.impl.exoplayer.getCountTimeByLong
 import kotlin.math.max
 import kotlin.math.min
@@ -50,12 +51,30 @@ abstract class PlayerModel {
      *  Boolean是否需要再次调用onPlayChange
      *  如果播放的model被换掉，会回调onPlayModelNotThis()
      */
-    abstract fun callMediaUri(
-        uriCall: (
-            Uri?/*播放链接*/, Throwable?/*无法传入播放链接的时候错误回调*/,
-            Boolean/*是否需要再回调一次PlayModelChange*/
-        ) -> Unit
-    )
+    @Deprecated("[callMediaItem]代替")
+    open fun callMediaUri(
+            uriCall: (
+                    Uri?/*播放链接*/, Throwable?/*无法传入播放链接的时候错误回调*/,
+                    Boolean/*是否需要再回调一次PlayModelChange*/
+            ) -> Unit
+    ) {
+
+    }
+
+    open fun callMediaItem(
+            uriCall: (
+                    MediaItem?/*播放链接*/,
+                    Throwable?/*无法传入播放链接的时候错误回调*/,
+                    Boolean/*是否需要再回调一次PlayModelChange*/
+            ) -> Unit) {
+        callMediaUri { uri, throwable, b ->
+            if (uri != null) {
+                uriCall.invoke(MediaItem.fromUri(uri), throwable, b)
+            } else {
+                uriCall.invoke(null, throwable, b)
+            }
+        }
+    }
 
     /**
      * 准备url的时候出现错误

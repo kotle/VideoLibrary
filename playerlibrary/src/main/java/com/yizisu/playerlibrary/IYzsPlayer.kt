@@ -2,10 +2,12 @@ package com.yizisu.playerlibrary
 
 
 import android.content.Context
+import android.net.Uri
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.view.TextureView
 import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.MediaItem
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
 import com.yizisu.playerlibrary.impl.exoplayer.ExoPlayerImpl
@@ -24,8 +26,8 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
          * 创建播放器
          */
         operator fun <Model : PlayerModel> invoke(
-                context: Context,
-                impl: Impl = Impl.EXO_PLAYER
+            context: Context,
+            impl: Impl = Impl.EXO_PLAYER
         ): IYzsPlayer<Model> {
             return ExoPlayerImpl(context)
         }
@@ -35,9 +37,24 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
      * 保存播放的状态信息
      */
     data class Info<T : PlayerModel>(
-            var playModes: MutableList<T>,
-            var currentIndex: Int
+        var playModes: MutableList<T>,
+        var currentIndex: Int
     )
+
+    /**
+     * 针对过时函数更新
+     */
+    abstract class Model : PlayerModel() {
+        final override fun callMediaItem(uriCall: (MediaItem?, Throwable?, Boolean) -> Unit) {
+            onMediaItem(uriCall)
+        }
+
+        final override fun callMediaUri(uriCall: (Uri?, Throwable?, Boolean) -> Unit) {
+            super.callMediaUri(uriCall)
+        }
+
+        abstract fun onMediaItem(uriCall: (MediaItem?, Throwable?, Boolean) -> Unit)
+    }
 
 
     //视频总时间
@@ -59,20 +76,20 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
      * 需要手动再调用播放
      */
     fun prepare(
-            models: MutableList<Model>,
-            playIndex: Int = -1,
-            isStopLastMedia: Boolean = true,
-            listener: Function1<Model?, Unit>? = null
+        models: MutableList<Model>,
+        playIndex: Int = -1,
+        isStopLastMedia: Boolean = true,
+        listener: Function1<Model?, Unit>? = null
     )
 
     /**
      * 准备完毕就播放
      */
     fun prepareAndPlay(
-            models: MutableList<Model>,
-            playIndex: Int = 0,
-            isStopLastMedia: Boolean = true,
-            listener: Function1<Model?, Unit>? = null
+        models: MutableList<Model>,
+        playIndex: Int = 0,
+        isStopLastMedia: Boolean = true,
+        listener: Function1<Model?, Unit>? = null
     )
 
     /**
@@ -115,18 +132,18 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
      * 跳转
      */
     fun seekTo(
-            positionMs: Long,
-            index: Int? = null,
-            reset: Boolean = false,
-            listener: Function1<Model?, Unit>? = null
+        positionMs: Long,
+        index: Int? = null,
+        reset: Boolean = false,
+        listener: Function1<Model?, Unit>? = null
     )
 
     /**
      * 跳转
      */
     fun seekRatioTo(
-            ratio: Float,
-            listener: Function1<Model?, Unit>? = null
+        ratio: Float,
+        listener: Function1<Model?, Unit>? = null
     )
 
     /**
@@ -205,8 +222,8 @@ interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
      * 安卓媒体框架
      */
     fun setMediaSession(
-            session: MediaSessionCompat,
-            bundleCall: (Model?) -> MediaDescriptionCompat
+        session: MediaSessionCompat,
+        bundleCall: (Model?) -> MediaDescriptionCompat
     )
 
     /**

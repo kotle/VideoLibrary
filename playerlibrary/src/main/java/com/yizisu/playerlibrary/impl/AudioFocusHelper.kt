@@ -8,7 +8,6 @@ import android.media.AudioManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.media.AudioAttributesCompat
-import com.google.android.exoplayer2.SimpleExoPlayer
 
 class AudioFocusHelper(
     context: Context,

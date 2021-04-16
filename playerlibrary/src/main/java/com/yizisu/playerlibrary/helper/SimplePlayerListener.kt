@@ -7,7 +7,16 @@ interface SimplePlayerListener<Model : PlayerModel> : AudioManager.OnAudioFocusC
     /**
      * 每秒钟回调一次
      */
-    fun onTick(playerModel: Model)
+    fun onTick(playerModel: Model) {
+
+    }
+
+    /**
+     * 每秒钟回调一次,只是在子线程回调
+     */
+    fun onTickInWorkThread(playerModel: Model) {
+
+    }
 
     /**
      * 当视频发生错误

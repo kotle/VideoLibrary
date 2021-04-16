@@ -11,7 +11,7 @@ import java.lang.ref.WeakReference
 import java.util.*
 
 internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextWrf: WeakReference<Context?>?) :
-    IYzsPlayer<Model> {
+        IYzsPlayer<Model> {
     internal val context: Context?
         get() = contextWrf?.get()
 
@@ -72,6 +72,9 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
     protected val timerTask = object : TimerTask() {
         override fun run() {
             if (playModelList.isNotEmpty() && context != null) {
+                currentPlayModel?.let { model ->
+                    doPlayerListener { it.onTickInWorkThread(model) }
+                }
                 mainHandler.post(tickRunnable)
             }
         }
@@ -120,10 +123,10 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
     }
 
     override fun prepare(
-        models: MutableList<Model>,
-        playIndex: Int,
-        isStopLastMedia: Boolean,
-        listener: ((Model?) -> Unit)?
+            models: MutableList<Model>,
+            playIndex: Int,
+            isStopLastMedia: Boolean,
+            listener: ((Model?) -> Unit)?
     ) {
         playModelList.clear()
         playModelList.addAll(models)

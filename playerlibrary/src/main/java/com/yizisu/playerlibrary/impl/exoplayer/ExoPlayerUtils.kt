@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.DefaultLoadControl
+import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory
 import com.google.android.exoplayer2.source.MediaSource
@@ -13,10 +14,8 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
-import com.google.android.exoplayer2.upstream.DefaultAllocator
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.yizisu.playerlibrary.BuildConfig
 import com.yizisu.playerlibrary.helper.PlayerModel
@@ -53,22 +52,23 @@ internal fun SimpleExoPlayer.createSingleSource(
     exoPlayerImpl: ExoPlayerImpl<*>,
     errorListener: Function2<Throwable?, Boolean, Unit>
 ) {
-    model.callMediaUri { mediaUri, error, isCallOnPlayChange ->
+    model.callMediaItem { mediaItem, error, isCallOnPlayChange ->
         if (model != exoPlayerImpl.currentPlayModel) {
-            return@callMediaUri
+            return@callMediaItem
         }
         if (BuildConfig.DEBUG) {
-            logI("ExoPlay播放准备资源：url:${mediaUri}\nerror:${error?.message}\nisCallOnPlayChange:${isCallOnPlayChange}")
+            logI("ExoPlay播放准备资源：url:${mediaItem}\nerror:${error?.message}\nisCallOnPlayChange:${isCallOnPlayChange}")
         }
         context.runOnUiThread {
-            if (mediaUri == null) {
+            if (mediaItem == null) {
                 if (error == null) {
                     errorListener.invoke(Throwable("Uri is null"), false)
                 } else {
                     errorListener.invoke(error, false)
                 }
             } else {
-                prepare(model.buildMediaSource(mediaUri, context))
+                setMediaSource(model.buildMediaSource(mediaItem, context))
+                prepare()
                 errorListener.invoke(null, isCallOnPlayChange)
             }
         }
@@ -109,7 +109,7 @@ private fun Context.runOnUiThread(f: Context.() -> Unit) {
     if (isMainThread()) f() else mainHandler.post { f() }
 }
 
-private fun PlayerModel.buildMediaSource(mediaUri: Uri, context: Context): MediaSource {
+private fun PlayerModel.buildMediaSource(mediaUri: MediaItem, context: Context): MediaSource {
     //判断是否是rtmp流,已经测试支持rtmp
     if (isRtmpSource(mediaUri, overrideExtension)) {
         return ProgressiveMediaSource.Factory(
@@ -127,7 +127,10 @@ private fun PlayerModel.buildMediaSource(mediaUri: Uri, context: Context): Media
             RtmpDataSourceFactory()
         ).createMediaSource(mediaUri)
     }
-    return when (val type = Util.inferContentType(mediaUri, overrideExtension)) {
+    return when (val type = Util.inferContentType(
+        mediaUri.playbackProperties?.uri
+            ?: Uri.EMPTY, overrideExtension
+    )) {
         C.TYPE_SS -> {
             SsMediaSource.Factory(
                 getDefaultHttpDataSourceFactory(context)
@@ -145,7 +148,7 @@ private fun PlayerModel.buildMediaSource(mediaUri: Uri, context: Context): Media
         }
         C.TYPE_OTHER -> {
             ProgressiveMediaSource.Factory(
-                if (mediaUri.scheme == "http" || mediaUri.scheme == "https") {
+                if (mediaUri.playbackProperties?.uri?.scheme == "http" || mediaUri.playbackProperties?.uri?.scheme == "https") {
                     getDefaultHttpDataSourceFactory(context)
                 } else {
                     DefaultDataSourceFactory(
@@ -161,16 +164,16 @@ private fun PlayerModel.buildMediaSource(mediaUri: Uri, context: Context): Media
     }
 }
 
-private fun getDefaultHttpDataSourceFactory(context: Context): DefaultHttpDataSourceFactory {
-    return DefaultHttpDataSourceFactory(
-        Util.getUserAgent(context, context.packageName),
-        DefaultHttpDataSource.DEFAULT_CONNECT_TIMEOUT_MILLIS,
-        DefaultHttpDataSource.DEFAULT_READ_TIMEOUT_MILLIS,
-        true/*允许重定向*/
-    )
+private fun getDefaultHttpDataSourceFactory(context: Context): DefaultHttpDataSource.Factory {
+    return DefaultHttpDataSource.Factory().apply {
+        setUserAgent(Util.getUserAgent(context, context.packageName))
+        setConnectTimeoutMs(DefaultHttpDataSource.DEFAULT_CONNECT_TIMEOUT_MILLIS)
+        setReadTimeoutMs(DefaultHttpDataSource.DEFAULT_READ_TIMEOUT_MILLIS)
+        setAllowCrossProtocolRedirects(true/*允许重定向*/)
+    }
 }
 
-private fun isRtmpSource(uri: Uri, overrideExtension: String?): Boolean {
+private fun isRtmpSource(uri: MediaItem, overrideExtension: String?): Boolean {
     return overrideExtension?.contains("rtmp") == true || uri.toString().startsWith("rtmp")
 }
 

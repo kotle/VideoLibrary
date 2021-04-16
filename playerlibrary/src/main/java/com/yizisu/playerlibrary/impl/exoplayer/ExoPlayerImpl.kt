@@ -131,7 +131,7 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
             lastPlayModel = currentPlayModel
         }
         if (isStopLastMedia) {
-            player.stop(true)
+            player.stop()
         }
         currentPlayModel?.apply {
             doPlayerListener {
