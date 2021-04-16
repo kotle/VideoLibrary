@@ -9,6 +9,7 @@ import kotlin.math.min
 /**
  * 一个播放对象，所以播放资源通过这个对象传递
  */
+@Deprecated("使用[IYzsPlayer.Model]替代")
 abstract class PlayerModel {
     //文件类型,rtmp,http等，用于创建mediaSource是用
     var overrideExtension: String? = null

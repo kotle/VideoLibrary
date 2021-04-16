@@ -23,8 +23,8 @@ import java.lang.ref.WeakReference
  * ExoPlayer实现类，可以用于其他播放器替换
  */
 internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
-    BaseYzsPlayer<Model>(WeakReference(contextWrf)), Player.EventListener,
-    VideoListener, AudioListener {
+        BaseYzsPlayer<Model>(WeakReference(contextWrf)), Player.EventListener,
+        VideoListener, AudioListener {
     //创建播放器
     private val player = createSimpleExoPlayer(context!!).apply {
         addListener(this@ExoPlayerImpl)
@@ -41,20 +41,20 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
         get() = player.bufferedPosition
 
     override fun prepareAndPlay(
-        models: MutableList<Model>,
-        playIndex: Int,
-        isStopLastMedia: Boolean,
-        listener: ((Model?) -> Unit)?
+            models: MutableList<Model>,
+            playIndex: Int,
+            isStopLastMedia: Boolean,
+            listener: ((Model?) -> Unit)?
     ) {
         play(null)
         prepare(models, playIndex, isStopLastMedia, listener)
     }
 
     override fun prepare(
-        models: MutableList<Model>,
-        playIndex: Int,
-        isStopLastMedia: Boolean,
-        listener: ((Model?) -> Unit)?
+            models: MutableList<Model>,
+            playIndex: Int,
+            isStopLastMedia: Boolean,
+            listener: ((Model?) -> Unit)?
     ) {
         super.prepare(models, playIndex, isStopLastMedia, listener)
         startPrepare(listener, isStopLastMedia)
@@ -118,9 +118,9 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
      */
     private var lastPlayModel: Model? = null
     private fun startPrepare(
-        listener: ((Model?) -> Unit)?,
-        isStopLastMedia: Boolean,
-        progress: Long = 0
+            listener: ((Model?) -> Unit)?,
+            isStopLastMedia: Boolean,
+            progress: Long = 0
     ) {
         val ctx = context ?: return
         //切换资源的时候，回调上一次资源的销毁方法，做好资源回收
@@ -191,10 +191,10 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
     }
 
     override fun seekTo(
-        positionMs: Long,
-        index: Int?,
-        reset: Boolean,
-        listener: ((Model?) -> Unit)?
+            positionMs: Long,
+            index: Int?,
+            reset: Boolean,
+            listener: ((Model?) -> Unit)?
     ) {
         if (index == null) {
             player.seekTo(positionMs)
@@ -207,6 +207,9 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
             info.currentIndex = index
             startPrepare(listener, true)
             startPlayIfNotPlay()
+            if (positionMs > 0) {
+                player.seekTo(positionMs)
+            }
         }
         timerTask.run()
     }
@@ -245,8 +248,8 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
     }
 
     override fun setMediaSession(
-        session: MediaSessionCompat,
-        bundleCall: (Model?) -> MediaDescriptionCompat
+            session: MediaSessionCompat,
+            bundleCall: (Model?) -> MediaDescriptionCompat
     ) {
         MediaSessionConnector(session).apply {
             setQueueNavigator(QueueNavigator(mediaSession, bundleCall))
@@ -255,8 +258,8 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
     }
 
     private inner class QueueNavigator(
-        mediaSession: MediaSessionCompat,
-        val bundleCall: (Model?) -> MediaDescriptionCompat
+            mediaSession: MediaSessionCompat,
+            val bundleCall: (Model?) -> MediaDescriptionCompat
     ) : TimelineQueueNavigator(mediaSession) {
         override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
             return bundleCall(currentPlayModel)
@@ -353,20 +356,20 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
      * EXOPlayer监听-视频大小变化
      */
     override fun onVideoSizeChanged(
-        width: Int,
-        height: Int,
-        unappliedRotationDegrees: Int,
-        pixelWidthHeightRatio: Float
+            width: Int,
+            height: Int,
+            unappliedRotationDegrees: Int,
+            pixelWidthHeightRatio: Float
     ) {
         currentPlayModel?._videoWidth = width
         currentPlayModel?._videoHeight = height
         doPlayerListener {
             it.onVideoSizeChange(
-                width,
-                height,
-                unappliedRotationDegrees,
-                pixelWidthHeightRatio,
-                currentPlayModel
+                    width,
+                    height,
+                    unappliedRotationDegrees,
+                    pixelWidthHeightRatio,
+                    currentPlayModel
             )
         }
     }
@@ -376,25 +379,25 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
      * 每个对象都会获取一个焦点，创建的其他对象会失去焦点
      */
     private val audioFocusListener =
-        AudioManager.OnAudioFocusChangeListener { focusChange ->
-            doPlayerListener {
-                it.onAudioFocusChange(focusChange)
+            AudioManager.OnAudioFocusChangeListener { focusChange ->
+                doPlayerListener {
+                    it.onAudioFocusChange(focusChange)
+                }
+                when (focusChange) {
+                    AudioManager.AUDIOFOCUS_GAIN -> {
+                        player.playWhenReady = true
+                    }
+                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
+                        player.playWhenReady = false
+                    }
+                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                        player.playWhenReady = false
+                    }
+                    AudioManager.AUDIOFOCUS_LOSS -> {
+                        player.playWhenReady = false
+                    }
+                }
             }
-            when (focusChange) {
-                AudioManager.AUDIOFOCUS_GAIN -> {
-                    player.playWhenReady = true
-                }
-                AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
-                    player.playWhenReady = false
-                }
-                AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
-                    player.playWhenReady = false
-                }
-                AudioManager.AUDIOFOCUS_LOSS -> {
-                    player.playWhenReady = false
-                }
-            }
-        }
 
     override fun onRenderedFirstFrame() {
         doPlayerListener {
