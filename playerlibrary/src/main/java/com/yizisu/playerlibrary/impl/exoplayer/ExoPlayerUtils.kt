@@ -57,7 +57,7 @@ internal fun SimpleExoPlayer.createSingleSource(
             return@callMediaItem
         }
         if (BuildConfig.DEBUG) {
-            logI("ExoPlay播放准备资源：url:${mediaItem}\nerror:${error?.message}\nisCallOnPlayChange:${isCallOnPlayChange}")
+            logI("ExoPlay播放准备资源：url:${mediaItem?.playbackProperties?.uri}\nerror:${error?.message}\nisCallOnPlayChange:${isCallOnPlayChange}")
         }
         context.runOnUiThread {
             if (mediaItem == null) {
