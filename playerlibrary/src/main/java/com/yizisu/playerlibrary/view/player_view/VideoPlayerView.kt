@@ -1,6 +1,5 @@
 package com.yizisu.playerlibrary.view.player_view
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
@@ -11,11 +10,9 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.yizisu.playerlibrary.IYzsPlayer
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
-import com.yizisu.playerlibrary.helper.fullScreen
 import com.yizisu.playerlibrary.view.autoBindListener
 import com.yizisu.playerlibrary.view.dip
 
