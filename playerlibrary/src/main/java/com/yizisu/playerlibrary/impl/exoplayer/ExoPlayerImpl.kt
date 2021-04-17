@@ -23,8 +23,8 @@ import java.lang.ref.WeakReference
  * ExoPlayer实现类，可以用于其他播放器替换
  */
 internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
-        BaseYzsPlayer<Model>(WeakReference(contextWrf)), Player.EventListener,
-        VideoListener, AudioListener {
+    BaseYzsPlayer<Model>(WeakReference(contextWrf)), Player.EventListener,
+    VideoListener, AudioListener {
     //创建播放器
     private val player = createSimpleExoPlayer(context!!).apply {
         addListener(this@ExoPlayerImpl)
@@ -41,20 +41,20 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
         get() = player.bufferedPosition
 
     override fun prepareAndPlay(
-            models: MutableList<Model>,
-            playIndex: Int,
-            isStopLastMedia: Boolean,
-            listener: ((Model?) -> Unit)?
+        models: MutableList<Model>,
+        playIndex: Int,
+        isStopLastMedia: Boolean,
+        listener: ((Model?) -> Unit)?
     ) {
         play(null)
         prepare(models, playIndex, isStopLastMedia, listener)
     }
 
     override fun prepare(
-            models: MutableList<Model>,
-            playIndex: Int,
-            isStopLastMedia: Boolean,
-            listener: ((Model?) -> Unit)?
+        models: MutableList<Model>,
+        playIndex: Int,
+        isStopLastMedia: Boolean,
+        listener: ((Model?) -> Unit)?
     ) {
         super.prepare(models, playIndex, isStopLastMedia, listener)
         startPrepare(listener, isStopLastMedia)
@@ -118,9 +118,9 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
      */
     private var lastPlayModel: Model? = null
     private fun startPrepare(
-            listener: ((Model?) -> Unit)?,
-            isStopLastMedia: Boolean,
-            progress: Long = 0
+        listener: ((Model?) -> Unit)?,
+        isStopLastMedia: Boolean,
+        progress: Long = 0
     ) {
         val ctx = context ?: return
         //切换资源的时候，回调上一次资源的销毁方法，做好资源回收
@@ -136,7 +136,9 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
         currentPlayModel?.apply {
             doPlayerListener {
                 it.onPlayerModelChange(this)
-                it.onPlayerModelChange(last, this)
+                if (last != this) {
+                    it.onPlayerModelChange(last, this)
+                }
                 it.onTick(this)
             }
             //回调准备资源监听
@@ -145,34 +147,38 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
                     it.onPrepare(model)
                 }
             }
-            player.createSingleSource(ctx, this, this@ExoPlayerImpl) { error, isCallOnPlayChange ->
+            player.createSingleSource(
+                ctx,
+                this,
+                this@ExoPlayerImpl,
+                null
+            ) { error, isCallOnPlayChange ->
                 if (currentPlayModel == this) {//因为这里可能异步，需要判断
                     if (error != null) {//错误监听
-                        listener?.invoke(null)
+                        listener?.invoke(this)
                         currentPlayModel?.onError(error)
                         doPlayerListener {
                             it.onError(error, this)
                         }
                     } else {
-                        if (currentPlayModel == this) {//因为这里可能异步，需要判断
-                            listener?.invoke(this)
-                            if (progress > 0) {
-                                seekTo(progress)
-                            }
-                            //因为获取url是异步的，而且还有可能从网络获取其他信息
-                            //所以获取url后再通知一次
-                            if (isCallOnPlayChange) {
-                                doPlayerListener {
-                                    it.onPlayerModelChange(this)
+                        listener?.invoke(this)
+                        if (progress > 0) {
+                            seekTo(progress)
+                        }
+                        //因为获取url是异步的，而且还有可能从网络获取其他信息
+                        //所以获取url后再通知一次
+                        if (isCallOnPlayChange) {
+                            doPlayerListener {
+                                it.onPlayerModelChange(this)
+                                if (last != this) {
                                     it.onPlayerModelChange(last, this)
-                                    it.onTick(this)
                                 }
+                                it.onTick(this)
                             }
                         }
                     }
                 }
             }
-
         }
     }
 
@@ -191,10 +197,10 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
     }
 
     override fun seekTo(
-            positionMs: Long,
-            index: Int?,
-            reset: Boolean,
-            listener: ((Model?) -> Unit)?
+        positionMs: Long,
+        index: Int?,
+        reset: Boolean,
+        listener: ((Model?) -> Unit)?
     ) {
         if (index == null) {
             player.seekTo(positionMs)
@@ -233,6 +239,32 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
         doPlayerListener {
             it.onError(error, currentPlayModel)
         }
+        prepareMediaItemWithError(error)
+    }
+
+    private fun prepareMediaItemWithError(playerError: ExoPlaybackException) {
+        val ctx = context ?: return
+        val model = currentPlayModel ?: return
+        player.createSingleSource(ctx, model, this, playerError) { error, isCallOnPlayChange ->
+            if (currentPlayModel == model) {//因为这里可能异步，需要判断
+                if (error != null) {//错误监听
+                    currentPlayModel?.onError(error)
+                    doPlayerListener {
+                        it.onError(error, model)
+                    }
+                } else {
+                    seekTo(model.currentDuration)
+                    //因为获取url是异步的，而且还有可能从网络获取其他信息
+                    //所以获取url后再通知一次
+                    if (isCallOnPlayChange) {
+                        doPlayerListener {
+                            it.onPlayerModelChange(model)
+                            it.onTick(model)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun isPlaying(): Boolean {
@@ -248,8 +280,8 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
     }
 
     override fun setMediaSession(
-            session: MediaSessionCompat,
-            bundleCall: (Model?) -> MediaDescriptionCompat
+        session: MediaSessionCompat,
+        bundleCall: (Model?) -> MediaDescriptionCompat
     ) {
         MediaSessionConnector(session).apply {
             setQueueNavigator(QueueNavigator(mediaSession, bundleCall))
@@ -258,8 +290,8 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
     }
 
     private inner class QueueNavigator(
-            mediaSession: MediaSessionCompat,
-            val bundleCall: (Model?) -> MediaDescriptionCompat
+        mediaSession: MediaSessionCompat,
+        val bundleCall: (Model?) -> MediaDescriptionCompat
     ) : TimelineQueueNavigator(mediaSession) {
         override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
             return bundleCall(currentPlayModel)
@@ -356,20 +388,20 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
      * EXOPlayer监听-视频大小变化
      */
     override fun onVideoSizeChanged(
-            width: Int,
-            height: Int,
-            unappliedRotationDegrees: Int,
-            pixelWidthHeightRatio: Float
+        width: Int,
+        height: Int,
+        unappliedRotationDegrees: Int,
+        pixelWidthHeightRatio: Float
     ) {
         currentPlayModel?._videoWidth = width
         currentPlayModel?._videoHeight = height
         doPlayerListener {
             it.onVideoSizeChange(
-                    width,
-                    height,
-                    unappliedRotationDegrees,
-                    pixelWidthHeightRatio,
-                    currentPlayModel
+                width,
+                height,
+                unappliedRotationDegrees,
+                pixelWidthHeightRatio,
+                currentPlayModel
             )
         }
     }
@@ -379,25 +411,25 @@ internal class ExoPlayerImpl<Model : PlayerModel>(contextWrf: Context?) :
      * 每个对象都会获取一个焦点，创建的其他对象会失去焦点
      */
     private val audioFocusListener =
-            AudioManager.OnAudioFocusChangeListener { focusChange ->
-                doPlayerListener {
-                    it.onAudioFocusChange(focusChange)
+        AudioManager.OnAudioFocusChangeListener { focusChange ->
+            doPlayerListener {
+                it.onAudioFocusChange(focusChange)
+            }
+            when (focusChange) {
+                AudioManager.AUDIOFOCUS_GAIN -> {
+                    player.playWhenReady = true
                 }
-                when (focusChange) {
-                    AudioManager.AUDIOFOCUS_GAIN -> {
-                        player.playWhenReady = true
-                    }
-                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
-                        player.playWhenReady = false
-                    }
-                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
-                        player.playWhenReady = false
-                    }
-                    AudioManager.AUDIOFOCUS_LOSS -> {
-                        player.playWhenReady = false
-                    }
+                AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
+                    player.playWhenReady = false
+                }
+                AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                    player.playWhenReady = false
+                }
+                AudioManager.AUDIOFOCUS_LOSS -> {
+                    player.playWhenReady = false
                 }
             }
+        }
 
     override fun onRenderedFirstFrame() {
         doPlayerListener {

@@ -54,12 +54,12 @@ interface SimplePlayerListener<Model : PlayerModel> : AudioManager.OnAudioFocusC
     fun onBufferStateChange(isBuffering: Boolean, playStatus: Boolean, playerModel: Model?) {}
 
     /**
-     * 当播放发生变化
+     * 当播放发生变化，有可能上一次和这一次的model是同一个对象
      */
     fun onPlayerModelChange(playerModel: Model) {}
 
     /**
-     * 当播放发生变化
+     * 当播放发生变化,并且上一次和这次的model不一样
      */
     fun onPlayerModelChange(lastModel: Model?, playerModel: Model) {}
 
@@ -79,11 +79,11 @@ interface SimplePlayerListener<Model : PlayerModel> : AudioManager.OnAudioFocusC
      * 获取视频尺寸
      */
     fun onVideoSizeChange(
-            width: Int,
-            height: Int,
-            unappliedRotationDegrees: Int,
-            pixelWidthHeightRatio: Float,
-            playerModel: Model?
+        width: Int,
+        height: Int,
+        unappliedRotationDegrees: Int,
+        pixelWidthHeightRatio: Float,
+        playerModel: Model?
     ) {
 
     }

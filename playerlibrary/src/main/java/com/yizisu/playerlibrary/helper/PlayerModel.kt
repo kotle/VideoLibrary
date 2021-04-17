@@ -18,6 +18,11 @@ abstract class PlayerModel {
     internal var _videoWidth: Int = 0
     internal var _videoHeight: Int = 0
 
+    //当前的资源item
+    internal var _mediaItem: MediaItem? = null
+    val mediaItem: MediaItem?
+        get() = _mediaItem
+
     //视频总时间
     internal var _totalDuration: Long = 0
     val totalDuration: Long
@@ -28,14 +33,14 @@ abstract class PlayerModel {
     //当前播放时间
     internal var _currentDuration: Long = 0
     val currentDuration: Long
-        get() = min(_currentDuration, totalDuration)
+        get() = max(min(_currentDuration, totalDuration), 0)
     val currentDurationText: String
         get() = getCountTimeByLong(_currentDuration)
 
     //当前已经缓存的时间
     internal var _currentBufferDuration: Long = 0
     val currentBufferDuration: Long
-        get() = min(_currentBufferDuration, totalDuration)
+        get() = max(0, min(_currentBufferDuration, totalDuration))
     val currentBufferDurationText: String
         get() = getCountTimeByLong(_currentBufferDuration)
 
@@ -54,20 +59,29 @@ abstract class PlayerModel {
      */
     @Deprecated("[callMediaItem]代替")
     open fun callMediaUri(
-            uriCall: (
-                    Uri?/*播放链接*/, Throwable?/*无法传入播放链接的时候错误回调*/,
-                    Boolean/*是否需要再回调一次PlayModelChange*/
-            ) -> Unit
+        uriCall: (
+            Uri?/*播放链接*/, Throwable?/*无法传入播放链接的时候错误回调*/,
+            Boolean/*是否需要再回调一次PlayModelChange*/
+        ) -> Unit
     ) {
 
     }
 
+    /**
+     * 回调播放链接地址
+     * 支持子线程回调
+     * 回调完毕才会播放
+     *  如果有错误，请给Throwable赋值，并且Uri赋值为null
+     *  Boolean是否需要再次调用onPlayChange
+     *  如果播放的model被换掉，会回调onPlayModelNotThis()
+     */
     open fun callMediaItem(
-            uriCall: (
-                    MediaItem?/*播放链接*/,
-                    Throwable?/*无法传入播放链接的时候错误回调*/,
-                    Boolean/*是否需要再回调一次PlayModelChange*/
-            ) -> Unit) {
+        uriCall: (
+            MediaItem?/*播放链接*/,
+            Throwable?/*无法传入播放链接的时候错误回调*/,
+            Boolean/*是否需要再回调一次PlayModelChange*/
+        ) -> Unit
+    ) {
         callMediaUri { uri, throwable, b ->
             if (uri != null) {
                 uriCall.invoke(MediaItem.fromUri(uri), throwable, b)
@@ -75,6 +89,18 @@ abstract class PlayerModel {
                 uriCall.invoke(null, throwable, b)
             }
         }
+    }
+
+    /**
+     * 但播放链接出现错误，再次回调这个，根据情况自行处理
+     * 注意： 当这里播放链接也发生错误，容易发生死循环
+     * 播放器错误--回调函数---播放器错误---回调函数
+     */
+    open fun callMediaItemWhenError(
+        error: Throwable,
+        uriCall: (MediaItem?/*播放链接*/, Throwable?/*无法传入播放链接的时候错误回调*/, Boolean/*是否需要再回调一次PlayModelChange*/) -> Unit
+    ) {
+
     }
 
     /**

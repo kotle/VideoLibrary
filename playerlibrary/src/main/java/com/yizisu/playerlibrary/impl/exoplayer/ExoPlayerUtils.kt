@@ -50,27 +50,68 @@ internal fun SimpleExoPlayer.createSingleSource(
     context: Context,
     model: PlayerModel,
     exoPlayerImpl: ExoPlayerImpl<*>,
+    lastPlayerError: Throwable?,
     errorListener: Function2<Throwable?, Boolean, Unit>
 ) {
-    model.callMediaItem { mediaItem, error, isCallOnPlayChange ->
-        if (model != exoPlayerImpl.currentPlayModel) {
-            return@callMediaItem
+    if (lastPlayerError == null) {
+        //第一次准备播放链接回调
+        model.callMediaItem { mediaItem, error, isCallOnPlayChange ->
+            dealModelCall(
+                context,
+                model,
+                exoPlayerImpl,
+                mediaItem,
+                error,
+                isCallOnPlayChange,
+                errorListener
+            )
         }
-        if (BuildConfig.DEBUG) {
-            logI("ExoPlay播放准备资源：url:${mediaItem?.playbackProperties?.uri}\nerror:${error?.message}\nisCallOnPlayChange:${isCallOnPlayChange}")
+    } else {
+        //但播放链接出错，再次回调此函数
+        model.callMediaItemWhenError(lastPlayerError) { mediaItem, error, isCallOnPlayChange ->
+            dealModelCall(
+                context,
+                model,
+                exoPlayerImpl,
+                mediaItem,
+                error,
+                isCallOnPlayChange,
+                errorListener
+            )
         }
-        context.runOnUiThread {
-            if (mediaItem == null) {
-                if (error == null) {
-                    errorListener.invoke(Throwable("Uri is null"), false)
-                } else {
-                    errorListener.invoke(error, false)
-                }
+    }
+}
+
+/**
+ * 处理回调结果
+ */
+private fun SimpleExoPlayer.dealModelCall(
+    context: Context,
+    model: PlayerModel,
+    exoPlayerImpl: ExoPlayerImpl<*>,
+    mediaItem: MediaItem?,
+    error: Throwable?,
+    isCallOnPlayChange: Boolean,
+    errorListener: Function2<Throwable?, Boolean, Unit>
+) {
+    model._mediaItem = mediaItem
+    if (model != exoPlayerImpl.currentPlayModel) {
+        return
+    }
+    if (BuildConfig.DEBUG) {
+        logI("ExoPlay播放准备资源：url:${mediaItem?.playbackProperties?.uri}\nerror:${error?.message}\nisCallOnPlayChange:${isCallOnPlayChange}")
+    }
+    context.runOnUiThread {
+        if (mediaItem == null) {
+            if (error == null) {
+                errorListener.invoke(Throwable("Uri is null"), false)
             } else {
-                setMediaSource(model.buildMediaSource(mediaItem, context))
-                prepare()
-                errorListener.invoke(null, isCallOnPlayChange)
+                errorListener.invoke(error, false)
             }
+        } else {
+            setMediaSource(model.buildMediaSource(mediaItem, context))
+            prepare()
+            errorListener.invoke(null, isCallOnPlayChange)
         }
     }
 }
