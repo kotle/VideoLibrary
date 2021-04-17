@@ -23,14 +23,12 @@ import com.yizisu.playerlibrary.view.dip
  * 上方的标题栏
  */
 class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
-
-
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-            context,
-            attrs,
-            defStyleAttr
+        context,
+        attrs,
+        defStyleAttr
     )
 
     //手势控制view
@@ -45,6 +43,9 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
                 //显示
                 titleBar.translationY = -titleBar.height * (1 - animPercentage)
                 bottomBar.translationY = bottomBar.height * (1 - animPercentage)
+                if (bottomBar.visibility != View.VISIBLE && player?.getCurrentModel() != null) {
+                    bottomBar.visibility = View.VISIBLE
+                }
             }
         }
     }
@@ -56,7 +57,7 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
 
     //底部栏view
     private val bottomBar = VideoPlayerBottomBar(context).apply {
-
+        this.visibility = View.INVISIBLE
     }
 
     //自动播放暂停view
@@ -109,17 +110,17 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
         }
         if (titleBar.parent == null) {
             addView(
-                    titleBar,
-                    LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
-                        gravity = Gravity.TOP
-                    })
+                titleBar,
+                LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
+                    gravity = Gravity.TOP
+                })
         }
         if (bottomBar.parent == null) {
             addView(
-                    bottomBar,
-                    LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
-                        gravity = Gravity.BOTTOM
-                    })
+                bottomBar,
+                LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
+                    gravity = Gravity.BOTTOM
+                })
         }
     }
 
@@ -157,9 +158,9 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
     }
 
     override fun onBufferStateChange(
-            isBuffering: Boolean,
-            playStatus: Boolean,
-            playerModel: PlayerModel?
+        isBuffering: Boolean,
+        playStatus: Boolean,
+        playerModel: PlayerModel?
     ) {
         super.onBufferStateChange(isBuffering, playStatus, playerModel)
         if (playStatus) {
