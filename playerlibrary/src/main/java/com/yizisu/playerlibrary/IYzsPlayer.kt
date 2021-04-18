@@ -19,8 +19,6 @@ import com.yizisu.playerlibrary.view.SimplePlayerRepeatMode
  * 播放器操作类
  */
 interface IYzsPlayer<Model : PlayerModel> : PlayerLifecycleObserver {
-
-
     companion object {
         /**
          * 创建播放器
