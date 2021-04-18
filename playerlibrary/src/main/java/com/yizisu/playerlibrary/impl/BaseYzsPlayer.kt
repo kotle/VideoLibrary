@@ -10,10 +10,8 @@ import com.yizisu.playerlibrary.impl.exoplayer.mainHandler
 import java.lang.ref.WeakReference
 import java.util.*
 
-internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextWrf: WeakReference<Context?>?) :
+internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val context:Context) :
         IYzsPlayer<Model> {
-    internal val context: Context?
-        get() = contextWrf?.get()
 
     //播放倍速
     private var _speed = 1f
@@ -71,7 +69,7 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
     //定时任务
     protected val timerTask = object : TimerTask() {
         override fun run() {
-            if (playModelList.isNotEmpty() && context != null) {
+            if (playModelList.isNotEmpty()) {
                 currentPlayModel?.let { model ->
                     doPlayerListener { it.onTickInWorkThread(model) }
                 }
@@ -159,8 +157,6 @@ internal abstract class BaseYzsPlayer<Model : PlayerModel>(internal val contextW
         playModelList.clear()
         playerListener.clear()
         abandonAudioFocus()
-        contextWrf?.clear()
-
     }
 
     final override fun addPlayerListener(listener: SimplePlayerListener<Model>) {

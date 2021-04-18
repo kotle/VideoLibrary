@@ -17,7 +17,7 @@ open class BasePlayerService<Model : PlayerModel> : Service(), SimplePlayerListe
 
     //播放器对象
     val player by lazy {
-        IYzsPlayer<Model>(this, IYzsPlayer.Impl.EXO_PLAYER).apply {
+        IYzsPlayer<Model>(this).apply {
             setWakeMode(C.WAKE_MODE_NETWORK)
             setAudioForceEnable(true)
         }
