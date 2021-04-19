@@ -4,13 +4,14 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
 import android.util.AttributeSet
-import android.view.Gravity
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
 import android.widget.FrameLayout
 import android.widget.ProgressBar
+import androidx.constraintlayout.solver.GoalRow
+import androidx.core.widget.ContentLoadingProgressBar
 import androidx.lifecycle.MutableLiveData
 import com.yizisu.playerlibrary.IYzsPlayer
+import com.yizisu.playerlibrary.R
 import com.yizisu.playerlibrary.helper.PlayerModel
 import com.yizisu.playerlibrary.helper.SimplePlayerListener
 import com.yizisu.playerlibrary.view.autoBindListener
@@ -28,6 +29,9 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
         defStyleAttr
     )
 
+    //操作栏隐藏的时候，是否需要显示底部进度条
+    private var enableBottomProgress = false
+
     //手势控制view
     private val gestureView = VideoPlayerGestureView(context).apply {
         //监听是否隐藏view
@@ -36,12 +40,22 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
                 //隐藏
                 titleBar.translationY = -titleBar.height * animPercentage
                 bottomBar.translationY = bottomBar.height * animPercentage
+                if (enableBottomProgress) {
+                    if (progressHintView.visibility != VISIBLE && player?.getCurrentModel() != null) {
+                        progressHintView.visibility = VISIBLE
+                    }
+                }
             } else {
                 //显示
                 titleBar.translationY = -titleBar.height * (1 - animPercentage)
                 bottomBar.translationY = bottomBar.height * (1 - animPercentage)
                 if (bottomBar.visibility != View.VISIBLE && player?.getCurrentModel() != null) {
                     bottomBar.visibility = View.VISIBLE
+                }
+                if (enableBottomProgress) {
+                    if (progressHintView.visibility != GONE) {
+                        progressHintView.visibility = GONE
+                    }
                 }
             }
         }
@@ -69,6 +83,12 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
     //加载的view
     private val loadingView = ProgressBar(context).apply {
         visibility = View.GONE
+    }
+
+    //进度条的显示view
+    private val progressHintView by lazy {
+        LayoutInflater.from(context)
+            .inflate(R.layout.progressbar_horizontal, this, false) as ProgressBar
     }
 
     /**
@@ -119,6 +139,9 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
                     gravity = Gravity.BOTTOM
                 })
         }
+        if (enableBottomProgress && progressHintView.parent == null) {
+            addView(progressHintView)
+        }
     }
 
     /**
@@ -143,7 +166,11 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
     }
 
     override fun onTick(playerModel: PlayerModel) {
-
+        if (enableBottomProgress && progressHintView.visibility == VISIBLE) {
+            progressHintView.max = playerModel.totalDuration.toInt()
+            progressHintView.progress = playerModel.currentDuration.toInt()
+            progressHintView.secondaryProgress = playerModel.currentBufferDuration.toInt()
+        }
     }
 
     override fun onPrepare(playerModel: PlayerModel?) {
