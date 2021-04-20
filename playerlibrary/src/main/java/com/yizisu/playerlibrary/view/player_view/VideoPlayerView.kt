@@ -87,8 +87,9 @@ class VideoPlayerView : FrameLayout, SimplePlayerListener<PlayerModel> {
 
     //进度条的显示view
     private val progressHintView by lazy {
-        LayoutInflater.from(context)
-            .inflate(R.layout.progressbar_horizontal, this, false) as ProgressBar
+        ProgressBar(context)
+//        LayoutInflater.from(context)
+//            .inflate(R.layout.progressbar_horizontal, this, false) as ProgressBar
     }
 
     /**
