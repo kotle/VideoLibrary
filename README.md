@@ -1,5 +1,7 @@
 # VideoLibrary
 音视频播放库，目前基于ExoPlayer.
+github的网络环境太不友好了，已经迁入到了码云，此库不再更新
+[码云]（https://gitee.com/kotle/VideoLibrary）
 
 # 如何使用
 1.创建带有生命感知的播放器，在activity销毁后会自己清理数据，activity不可见的时候暂停播放。
